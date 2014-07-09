@@ -1,0 +1,22 @@
+.page-region-content > section {
+    padding: 0px;
+    background: transparent;
+    box-shadow: 0;
+}
+
+.page-region-content > aside {
+    background: transparent;
+}
+
+.page-region-content > aside.right header {
+    border-radius: 0 10px 0 0;
+}
+
+.page-region-content > aside.right .square-gallery.content {
+    border-radius: 0 0 10px 0;
+}
+
+
+.metro .page .page-region {
+    background: transparent;
+}

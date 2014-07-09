@@ -1,0 +1,22 @@
+{
+    "name": "HospitalNet",
+    "title": "Intranet Software for Hospitals",
+    "description": "UHWI Hospital",
+    "homepage": "http://intranet",
+    "author": {
+        "name": "Wayne Little",
+        "email": "waynerlittle@gmail.com",
+        "url": "http://www.clixtechnologies.com"
+    },
+    "version": "0.0.1",
+    "private": true,
+    "scripts": {
+        "start": "NODE_PATH=./app/controllers NODE_ENV=development ./node_modules/.bin/nodemon app_start.js"
+    },
+    "dependencies": {
+        "express": "latest",
+        "jade": "*"
+    },
+    "main": "app_start",
+    "keywords": ["Marionette.js", "Backbone.js", "Require.js", "Marionette and Require Boilerplate"]
+}

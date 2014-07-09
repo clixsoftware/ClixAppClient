@@ -1,0 +1,260 @@
+/* Custom CSS rules below: */
+body {
+    font-weight: 400;
+    font-size: 16px !important;
+}
+
+h1, h2, h3, h4, h5, h6 {
+    font-weight: bold;
+}
+
+#staff-search .btn {
+    font-size: 16px;
+}
+
+#searchformdiv .btn {
+    font-size: 16px;
+}
+
+/*projects*/
+.single.single-projects #menu-item-12 li {
+    background: white;
+    border-bottom: 1px solid #fff;
+}
+
+/*vacanies*/
+.single.single-vacancies #menu-item-12 {
+    background: white;
+    border-bottom: 1px solid #fff;
+}
+
+/*about*/
+.page.parent-page-id-72 #menu-item-12 li {
+    background: white;
+    border-bottom: 1px solid #fff;
+}
+
+/*how do i*/
+.single.single-task #menu-item-11 {
+    background: white;
+    border-bottom: 1px solid #fff;
+}
+
+.page.page-id-656 #menu-item-11 {
+    background: white;
+    border-bottom: 1px solid #fff;
+}
+
+/*news*/
+.single.single-news #menu-item-10 {
+    background: white;
+    border-bottom: 1px solid #fff;
+}
+
+.archive.date #menu-item-10 {
+    background: white;
+    border-bottom: 1px solid #fff;
+}
+
+.page.page-id-662 #menu-item-10 {
+    background: white;
+    border-bottom: 1px solid #fff;
+}
+
+/*forums*/
+.topic.bbpress.single.single-topic #menu-item-12 {
+    background: white;
+    border-bottom: 1px solid #fff;
+}
+
+.forum.bbpress.single.single-forum #menu-item-12 {
+    background: white;
+    border-bottom: 1px solid #fff;
+}
+
+.reply.bbpress.single.single-reply #menu-item-12 {
+    background: white;
+    border-bottom: 1px solid #fff;
+}
+
+#topstrip {
+    background: #596a75;
+}
+
+#footerwrapper { border-top: 7px solid #485760; }
+
+.page-template-page-about-php .category-block h2 { border-top: 7px solid #485760; padding: 0.6em 0;
+}
+
+.home.page .category-block h3 {
+    border-bottom: 3px solid #596a75;
+}
+
+.h3border {
+    border-bottom: 3px solid #596a75;
+}
+
+#content .widget-box {
+    padding: .1em .4em .7em 0;
+    font-size: .9em;
+    background: #fff; border-top: 7px solid #485760; margin-top: .7em;
+}
+
+.home.page .category-block h3 { border-top: 7px solid #485760; border-bottom: none;
+    padding-top: .7em;
+    margin-top: .7em;
+}
+
+.page-template-page-news-php h1 {
+    border-bottom: 7px solid #485760;
+}
+
+.tax-team h2 {
+    border-bottom: 7px solid #485760;
+}
+
+#crownlink {
+    /*background: url('https://govintranet.helpfulclients.com/wp-content/uploads/ht_coatofarms21.png') no-repeat;*/
+    background-position: left 10px;
+    /*padding: 16px 0 0 70px;*/
+    height: auto;
+    min-height: 50px;
+    margin-bottom: 0.6em;
+}
+
+#primarynav ul li {
+    border-bottom: 1px solid #596a75;
+    border-top: 1px solid #596a75;
+    border-right: 1px solid #596a75;
+}
+
+.t5 { color: #ffffff; background: #dd9933; }
+
+.t5 a { color: #ffffff !important; }
+
+.brd5 { border-left: 1.2em solid #dd9933; }
+
+.hr5 { border-bottom: 1px solid #dd9933; }
+
+.h1_5 { border-bottom: 7px solid #dd9933; margin-bottom: 0.4em; padding-bottom: 0.3em; }
+
+.b5 { border-left: 20px solid #dd9933; }
+
+.glyphicon.glyphicon-stop.gb5 { color: #dd9933; }
+
+.t7 { color: #ffffff; background: #1e73be; }
+
+.t7 a { color: #ffffff !important; }
+
+.brd7 { border-left: 1.2em solid #1e73be; }
+
+.hr7 { border-bottom: 1px solid #1e73be; }
+
+.h1_7 { border-bottom: 7px solid #1e73be; margin-bottom: 0.4em; padding-bottom: 0.3em; }
+
+.b7 { border-left: 20px solid #1e73be; }
+
+.glyphicon.glyphicon-stop.gb7 { color: #1e73be; }
+
+.t8 { color: #24004f; background: #c7aae2; }
+
+.t8 a { color: #24004f !important; }
+
+.brd8 { border-left: 1.2em solid #c7aae2; }
+
+.hr8 { border-bottom: 1px solid #c7aae2; }
+
+.h1_8 { border-bottom: 7px solid #c7aae2; margin-bottom: 0.4em; padding-bottom: 0.3em; }
+
+.b8 { border-left: 20px solid #c7aae2; }
+
+.glyphicon.glyphicon-stop.gb8 { color: #c7aae2; }
+
+.t6 { color: #ffffff; background: #dd3333; }
+
+.t6 a { color: #ffffff !important; }
+
+.brd6 { border-left: 1.2em solid #dd3333; }
+
+.hr6 { border-bottom: 1px solid #dd3333; }
+
+.h1_6 { border-bottom: 7px solid #dd3333; margin-bottom: 0.4em; padding-bottom: 0.3em; }
+
+.b6 { border-left: 20px solid #dd3333; }
+
+.glyphicon.glyphicon-stop.gb6 { color: #dd3333; }
+
+.t3 { color: #ffffff; background: #d657b4; }
+
+.t3 a { color: #ffffff !important; }
+
+.brd3 { border-left: 1.2em solid #d657b4; }
+
+.hr3 { border-bottom: 1px solid #d657b4; }
+
+.h1_3 { border-bottom: 7px solid #d657b4; margin-bottom: 0.4em; padding-bottom: 0.3em; }
+
+.b3 { border-left: 20px solid #d657b4; }
+
+.glyphicon.glyphicon-stop.gb3 { color: #d657b4; }
+
+.t4 { color: #ffffff; background: #1ea4bf; }
+
+.t4 a { color: #ffffff !important; }
+
+.brd4 { border-left: 1.2em solid #1ea4bf; }
+
+.hr4 { border-bottom: 1px solid #1ea4bf; }
+
+.h1_4 { border-bottom: 7px solid #1ea4bf; margin-bottom: 0.4em; padding-bottom: 0.3em; }
+
+.b4 { border-left: 20px solid #1ea4bf; }
+
+.glyphicon.glyphicon-stop.gb4 { color: #1ea4bf; }
+
+.t10 { color: #ffffff; background: #666666; }
+
+.t10 a { color: #ffffff !important; }
+
+.brd10 { border-left: 1.2em solid #666666; }
+
+.hr10 { border-bottom: 1px solid #666666; }
+
+.h1_10 { border-bottom: 7px solid #666666; margin-bottom: 0.4em; padding-bottom: 0.3em; }
+
+.b10 { border-left: 20px solid #666666; }
+
+.glyphicon.glyphicon-stop.gb10 { color: #666666; }
+
+.t9 { color: #ffffff; background: #76a533; }
+
+.t9 a { color: #ffffff !important; }
+
+.brd9 { border-left: 1.2em solid #76a533; }
+
+.hr9 { border-bottom: 1px solid #76a533; }
+
+.h1_9 { border-bottom: 7px solid #76a533; margin-bottom: 0.4em; padding-bottom: 0.3em; }
+
+.b9 { border-left: 20px solid #76a533; }
+
+.glyphicon.glyphicon-stop.gb9 { color: #76a533; }
+
+.t1 { color:; background:; }
+
+.t1 a { color: !important; }
+
+.brd1 { border-left: 1.2em solid; }
+
+.hr1 { border-bottom: 1px solid; }
+
+.h1_1 { border-bottom: 7px solid; margin-bottom: 0.4em; padding-bottom: 0.3em; }
+
+.b1 { border-left: 20px solid; }
+
+.glyphicon.glyphicon-stop.gb1 { color:; }
+
+body{
+background-color: #e6eaf2;
+}
+

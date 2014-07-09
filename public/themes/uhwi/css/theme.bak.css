@@ -1,0 +1,613 @@
+/*
+Kit Name: Intranet
+Kit URI: http://pixelkit.com
+Description: 100+ elements
+Version: 1.0
+Author: Wayne Little
+Author URI: http://themefuse.com
+
+CSS STRUCTURE:
+
+1. GENERAL TYPOGRAPHY
+	- Fonts
+	- Global Reset
+	- General Styles
+	- Clear Floats
+	- Typography
+	- Buttons
+	- Custom checkboxes, radios
+	- Ribbons
+	- Badges
+	- Rating Stars
+	- Layout
+
+2. PAGE ITEMS, WIDGETS
+	- Services
+			- Services Style 1
+			- Services Style 2,  Services Style 3
+	- About Us Items
+	- Table Pricing
+	- Sidebar widgets
+			- Widget Categories
+			- Widget Latest Stories, Latest Comments
+			- Widget Tags
+			- Widget Flickr
+			- Widget Text
+			- Widget Calendar
+			- Widget Join Us
+			- Widget Twitter
+	- Full width widgets
+            - Widget Partners
+            - Widget Caption
+            - Widget Portfolio Filter
+            - Widget Question
+	- Post Items
+			- Post Item Labels
+			- Post Items Default Style
+			- Post Items Style 2
+			- Post Items Style 3
+			- Post Items Style 4
+			- Post Items Style 5
+			- Post Quotes
+			- Post Images
+			- Post Video, Post Audio
+			- Post Intro Text
+	- Popular Post Items
+	- Comments
+	- Forms
+    	    - Comment Form
+    	    - Contact Form
+    	    - Survey Form
+    	    - Payment Form
+    	    - Login Form
+    	    - Newsletter Form, Search Form
+	- Pagination
+	- Dividers
+	- Tabs
+    	    - Tabs Style 1
+    	    - Tabs Style 2
+	- Toggles
+	- Pull Quotes
+	- Info Boxes
+	- Filters
+			- Checkbox Filter, Radiobox Filter
+			- Filter Results
+	- Sliders
+			- Grid Gallery
+			- Main Slider
+	- Footers
+			- Footer Style 1
+			- Footer Style 2
+    - Square Gallery
+
+3. INDEX PAGE
+    - Header (Kit Name)
+	- Main Menu
+	- User Menu
+	- Contact Form styled
+	- Login Form styled
+	- Search Form styled
+	- Progress Bars
+	- Scroll Bars
+	- Simple Message Field
+	- Avatar Placeholder
+	- Widget Profile
+	- Widget Trade
+	- Widget Social Buttons
+	- Widget Weather
+	- Widget Stats
+	- Image Slider
+	- Notifications
+
+4. RESPONSIVE
+
+/*===================================================*/
+/* 1. GENERAL TYPOGRAPHY */
+/*===================================================*/
+
+
+/*-----------------------------------*/
+/* Fonts */
+/*-----------------------------------*/
+
+@font-face {
+    font-family: 'OpenSans-Regular';
+    src: url('/fonts/OpenSans-Regular/OpenSans-Regular-webfont.eot');
+    src: url('/fonts/OpenSans-Regular/OpenSans-Regular-webfont.eot?#iefix') format('embedded-opentype'),
+    url('/fonts/OpenSans-Regular/OpenSans-Regular-webfont.woff') format('woff'),
+    url('/fonts/OpenSans-Regular/OpenSans-Regular-webfont.ttf') format('truetype'),
+    url('/fonts/OpenSans-Regular/OpenSans-Regular-webfont.svg#open_sansregular') format('svg');
+    font-weight: normal;
+    font-style: normal;
+}
+
+
+@font-face {
+    font-family: 'Montserrat-Regular';
+    src: url('/fonts/Montserrat/Montserrat-Regular.ttf') format('truetype');
+    font-weight: normal;
+    font-style: normal;
+
+}
+
+@font-face {
+    font-family: 'proxima-nova';
+    src: url("/fonts/proxima_nova/ProximaNova-Regular.otf") format("opentype");
+}
+
+@font-face {
+    font-family: 'proxima-nova regular';
+    src: url("/fonts/proxima_nova/ProximaNova-Regular.otf") format("opentype");
+}
+
+
+@font-face {
+    font-family: 'proxima-nova light';
+    src: url("/fonts/proxima_nova/ProximaNova-Light.otf") format("opentype");
+}
+
+@font-face {
+    font-family: 'proxima-nova semi-bold';
+    src: url("/fonts/proxima_nova/ProximaNova-Semibold.otf") format("opentype");
+}
+
+@font-face {
+    font-family: 'proxima-nova condensed-semi-bold';
+    src: url("/fonts/proxima_nova/ProximaNovaCond-Semibold.otf") format("opentype");
+}
+
+
+@font-face {
+    font-family: 'proxima-nova';
+    font-weight: bold;
+    src: url("/fonts/proxima_nova/ProximaNova-Bold.otf") format("opentype");
+}
+
+
+/*-----------------------------------*/
+/* Global Reset */
+/*-----------------------------------*/
+
+/** * html5doctor.com Reset Stylesheet v1.6.1 (http://html5doctor.com/html-5-reset-stylesheet/) * Richard Clark (http://richclarkdesign.com) * http://cssreset.com */
+html, body, div, span, object, iframe, h1, h2, h3, h4, h5, h6, p, blockquote, pre, abbr, address, cite, code, del, dfn, em, img, ins, kbd, q, samp, small, strong, sub, sup, var, b, i, dl, dt, dd, ol, ul, li, fieldset, form, label, legend, table, caption, tbody, tfoot, thead, tr, th, td, article, aside, canvas, details, figcaption, figure, footer, header, hgroup, menu, nav, section, summary, time, mark, audio, video { margin: 0; padding: 0; border: 0; outline: 0; font-size: 100%; vertical-align: baseline; background: transparent; }
+
+body { line-height: 1; }
+
+article, aside, details, figcaption, figure, footer, header, hgroup, menu, nav, section { display: block; }
+
+nav ul { list-style: none; }
+
+blockquote, q { quotes: none; }
+
+blockquote:before, blockquote:after, q:before, q:after { content: ''; content: none; }
+
+a { margin: 0; padding: 0; font-size: 100%; vertical-align: baseline; background: transparent; }
+
+/* change colours to suit your needs */
+ins { background-color: #ff9; color: #000; text-decoration: none; }
+
+/* change colours to suit your needs */
+mark { background-color: #ff9; color: #000; font-style: italic; font-weight: bold; }
+
+del { text-decoration: line-through; }
+
+abbr[title], dfn[title] { border-bottom: 1px dotted; cursor: help; }
+
+table { border-collapse: collapse; border-spacing: 0; }
+
+/* change border colour to suit your needs */
+hr { display: block; height: 1px; border: 0; border-top: 1px solid #cccccc; margin: 1em 0; padding: 0; }
+
+input, select { vertical-align: middle; }
+
+a {text-decoration: none;}
+/*-----------------------------------*/
+/* General Styles */
+/*-----------------------------------*/
+body{
+    font-family: "proxima-nova light";
+    background: #ffffff;;
+}
+
+h1, h2, h3, h4, h5{
+    font-family: "proxima-nova light", "Segoe UI", verdana, arial;
+}
+
+/** DIALOG **/
+
+.ui.small.modal{
+    width: 50%;
+    margin-left: -25%;
+}
+.ui.modal .close {
+    cursor: pointer;
+    position: absolute;
+    z-index: 1;
+    opacity: .8;
+    font-size: 1.25em;
+    top: -1.75em;
+    right: -1.75em;
+    color: #FFF;
+}
+
+.ui.modal .content {
+    display: table;
+    width: 100%;
+    position: relative;
+    padding: 2em 0;
+    background-color: #fff;
+    border-top: 1px solid #F4F4F4;
+    border-bottom: 1px dashed #999;
+    -webkit-box-sizing: border-box;
+    -moz-box-sizing: border-box;
+    -ms-box-sizing: border-box;
+    box-sizing: border-box;
+}
+
+.ui.modal .header {
+    margin: 0;
+    padding: 1.5rem 2rem;
+    font-size: 1.6em;
+    font-weight: 700;
+    border-radius: .325em .325em 0 0;
+}
+
+.ui.modal .ui.form.segment {
+    padding: 0;
+}
+.page.container{
+    width: 1170px;
+    margin: 0 auto;
+}
+
+.ui.site.menu {
+    background-color: inherit;
+    border: 0;
+    box-shadow: 0 0 0 0;
+    margin-bottom: 0px;
+}
+
+.site.main {
+    margin-top: 70px;
+}
+.site.main .page.container{
+    width: 1170px;
+    margin: 0 auto;
+}
+#site-main.app .page.container{
+    width: 98%;
+    padding: 10px;
+}
+
+#site-header {
+    /*position: fixed;
+    top: 0;
+    z-index: 1000002;*/
+    width: 100%;
+    background-color: #113850;
+    border-bottom: 1px solid #5172a0;
+}
+
+.fixed {
+    width: 100%;
+    left: 0;
+    position: fixed;
+    top: 0;
+    z-index: 99;
+}
+
+.site.navigation.bar{
+    margin-top: 55px;
+    background-color: #ecebe6;
+}
+.site.navigation.bar .ui.menu{
+    background-color: inherit;
+    box-shadow: 0 0 0 0;
+
+}
+
+
+
+a.js-main-menu i.ui.reorder {
+    color: #ffffff !important;
+    opacity: 1;
+}
+
+#site-action-bar {
+    /* top: 0;
+     z-index: 1000002; */
+    width: 100%;
+    background-color: #113850;
+    border-bottom: 1px solid #5172a0;
+    box-shadow: 0 0 11px 0 #868686;
+    /* display: block;
+     background-color: #202020;
+     background-image: url('/sites/all/themes/queen/images/layout/radial_bg.jpg');
+     background-position: center center;
+     background-repeat: no-repeat;
+     background: -webkit-gradient(radial, center center, 0, center center, 460, from(red), to(#202020));
+     background: -webkit-radial-gradient(circle, red, #202020); background: -moz-radial-gradient(circle, red, #202020);
+     background: -ms-radial-gradient(circle, red, #202020);
+     height: 90px;*/
+}
+#site-action-bar  .ui.menu a.item{
+    color: #ffffff !important;
+}
+
+/**** SIDE BARS ****/
+#site-left-sidebar{
+    padding-top: 60px;
+}
+
+#site-left-sidebar.main-menu{
+    padding-left: 0;
+    padding-right: 0;
+    padding-top:60px;
+}
+
+#site-left-sidebar.main-menu .menu{
+    margin:0;
+    border-radius: 0;
+}
+
+#site-left-sidebar.main-menu .primary.menu a.item{
+    text-transform: uppercase;
+    font-weight: 600;
+}
+
+#site-search{
+
+    padding-right: 80px;
+    background-color: #fff;
+}
+#site-search input{
+    border: 0;
+    border-radius: 0;
+    font-family: 'proxima-nova', 'HelveticaNeue-Light';
+    font-size: 1.4em;
+    padding: .4em 1.2em;
+}
+
+.close-search{
+    position: absolute;
+    right: 10px;
+    top: 12px;
+
+
+}
+
+.close-search i.icon{
+    cursor: pointer;
+}
+
+.ui.top.sidebar {
+    height: 50px !important;
+    margin: -50px 0px 0px 0px !important;
+}
+
+
+/*** WIDGETS */
+
+.widget{
+    margin: 1em 0 !important;
+
+}
+
+.mostpopular .item {
+    padding: 5px 0;
+    position: relative;
+    display: table;
+}
+.mostpopular .mpImgLeft {
+    display: table-cell;
+    width: 83px;
+    padding-right: 10px;
+}
+.mostpopular .content {
+    width: 160px;
+    font-weight: bold;
+    line-height: 16px;
+    display: table-cell !important;
+    vertical-align: top;
+}
+.mostpopular .mpNum {
+    width: 18px;
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+    font: 300 35px/36px "proxima-nova", arial;
+    padding-right: 10px;
+    color: #2e538f;
+}
+
+.ui.news.home.list .item img{
+    width: 340px;
+    height: 190px;
+
+}
+
+.ui.news.home.list .item img, .ui.news.home.list .item .description{
+    display: none;
+}
+.ui.news.home.list .item.item-1 img, .ui.news.home.list .item.item-1 .description{
+    display: initial;
+
+}
+.ui.news.home.list .item > .content {
+    display: block;
+}
+
+.news.post.layout .site.main .page.container, .news.public.home .site.main .page.container{
+    width: 1017px !important;
+}
+
+.news.post.layout .site.main.content, .news.public.home .site.main.content {
+    background: url('../img/shadow_top.png') no-repeat 690px -10px,url('../img/shadow_bot.png') no-repeat 690px bottom,url('../img/shadow_mid.png') repeat-y 690px 0px;
+}
+
+.news.public.home .layout.content{
+    padding-right: 20px;
+}
+
+.fixed-bottom {
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+}
+
+.margin-none {
+    margin: 0 !important;
+}
+.bg-inverse-faded {
+    background: rgba(66,66,66,0.5) !important;
+}
+
+.box-generic {
+    border: 1px solid #efefef;
+    padding: 10px;
+    position: relative;
+    background: #fff;
+    -webkit-border-radius: 5px 5px 5px 5px;
+    -moz-border-radius: 5px 5px 5px 5px;
+    border-radius: 5px 5px 5px 5px;
+    margin: 0 0 10px;
+}
+/*
+.featured.posts.ui.items > .item {
+    border-bottom: 0;
+    border-radius: 0;
+    -webkit-transition: -webkit-box-shadow 0.2s ease;
+    transition: box-shadow 0.2s ease;
+    padding: 0;
+    border:0;
+    box-shadow: 0 0 0 0;
+    min-height: inherit;
+    margin-bottom: 0 !important;
+    margin-right: 5px;
+ }
+
+.featured.posts.ui.items  .img-responsive {
+    display: block;
+    height: auto;
+    max-width: 100%;
+}
+
+.featured.posts.ui.items img {
+
+}
+.featured.posts.ui.items > .item .content {
+    padding: 20px;
+}
+
+.featured.posts.ui.items > .item .content h4.ui.header {
+    line-height: 1;
+    font-size: 1.1rem;
+
+    margin-bottom: 0;
+}
+
+
+*/
+.border-bottom {
+    border-bottom: 1px solid #efefef !important;
+}
+.innerAll {
+    padding: 10px;
+    position: relative;
+}
+
+.ui.inline.list .item .content{
+    padding:0 !important;
+    color: #fff;
+}
+
+.ui.inline.list .item > .image {
+    display: inline-block;
+}
+.ui.inline.list .item {
+    padding-left: 20px;
+
+}
+.ui.inline.list > .item .avatar {
+    max-width: initial;
+}
+
+
+
+.home.view .site.navigation.bar h3.ui.floated.header {
+    margin-bottom: 0em;
+}
+.home.view .site.navigation.bar .page.container {
+    width: 1088px;
+    padding-top: 10px;
+}
+.home.view .site.navigation.bar {
+    background-color: #ecebe6;
+;
+}
+
+.home.view .site.sub.navigation.bar .page.container {
+    width: 1088px;
+    background-color: inherit;
+    padding-top: 0;
+}
+
+.home.view .site.main, .news .site.main{
+    margin-top: 0;
+}
+
+.home .site.main .page.container{
+    width: 1170px;
+    margin: 0 auto;
+}
+
+.site.sub.navigation.bar {
+    margin-top: 0;
+}
+
+.app .site.main .page.container {
+    width: 98%;
+
+}
+
+.thumb {
+    overflow: hidden;
+    background: #000000;
+}
+.post-info {
+    position: absolute;
+    bottom: 0;
+    left: 0;
+    color: #FFFFFF;
+    width: 100%;
+    -webkit-transition: all 0.2s ease-in-out;
+    -moz-transition: all 0.2s ease-in-out;
+    -o-transition: all 0.2s ease-in-out;
+    -ms-transition: all 0.2s ease-in-out;
+    transition: all 0.2s ease-in-out;
+    -webkit-backface-visibility: hidden;
+    -moz-backface-visibility: hidden;
+}
+.post-info .inner {
+    padding: 15px;
+    overflow: hidden;
+}
+.post-info .entry-cat h6 {
+    text-transform: uppercase;
+    display: inline-block;
+    border-bottom: 4px solid #FFFFFF;
+    padding-bottom: 3px;
+}
+.post-info a {
+    color: #FFFFFF;
+}
+.post-info h2 {
+    text-transform: uppercase;
+    font-weight: 700;
+    line-height: 1;
+}
+
+.post-info .excerpt {
+    display: none;
+}

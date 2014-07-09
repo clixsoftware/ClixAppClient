@@ -1,0 +1,120 @@
+.page-region-content > section {
+    padding: 0 20px 20px 20px;
+    background: #ffffff;
+    box-shadow: 0;
+    min-height: 800px;
+    border-radius: 7px 7px 7px 7px;
+    -webkit-box-shadow: inset -6px 0 15px -6px rgba(33,16,33,1);
+    -moz-box-shadow: inset -6px 0 15px -6px rgba(33,16,33,1);
+    -box-shadow: inset -6px 0 15px -6px rgba(33,16,33,1);
+}
+
+.page-region-content > section h1 {
+    font-family: "Open Sans Light", "Segoe UI_", "helvetica neue";
+    font-size: 34px;
+    line-height: inherit;
+    margin-top: 0;
+}
+
+.page-region-content > aside {
+    background: transparent;
+}
+
+.page-region-content > aside.right header {
+    border-radius: 0 10px 0 0;
+    background-color: #58C9F3;
+}
+
+.page-region-content > aside.right .content {
+    border-radius: 0 0px 10px 0;
+    background-color: #FFFFFF;
+    min-height: 500px;
+}
+
+.page-region-content > aside.right .square-gallery.content {
+    border-radius: 0 0 10px 0;
+}
+
+.metro .page .page-region {
+    background: transparent;
+}
+
+.widget{
+    margin-top: 30px;
+}
+aside.right .trending-article-list-widget header{
+    background-color: #ffffff;
+    border-bottom: 1px solid #f2f2f2;
+    border-radius: 0;
+    height: inherit;
+}
+
+aside.right .trending-article-list-widget{
+    margin-bottom: 60px;
+}
+
+aside.right .trending-article-list-widget header h3{
+    color: #333333;
+    font-family: "Open Sans";
+    margin-bottom: 0;
+}
+
+aside.right .trending-article-list-widget .listview ul{
+    margin-left: 0;
+    padding-left: 5px;
+}
+
+aside.right .trending-article-list-widget .listview ul li{
+    border-bottom: 1px solid #f2f2f2;
+    padding-bottom: 8px;
+    padding-top: 8px;
+}
+
+
+aside.right .trending-article-list-widget .listview ul li a{
+    color: #2e92cf;
+    font-size: 12pt;
+    font-family: "Segoe UI Semibold";
+}
+
+aside.right .trending-article-list-widget .listview ul li a:hover{
+    color: #0099ff !important;
+}
+
+.article-list-widget.line-top{
+        border-top-color: #007bb6;
+}
+
+.article-list-widget header h2{
+    margin-top: 0;
+    font-family: "Open Sans";
+    font-size: 16pt;
+    text-transform: uppercase;
+    font-weight: bold;
+    color: #333333;
+}
+.article-list-widget article.main{
+   margin-bottom: 20px;
+}
+
+.article-list-widget article.main{
+    border-top-color: #007bb6;
+}
+
+.article-list-widget article.main h3 {
+    line-height: 18pt;
+}
+
+.article-list-widget article.main h3 a{
+    font-family: "Open Sans", "Segoe UI_", "helvetica neue";
+
+    color: #003300;
+
+}
+
+.article-list-widget article.main img{
+    margin-right: 10px;
+}
+.article-list-widget article.main .content{
+    padding: 0 10px;
+}
