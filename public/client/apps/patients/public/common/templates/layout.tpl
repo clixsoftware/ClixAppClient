@@ -1,11 +1,10 @@
 <style type="text/css">
-    #content.container{
+    #content.container {
         width: 98% !important;
     }
 </style>
 
 <div id="layout-left-aside" class="col-lg-3 col-md-3 col-sm-5">
-    Sidebar Content
     <div id="layout-zone-1"></div>
     <div id="layout-zone-2"></div>
     <div id="layout-zone-3"></div>

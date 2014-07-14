@@ -1,7 +1,3 @@
-/*
- * Application: News Manager
- * */
-
 define(
     [
         "app"
@@ -12,7 +8,7 @@ define(
             PatientManager.title = "PatientManager Manager";
 
 
-            PatientManager.code = "newsmanager";
+            PatientManager.code = "patients";
 
             PatientManager.startWithParent = false;
 
@@ -63,7 +59,7 @@ define(
                 },
 
 
-                loadApplicationHome: function(alias){
+                loadApplicationHome: function (alias) {
 
                     console.log('Showing the patients home alias ' + alias);
 
@@ -94,7 +90,7 @@ define(
 
                     console.log(opts.slug);
 
-                   var cb = function () {
+                    var cb = function () {
                         require([
                             "apps/patients/public/entities/patient/show/controller"
                         ], function (ShowController) {
@@ -104,17 +100,26 @@ define(
 
                     IntranetManager.trigger("patients:public:init", null);
 
-                }
+                },
 
+                loadPatientCategories: function () {
+                    require([
+                        "apps/patients/public/entities/patient/list/controller"
+                    ], function (ListController) {
+                        ListController.displayPatientCategories();
+                    });
+                }
             };
 
-          //PUBLIC TRIGGERS
+            //PUBLIC TRIGGERS
 
             IntranetManager.on('patients:public:init', function (cb) {
-                //IntranetManager.navigate("workspace");
                 API.initPublic(cb);
             });
 
+            IntranetManager.on('patients:load:categories', function () {
+                API.loadPatientCategories();
+            });
 
             IntranetManager.addInitializer(function () {
                 new PatientManagerRouter.Router({

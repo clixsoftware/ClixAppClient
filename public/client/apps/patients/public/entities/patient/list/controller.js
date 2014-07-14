@@ -14,9 +14,9 @@ define([
         "moment"
 
     ],
-    function ( IntranetManager, ListViews, CommonViews, GlobalViews ) {
+    function (IntranetManager, ListViews, CommonViews, GlobalViews) {
         IntranetManager.module("PatientManager.Public.Patients.List",
-            function ( List, PatientManager, Backbone, Marionette, $, _ ) {
+            function (List, PatientManager, Backbone, Marionette, $, _) {
                 List.Controller = {
 
 
@@ -24,7 +24,7 @@ define([
                         return new ListViews.LayoutView();
                     },
 
-                    getListView: function ( collection ) {
+                    getListView: function (collection) {
                         var view = new ListViews.ListView({
                             collection: collection
                         });
@@ -33,7 +33,7 @@ define([
                     },
 
 
-                    getHeaderView: function ( app ) {
+                    getHeaderView: function (app) {
 
                         return new ListViews.HeaderView({
                             model: app
@@ -44,16 +44,16 @@ define([
                         return new ListViews.SearchFormView();
                     },
 
-                    getPaginatorView: function ( results ) {
+                    getPaginatorView: function (results) {
                         return new ListViews.PaginatedView({
                             model: results
                         });
                     },
 
 
-                    showPatientsList: function ( options ) {
+                    showPatientsList: function (options) {
 
-                         console.group('<< showPatientsList : INIT >>');
+                        console.group('<< showPatientsList : INIT >>');
 
                         var that = this;
                         var layout = this.getLayoutView();
@@ -69,7 +69,7 @@ define([
                             console.log('@@ Fetching Current Application using = ' + JSON.stringify(settings));
 
                             var fetchingApp = IntranetManager.request('applications:feature:alias', settings);
-                            fetchingApp.then(function ( app ) {
+                            fetchingApp.then(function (app) {
                                 console.log('Patient Application ' + JSON.stringify(app));
 
 
@@ -79,18 +79,22 @@ define([
                                 };
 
                                 var fetchingRecords = IntranetManager.request('patients:application:entities', options);
+
+                                //load categories
+                                IntranetManager.trigger('patients:load:categories');
+
                                 return [app, fetchingRecords, layout, options];
 
                             })
-                                .spread(function ( app, fetchedContacts, layout, triggerOptions ) {
+                                .spread(function (app, fetchedContacts, layout, triggerOptions) {
 
                                     var searchFormView = that.getSearchFormView();
 
 
-                                    var doGrouping = function ( models ) {
+                                    var doGrouping = function (models) {
 
                                         //alert('doing grouping');
-                                        models.each(function ( model, index, list ) {
+                                        models.each(function (model, index, list) {
 
                                             var gid = parseInt(index / 3);
                                             model.set('gid', gid);
@@ -101,14 +105,14 @@ define([
 
                                         return new Backbone.buildGroupedCollection({
                                             collection: models,
-                                            groupBy: function ( post ) {
+                                            groupBy: function (post) {
 
                                                 return post.get('gid');
                                             }
                                         });
                                     };
 
-                                    var buildPaginate = function ( collection, trigger, settings ) {
+                                    var buildPaginate = function (collection, trigger, settings) {
                                         var PaginateModel = Backbone.Model.extend();
 
                                         var paginator = new PaginateModel({
@@ -121,13 +125,13 @@ define([
                                         console.log(JSON.stringify(groupedCollection.vc));
                                         var paginatedView = that.getPaginatorView(paginator);
 
-                                        paginatedView.on('change:page', function ( pageNumber ) {
+                                        paginatedView.on('change:page', function (pageNumber) {
 
                                             settings.page = pageNumber;
 
                                             var records = IntranetManager.request(trigger, settings);
 
-                                            records.then(function ( success ) {
+                                            records.then(function (success) {
 
                                                 layout.peopleNav.show(that.getListView(doGrouping(success)));
 
@@ -147,7 +151,7 @@ define([
                                     layout.addRegion("paginator", "#paginator");
                                     //setup the search
 
-                                    searchFormView.on("people:search", function ( filterCriterion ) {
+                                    searchFormView.on("people:search", function (filterCriterion) {
 
                                         console.log("people:search event , criterion = " + filterCriterion);
                                         // alert('searching');
@@ -158,7 +162,7 @@ define([
 
                                         var search = IntranetManager.request("directory:application:contacts:search", search_options);
 
-                                        search.then(function ( results ) {
+                                        search.then(function (results) {
                                             //console.log('Search results ' +results.models.length);
 
                                             buildPaginate(results, 'directory:application:contacts:search', search_options);
@@ -182,14 +186,13 @@ define([
                                         buildPaginate(fetchedContacts, 'directory:application:contacts', triggerOptions);
                                     });
 
-
                                     IntranetManager.appLayout = layout;
 
                                     IntranetManager.layoutContent.show(IntranetManager.appLayout);
 
 
                                 })
-                                .fail(function ( error ) {
+                                .fail(function (error) {
 
                                     console.log(error);
                                 });
@@ -197,6 +200,16 @@ define([
                         });
 
 
+                    },
+
+                    getCategoriesView: function () {
+                        return new ListViews.CategoryView();
+                    },
+
+                    displayPatientCategories: function () {
+
+                        IntranetManager.layoutZone2.reset();
+                        IntranetManager.layoutZone2.show(new this.getCategoriesView());
                     }
                 }
 

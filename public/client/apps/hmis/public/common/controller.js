@@ -6,10 +6,10 @@
 
 
 define([
-    "app",
-    "apps/hmis/public/common/views",
-    "common/views"
-],
+        "app",
+        "apps/hmis/public/common/views",
+        "common/views"
+    ],
     function (IntranetManager, CommonViews, GlobalViews) {
         IntranetManager.module("HospitalManager.Public.Common",
             function (Common, HospitalManager, Backbone, Marionette, $, _) {
@@ -21,55 +21,46 @@ define([
                         return new CommonViews.LayoutView();
                     },
 
-                    setupAppLayout: function (next) {
+                    initAppEngine: function (next) {
                         var that = this;
 
-                       // if (HomeManager.started === false || HomeManager.started === undefined) {
-                            console.log('<<Setup Home Page layout>>');
-                            //console.log('Init site manager setup : ');
+                        require(["entities/feature"],
+                            function () {
+
+                                var fetchFeature = IntranetManager.request('feature:entity:search:alias', 'hmis');
+                                fetchFeature.then(function (feature) {
+
+                                    if (!feature) {
+                                        throw new Error('Feature HospitalManager is not installed');
+                                    }
+
+                                    HospitalManager.feature = {
+                                        id: feature.get('id')
+                                    };
+
+                                    HospitalManager.started = true;
+                                    var layout = Common.Controller.getLayoutView();
 
 
-                            require(["entities/feature"],
-                                function () {
+                                    IntranetManager.appLayout = layout;//Common.Controller.getLayoutView();
 
-                                    //fetch workspaces
-                                    var fetchFeature = IntranetManager.request('feature:entity:search:alias', 'hmis');
-                                    fetchFeature.then(function (feature) {
+                                    IntranetManager.siteMainContent.reset();
+                                    IntranetManager.siteMainContent.show(IntranetManager.appLayout);
+                                    IntranetManager.trigger('hmis:show:menu');
 
-                                       // console.log('an error occurred do we reach here');
-                                        // alert(feature);
-                                        if (!feature) {
-                                            throw new Error('Feature HomePage is not installed');
-                                        }
+                                    //Call the next function, Setup app layout must be run before..
+                                    if (next) {
+                                        next();
+                                    }
+                                })
+                                    .fail(function (error) {
+                                        alert(error);
+                                        console.log('Go to 404 page');
+                                        /*//TODO: navigate to 404 pages*/
+                                    });
 
-                                        HospitalManager.feature = {
-                                            id: feature.get('id')
-                                        };
-
-                                        HospitalManager.started = true;
-                                        var layout = Common.Controller.getLayoutView();
-
-
-
-                                        IntranetManager.appLayout = layout;//Common.Controller.getLayoutView();
-
-                                        IntranetManager.siteMainContent.reset();
-                                        IntranetManager.siteMainContent.show(IntranetManager.appLayout);
-                                        IntranetManager.trigger('hmis:show:menu');
-
-                                        //Call the next function, Setup app layout must be run before..
-                                        if (next) {
-                                            next();
-                                        }
-                                    })
-                                        .fail(function (error) {
-                                            alert(error);
-                                            console.log('Go to 404 page');
-                                            /*//TODO: navigate to 404 pages*/
-                                        });
-
-                                }
-                            );
+                            }
+                        );
 
                     },
 
@@ -78,7 +69,7 @@ define([
                         return new CommonViews.AppHomeView();
                     },
 
-                    displayOverviewPage: function ( alias ) {
+                    displayOverviewPage: function (alias) {
                         // alert('showing a public news post' + opts.slug);
                         var that = this;
 
@@ -95,19 +86,19 @@ define([
                             var fetchingApp = IntranetManager.request('applications:feature:alias', options);
 
 
-                            fetchingApp.then(function ( app ) {
+                            fetchingApp.then(function (app) {
 
                                 console.log(app);
 
                                 IntranetManager.trigger('dom:title', app.get('title'));
                                 alert('loading the components for the home overview page');
 
-/*                                IntranetManager.layoutContent.reset();
-                                IntranetManager.layoutContent.show(that.getPublicView(post));*/
+                                /*                                IntranetManager.layoutContent.reset();
+                                 IntranetManager.layoutContent.show(that.getPublicView(post));*/
 
                                 return app;
 
-                            }).fail(function ( err ) {
+                            }).fail(function (err) {
                                 console.log('an error occurred ' + err);
                             });
 

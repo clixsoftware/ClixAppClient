@@ -14,12 +14,12 @@ define(["app",
         "tpl!apps/patients/public/entities/patient/list/templates/atoz_navigation.tpl",
         "tpl!apps/patients/public/entities/patient/list/templates/sort_filter.tpl",
         "tpl!apps/patients/public/entities/patient/list/templates/paginator.tpl",
-        "tpl!apps/patients/public/entities/patient/list/templates/header.tpl"
+        "tpl!apps/patients/public/entities/patient/list/templates/header.tpl",
+        "tpl!apps/patients/public/entities/patient/list/templates/categories.tpl"
     ],
-    function ( IntranetManager, GlobalViews,   listTpl, listItemTpl, layoutTpl, searchFormTpl,
-               atozTpl, sortFilterTpl, paginatorTpl, headerTpl) {
+    function (IntranetManager, GlobalViews, listTpl, listItemTpl, layoutTpl, searchFormTpl, atozTpl, sortFilterTpl, paginatorTpl, headerTpl, categoriesTpl) {
         IntranetManager.module("PatientManager.Public.Entries.List.Views",
-            function ( Views, IntranetManager, Backbone, Marionette, $, _ ) {
+            function (Views, IntranetManager, Backbone, Marionette, $, _) {
 
                 Views.SearchFormView = Marionette.ItemView.extend({
                     template: searchFormTpl,
@@ -85,12 +85,12 @@ define(["app",
                 });
 
                 Views.ListCategoryView = Marionette.CompositeView.extend({
-                    onBeforeRender: function(){
+                    onBeforeRender: function () {
                         //console.log(JSON.stringify(this.model));
 
                     },
 
-                    initialize: function(){
+                    initialize: function () {
                         // this.collection.groupBy('category');
                         //this.collection = this.model.vc;
                         this.collection = this.model.get('vc');
@@ -98,7 +98,7 @@ define(["app",
 
                     },
 
-                    itemViewOptions: function(model){
+                    itemViewOptions: function (model) {
                         return {
                             index: this.collection.indexOf(model) + 1
                         }
@@ -147,7 +147,7 @@ define(["app",
 
                     template: paginatorTpl,
 
-                    initialize: function() {
+                    initialize: function () {
                         console.log(this.$el);
 
                     },
@@ -157,7 +157,7 @@ define(["app",
                         'click a.next': 'next'
                     },
 
-                    onRender: function() {
+                    onRender: function () {
                         // $(this.$el).html(this.collection.pageInfo());
 
                         var that = this;
@@ -167,7 +167,7 @@ define(["app",
                             itemsOnPage: this.model.get('itemsOnPage'),
                             cssStyle: '',
                             hrefTextPrefix: this.model.get('path') + '/page/',
-                            onPageClick: function(pageNumber, event) {
+                            onPageClick: function (pageNumber, event) {
                                 // Callback triggered when a page is clicked
                                 // Page number is given as an optional parameter
                                 that.trigger('change:page', pageNumber);
@@ -178,11 +178,11 @@ define(["app",
                         //  console.log(this.model);
                     },
 
-                    previous: function() {
+                    previous: function () {
 
                     },
 
-                    next: function() {
+                    next: function () {
 
                     }
 
@@ -196,6 +196,11 @@ define(["app",
                     template: headerTpl
 
                 });
+
+                Views.CategoryView = Marionette.ItemView.extend({
+                    template: categoriesTpl
+                });
+
             });
 
         return IntranetManager.PatientManager.Public.Entries.List.Views;

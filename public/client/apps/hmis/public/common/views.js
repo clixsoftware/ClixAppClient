@@ -17,6 +17,8 @@ define([
 
             Views.LayoutView = Marionette.Layout.extend({
                 template: layoutTpl,
+                className: 'layout-app',
+
                 onBeforeRender: function () {
                     // set up final bits just before rendering the view's `el`
                     $('body').addClass('home page');

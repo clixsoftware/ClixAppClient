@@ -7,8 +7,8 @@ define(
     [
         "app"
     ],
-    function ( IntranetManager ) {
-        IntranetManager.module("HospitalManager", function ( HospitalManager, IntranetManager, Backbone, Marionette, $, _ ) {
+    function (IntranetManager) {
+        IntranetManager.module("HospitalManager", function (HospitalManager, IntranetManager, Backbone, Marionette, $, _) {
 
             HospitalManager.startWithParent = false;
 
@@ -26,7 +26,7 @@ define(
                 init: function () {
                     require([
                         "apps/ward_app/common/controller"
-                    ], function ( CommonController ) {
+                    ], function (CommonController) {
                         //alert('init layout');
                         CommonController.setupAppLayout();
                     });
@@ -40,7 +40,7 @@ define(
 
         });
 
-        IntranetManager.module("Routers.HospitalManager", function ( HospitalManagerRouter, IntranetManager, Backbone, Marionette, $, _ ) {
+        IntranetManager.module("Routers.HospitalManager", function (HospitalManagerRouter, IntranetManager, Backbone, Marionette, $, _) {
 
             HospitalManagerRouter.Router = Marionette.AppRouter.extend({
 
@@ -51,7 +51,7 @@ define(
 
             });
 
-            var executeAction = function ( action, arg ) {
+            var executeAction = function (action, arg) {
                 IntranetManager.startSubApp("HospitalManager");
                 action(arg);
                 //IntranetManager.execute("set:active:header", "contacts");
@@ -59,25 +59,21 @@ define(
 
             var API = {
 
-                initPublic: function ( cb ) {
+                initPublic: function (cb) {
 
                     require([
                         "apps/hmis/public/common/controller"
-                    ], function ( CommonController ) {
-                        //alert('init layout');
-                        executeAction(CommonController.setupAppLayout, cb);
+                    ], function (CommonController) {
+                        executeAction(CommonController.initAppEngine, cb);
                     });
 
                 },
 
-                loadOverviewPage: function ( alias ) {
-
-                    //alert('Loading Overview Page');
-
+                loadOverviewPage: function (alias) {
                     var cb = function () {
                         require([
                             "apps/hmis/public/common/controller"
-                        ], function ( CommonController ) {
+                        ], function (CommonController) {
                             CommonController.displayOverviewPage(alias);
                         });
                     };
@@ -88,7 +84,7 @@ define(
                 loadMainMenuWidget: function () {
                     require([
                         "apps/hmis/public/widgets/controller"
-                    ], function ( WidgetsController ) {
+                    ], function (WidgetsController) {
                         WidgetsController.showMainMenu();
                     });
 
@@ -97,7 +93,7 @@ define(
 
             };
 
-            IntranetManager.on("hmis:public:init", function ( cb ) {
+            IntranetManager.on("hmis:public:init", function (cb) {
                 API.initPublic(cb);
             });
 
