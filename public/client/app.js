@@ -140,8 +140,11 @@ define([
     };
 
     IntranetManager.startSubApp = function (appName, args) {
-        console.log('auth-cookie - ' + $.cookie('hospitalnet-auth'));
-        console.log('auth-user-cookie - ' + $.cookie('hospitalnet-user'));
+
+        console.group('auth-user-cookie ')
+        console.log(JSON.stringify($.cookie('hospitalnet-user')));
+        console.log($.cookie('hospitalnet-auth'));
+        console.groupEnd();
 
         if ($.cookie('hospitalnet-auth') != undefined) {
             IntranetManager.Auth.isAuthenticated = true;
@@ -189,13 +192,14 @@ define([
                 "apps/feature/app",
                 "apps/core/app",
                 "apps/taxonomy/app",
-                "apps/appmanager/app", //application Manager
+                //"apps/appmanager/app", //application Manager
                 // "apps/contacts/contacts_app", //Contacts Manager
                 "apps/news/app",    //News Manager
                 "apps/howdoi/app",    //Yellow Pages Manager
                 "apps/directory/app",    //Directory Manager
                 "apps/workspaces/app", //Workspace Manager
                 "apps/pages/app", //HomePage Manager
+                "apps/classifieds/app", //HomePage Manager
                 "apps/auth/app",
                 "apps/tasks/app",
                 "apps/sites/app",

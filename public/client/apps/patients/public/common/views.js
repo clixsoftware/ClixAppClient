@@ -1,30 +1,16 @@
-/*
- * Application: Application Manager
- * Views: Workspace Common Views
- * Module: SiteManager.Common.Views
- *
- * */
-
-
-
 define([
     "app",
     "common/views",
-    "tpl!apps/patients/public/common/templates/form.tpl",
-    "tpl!apps/patients/public/common/templates/app_menu.tpl",
-    "tpl!apps/patients/public/common/templates/blank.tpl",
-    "tpl!apps/patients/public/common/templates/blank_help.tpl",
-    "tpl!apps/patients/public/common/templates/layout.tpl"
+    "tpl!apps/classifieds/public/common/templates/form.tpl",
+    "tpl!apps/classifieds/public/common/templates/app_menu.tpl",
+    "tpl!apps/classifieds/public/common/templates/blank.tpl",
+    "tpl!apps/classifieds/public/common/templates/blank_help.tpl",
+    "tpl!apps/classifieds/public/common/templates/layout.tpl"
 
-], function(IntranetManager, GlobalViews, formTpl, appMenuTpl, blankTpl, blankhelpTpl, publicLayoutTpl){
+], function (IntranetManager, GlobalViews, formTpl, appMenuTpl, blankTpl, blankhelpTpl, publicLayoutTpl) {
 
-    IntranetManager.module("PatientManager.Public.Common.Views",
-        function(
-             Views,
-             IntranetManager,
-             Backbone,
-             Marionette,
-             $, _){
+    IntranetManager.module("ClassifiedsManager.Public.Common.Views",
+        function (Views, IntranetManager, Backbone, Marionette, $, _) {
 
             Views.NewsLayoutView = GlobalViews.Content2ColLayoutView.extend({
                 template: publicLayoutTpl,
@@ -34,7 +20,7 @@ define([
                     $('body').addClass('public news').removeClass('app');
                 },
 
-                onRender: function(){
+                onRender: function () {
                     $('body').removeClass('app');
                 }
             });
@@ -44,19 +30,17 @@ define([
 
                 onBeforeRender: function () {
                     // set up final bits just before rendering the view's `el`
-                    $('body').addClass('public news').removeClass('app');
+                    // $('body').addClass('public news').removeClass('app');
                 },
 
-                onRender: function(){
-                    $('body').removeClass('app');
+                onRender: function () {
+                    //  $('body').removeClass('app');
                 }
             });
 
 
             Views.BlankView = GlobalViews.BlankView.extend({
                 template: blankTpl,
-
-
                 triggers: {
                     'click .js-add-site': 'command:form:new'
                 }
@@ -73,7 +57,7 @@ define([
                     "click .js-command-new": "button:command:new"
                 },
 
-                onRender: function(){
+                onRender: function () {
                     this.$(".ui.view.header span").text("News Applications");
                     this.$(".ui.view.header .sub.header").text("List of news applications");
                     this.$(".js-command-new").remove();
@@ -85,7 +69,7 @@ define([
 
             Views.ListHeaderView = GlobalViews.ListHeaderView.extend({
 
-                initialize: function(){
+                initialize: function () {
                     //this.model.set('header', 'The header');
 
                 },
@@ -103,7 +87,7 @@ define([
 
                 className: 'ui secondary pointing menu',
 
-                onRender: function(){
+                onRender: function () {
                     console.log('<< AppMenuView : LOADED >>');
                 }
             });
@@ -116,7 +100,7 @@ define([
                 },
 
                 triggers: {
-                    'click .js-cancel' : 'form:cancel'
+                    'click .js-cancel': 'form:cancel'
                 },
 
                 tagName: 'form',
@@ -145,9 +129,8 @@ define([
             });
 
 
-  });
+        });
 
+    return IntranetManager.ClassifiedsManager.Public.Common.Views;
 
-
-  return IntranetManager.PatientManager.Public.Common.Views;
 });

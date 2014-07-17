@@ -2,18 +2,14 @@ define([
     "app",
     "apps/sites/public/widgets/views",
     "moment"
-], function ( IntranetManager, WidgetsShow) {
+], function (IntranetManager, WidgetsShow) {
 
     IntranetManager.module("SiteManager.Widgets.Show",
-        function ( Show,
-                   IntranetManager,
-                   Backbone,
-                   Marionette,
-                   $, _ ) {
+        function (Show, IntranetManager, Backbone, Marionette, $, _) {
 
             Show.Controller = {
 
-                getRecentlyUpdatedView: function(posts){
+                getRecentlyUpdatedView: function (posts) {
                     //alert('getting the view');
                     return new WidgetsShow.HowDoIRecentView({
                         collection: posts
@@ -21,13 +17,13 @@ define([
 
                 },
 
-                getBreadcrumbView: function(){
+                getBreadcrumbView: function () {
 
                     return new WidgetsShow.BreadcrumbView();
 
                 },
 
-                getHowDoIMostActiveView: function(posts){
+                getHowDoIMostActiveView: function (posts) {
                     //alert('getting the view');
                     return new WidgetsShow.HowDoIMostActiveView({
                         collection: posts
@@ -35,30 +31,25 @@ define([
 
                 },
 
-                getAdPostsView: function(){
+                getAdPostsView: function () {
 
                     return new WidgetsShow.AdPostView();
 
                 },
 
-                getCalendarPostsView: function(){
+                getCalendarPostsView: function () {
                     return new WidgetsShow.CalendarPostsView();
 
                 },
 
-                getFeaturedPostsView: function(posts){
-                    return new WidgetsShow.FeaturedPostsView({
-                        collection: posts
-                    });
-                },
 
-                getHomeNewsPosts: function(posts){
+                getHomeNewsPosts: function (posts) {
                     return new WidgetsShow.HomeNewsPostsView({
                         collection: posts
                     });
                 },
 
-                displayHomeNewsPosts: function(alias){
+                displayHomeNewsPosts: function (alias) {
 
                     console.log('<< INIT: displayHomeNewsPosts >>');
 
@@ -66,36 +57,36 @@ define([
 
                     require([
                         "entities/news_post"
-                    ], function(){
+                    ], function () {
 
                         var options = {
                             alias: alias,
                             feature_alias: 'sites'
                         };
 
-                        var fetchingPosts = IntranetManager.request('news:posts:feature:alias', options );
+                        var fetchingPosts = IntranetManager.request('news:posts:feature:alias', options);
 
                         console.log('<< displayHomeNewsPosts: Fetching Postings  >>');
 
-                        fetchingPosts.then(function(posts){
+                        fetchingPosts.then(function (posts) {
                             IntranetManager.layoutZone2.reset();
                             IntranetManager.layoutZone2.show(that.getHomeNewsPosts(posts));
 
                         })
-                        .fail(function(error){
-                            alert(error);
-                        });
+                            .fail(function (error) {
+                                alert(error);
+                            });
 
                     });
                 },
 
-                getHomeEventsView: function(events){
+                getHomeEventsView: function (events) {
                     return new WidgetsShow.HomeEventsPostsView({
                         collection: events
                     })
                 },
 
-                displayHomeEventsPosts: function(alias){
+                displayHomeEventsPosts: function (alias) {
 
                     console.log('<< INIT: displayHomeEventsPosts >>');
 
@@ -103,71 +94,76 @@ define([
 
                     require([
                         "entities/calendar"
-                    ], function(){
+                    ], function () {
 
                         var options = {
                             alias: alias,
                             feature_alias: 'sites'
                         };
 
-                        var fetchingPosts = IntranetManager.request('calendar:events:feature:alias', options );
+                        var fetchingPosts = IntranetManager.request('calendar:events:feature:alias', options);
 
                         console.log('<< displayHomeEventsPosts: Fetching Postings  >>');
 
-                        fetchingPosts.then(function(posts){
+                        fetchingPosts.then(function (posts) {
                             IntranetManager.layoutZone6.reset();
                             IntranetManager.layoutZone6.show(that.getHomeEventsView(posts));
 
                         })
-                            .fail(function(error){
+                            .fail(function (error) {
                                 alert(error);
                             });
 
                     });
                 },
 
-                displayFeaturedPosts: function(alias){
+                getFeaturedPostsView: function (posts) {
+                    return new WidgetsShow.FeaturedPostsView({
+                        collection: posts
+                    });
+                },
+
+                displayFeaturedPosts: function (alias) {
                     console.log('<< INIT: displayFeaturedPosts >>');
 
                     var that = this;
                     require([
                         "entities/news_post"
-                    ], function(){
+                    ], function () {
 
                         var options = {
                             alias: alias,
                             feature_alias: 'sites'
                         };
 
-                        var fetchingPosts = IntranetManager.request('news:posts:featured', options );
+                        var fetchingPosts = IntranetManager.request('news:posts:featured', options);
 
                         console.log('<< displayFeaturedPosts: Fetching Postings  >>');
 
-                        fetchingPosts.then(function(posts){
+                        fetchingPosts.then(function (posts) {
                             IntranetManager.layoutZone1.reset();
                             IntranetManager.layoutZone1.show(that.getFeaturedPostsView(posts));
 
                         })
-                        .fail(function(error){
-                            alert(error);
-                        });
+                            .fail(function (error) {
+                                alert(error);
+                            });
 
                     });
                 },
 
-                displayRecentlyUpdated: function(alias){
-
+                displayRecentlyUpdated: function (alias) {
 
 
                     IntranetManager.layoutZone4.reset();
                     IntranetManager.layoutZone4.show(this.getRecentlyUpdatedView());
                 },
 
-                displayHowDoIMostActive: function(alias){
+                displayHowDoIMostActive: function (alias) {
 
                     console.group('<< SitesManager: Widgets: HowDoI: displayHowDoIMostActive >>');
 
-                    var options ={
+                    var options = {
                         parent_application_alias: alias,
                         parent_application_feature: 'sites'
                     };
@@ -177,16 +173,16 @@ define([
 
                     require([
                         "entities/howdoi"
-                    ], function(){
+                    ], function () {
 
                         var fetchingPost = IntranetManager.request('howdoi:posts:mostactive');
 
-                        fetchingPost.then(function(posts){
+                        fetchingPost.then(function (posts) {
 
-                           // alert('posts found');
-                           // console.log(posts);
+                            // alert('posts found');
+                            // console.log(posts);
                             var view = that.getHowDoIMostActiveView(posts);
-                           // console.log(view);
+                            // console.log(view);
 
                             IntranetManager.layoutZone3.reset();
                             IntranetManager.layoutZone3.show(view);
@@ -197,14 +193,13 @@ define([
                     });
 
 
-
                 },
 
-                displayHowDoIRecent: function(alias){
+                displayHowDoIRecent: function (alias) {
 
                     console.group('<< SitesManager: Widgets: HowDoI: displayHowDoIRecent >>');
 
-                    var options ={
+                    var options = {
                         parent_application_alias: alias,
                         parent_application_feature: 'sites'
                     };
@@ -214,11 +209,11 @@ define([
 
                     require([
                         "entities/howdoi"
-                    ], function(){
+                    ], function () {
 
                         var fetchingPost = IntranetManager.request('howdoi:posts:recent');
 
-                        fetchingPost.then(function(posts){
+                        fetchingPost.then(function (posts) {
 
                             // alert('posts found');
                             // console.log(posts);
@@ -234,10 +229,9 @@ define([
                     });
 
 
-
                 },
 
-                displayBreadcrumb: function(){
+                displayBreadcrumb: function () {
 
                     IntranetManager.layoutTopNavBar.reset();
                     IntranetManager.layoutTopNavBar.show(this.getBreadcrumbView());

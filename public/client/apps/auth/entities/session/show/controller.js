@@ -7,14 +7,14 @@
 define([
     "app",
     "apps/auth/entities/session/show/views"
-], function ( IntranetManager, ShowViews ) {
+], function (IntranetManager, ShowViews) {
 
     IntranetManager.module("AuthManager.Session.Show",
-        function ( Show, IntranetManager, Backbone, Marionette, $, _ ) {
+        function (Show, IntranetManager, Backbone, Marionette, $, _) {
 
             Show.Controller = {
 
-                getSignupFormView: function ( model ) {
+                getSignupFormView: function (model) {
                     return new ShowViews.SignupFormView({
                         model: model
                     });
@@ -39,16 +39,16 @@ define([
 
                         var signupFormView = Show.Controller.getSignupFormView(newSignupModel);
 
-                        signupFormView.on('form:submit', function ( data ) {
+                        signupFormView.on('form:submit', function (data) {
 
                             if (newSignupModel.save(data, {
 
-                                success: function ( model, response ) {
+                                success: function (model, response) {
                                     var successView = Show.Controller.getSuccessMessageView();
                                     IntranetManager.trigger("applayout:show:formregion", successView);
                                 },
 
-                                error: function ( model, response ) {
+                                error: function (model, response) {
                                     //alert('there was an error');
                                     //console.log(response);
                                     //  console.log(response.responseJSON.item.message);
@@ -86,7 +86,14 @@ define([
 
                         });
 
-                        IntranetManager.trigger("applayout:show:formregion", loginView);
+                        IntranetManager.siteHeader.reset();
+                        IntranetManager.siteFooter.reset();
+                        IntranetManager.siteMainContent.reset();
+                        IntranetManager.siteMainContent.show(loginView);
+
+                        IntranetManager.trigger('dom:title', 'Login');
+
+                        //  IntranetManager.trigger("applayout:show:formregion", loginView);
 
 
                         // IntranetManager.mainRegion.show(layoutView);

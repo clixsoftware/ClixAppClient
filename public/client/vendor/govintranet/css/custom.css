@@ -1,8 +1,8 @@
 /* Custom CSS rules below: */
 
-body.custom-background { background-color: #e6eaf2; }
-
-
+body.custom-background {
+    background-color: #e6eaf2;
+}
 
 body {
     font-weight: 400;
@@ -10,7 +10,8 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-    font-weight: bold;
+    /*font-weight: bold;*/
+    font-weight: 600;
 }
 
 #staff-search .btn {
@@ -86,9 +87,13 @@ h1, h2, h3, h4, h5, h6 {
     background: #0081c6;
 }
 
-#footerwrapper { border-top: 7px solid #006fa8; }
+#footerwrapper {
+    border-top: 7px solid #006fa8;
+}
 
-.page-template-page-about-php .category-block h2 { border-top: 7px solid #006fa8; padding: 0.6em 0;
+.page-template-page-about-php .category-block h2 {
+    border-top: 7px solid #006fa8;
+    padding: 0.6em 0;
 }
 
 .home.page .category-block h3 {
@@ -102,10 +107,14 @@ h1, h2, h3, h4, h5, h6 {
 #content .widget-box {
     padding: .1em .4em .7em 0;
     font-size: .9em;
-    background: #fff; border-top: 7px solid #006fa8; margin-top: .7em;
+    background: #fff;
+    border-top: 7px solid #006fa8;
+    margin-top: .7em;
 }
 
-.home.page .category-block h3 { border-top: 7px solid #006fa8; border-bottom: none;
+.home.page .category-block h3 {
+    border-top: 7px solid #006fa8;
+    border-bottom: none;
     padding-top: .7em;
     margin-top: .7em;
 }
@@ -119,12 +128,12 @@ h1, h2, h3, h4, h5, h6 {
 }
 
 #crownlink {
-   /* background: url('https://govintranet.helpfulclients.com/wp-content/uploads/ht_coatofarms21.png') no-repeat;
-    background-position: left 10px;
-    padding: 16px 0 0 70px;*/
+    /* background: url('https://govintranet.helpfulclients.com/wp-content/uploads/ht_coatofarms21.png') no-repeat;
+     background-position: left 10px;
+     padding: 16px 0 0 70px;*/
     height: auto;
     min-height: 50px;
-/*    margin-bottom: 0.6em;*/
+    /*    margin-bottom: 0.6em;*/
 }
 
 #primarynav ul li {
@@ -133,132 +142,320 @@ h1, h2, h3, h4, h5, h6 {
     border-right: 1px solid #0081c6;
 }
 
-.t5 { color: #ffffff; background: #dd9933; }
+.t1 {
+    color: #ffffff;
+    background: #dd9933;
+}
 
-.t5 a { color: #ffffff !important; }
+.t1 a {
+    color: #ffffff !important;
+}
 
-.brd5 { border-left: 1.2em solid #dd9933; }
+.t2 {
+    color: #ffffff;
+    background: #d657b4;
+}
 
-.hr5 { border-bottom: 1px solid #dd9933; }
+.t2 a {
+    color: #ffffff !important;
+}
 
-.h1_5 { border-bottom: 7px solid #dd9933; margin-bottom: 0.4em; padding-bottom: 0.3em; }
+.t3 {
+    color: #ffffff;
+    background: #d657b4;
+}
 
-.b5 { border-left: 20px solid #dd9933; }
+.t3 a {
+    color: #ffffff !important;
+}
 
-.glyphicon.glyphicon-stop.gb5 { color: #dd9933; }
+.t4 {
+    color: #ffffff;
+    background: #dd9933;
+}
 
-.t7 { color: #ffffff; background: #1e73be; }
+.t4 a {
+    color: #ffffff !important;
+}
 
-.t7 a { color: #ffffff !important; }
+.t5 {
+    color: #ffffff;
+    background: #dd9933;
+}
 
-.brd7 { border-left: 1.2em solid #1e73be; }
+.t5 a {
+    color: #ffffff !important;
+}
 
-.hr7 { border-bottom: 1px solid #1e73be; }
+.brd5 {
+    border-left: 1.2em solid #dd9933;
+}
 
-.h1_7 { border-bottom: 7px solid #1e73be; margin-bottom: 0.4em; padding-bottom: 0.3em; }
+.hr5 {
+    border-bottom: 1px solid #dd9933;
+}
 
-.b7 { border-left: 20px solid #1e73be; }
+.h1_5 {
+    border-bottom: 7px solid #dd9933;
+    margin-bottom: 0.4em;
+    padding-bottom: 0.3em;
+}
 
-.glyphicon.glyphicon-stop.gb7 { color: #1e73be; }
+.b5 {
+    border-left: 20px solid #dd9933;
+}
 
-.t8 { color: #24004f; background: #c7aae2; }
+.glyphicon.glyphicon-stop.gb5 {
+    color: #dd9933;
+}
 
-.t8 a { color: #24004f !important; }
+.t7 {
+    color: #ffffff;
+    background: #1e73be;
+}
 
-.brd8 { border-left: 1.2em solid #c7aae2; }
+.t7 a {
+    color: #ffffff !important;
+}
 
-.hr8 { border-bottom: 1px solid #c7aae2; }
+.brd7 {
+    border-left: 1.2em solid #1e73be;
+}
 
-.h1_8 { border-bottom: 7px solid #c7aae2; margin-bottom: 0.4em; padding-bottom: 0.3em; }
+.hr7 {
+    border-bottom: 1px solid #1e73be;
+}
 
-.b8 { border-left: 20px solid #c7aae2; }
+.h1_7 {
+    border-bottom: 7px solid #1e73be;
+    margin-bottom: 0.4em;
+    padding-bottom: 0.3em;
+}
 
-.glyphicon.glyphicon-stop.gb8 { color: #c7aae2; }
+.b7 {
+    border-left: 20px solid #1e73be;
+}
 
-.t6 { color: #ffffff; background: #dd3333; }
+.glyphicon.glyphicon-stop.gb7 {
+    color: #1e73be;
+}
 
-.t6 a { color: #ffffff !important; }
+.t8 {
+    color: #24004f;
+    background: #c7aae2;
+}
 
-.brd6 { border-left: 1.2em solid #dd3333; }
+.t8 a {
+    color: #24004f !important;
+}
 
-.hr6 { border-bottom: 1px solid #dd3333; }
+.brd8 {
+    border-left: 1.2em solid #c7aae2;
+}
 
-.h1_6 { border-bottom: 7px solid #dd3333; margin-bottom: 0.4em; padding-bottom: 0.3em; }
+.hr8 {
+    border-bottom: 1px solid #c7aae2;
+}
 
-.b6 { border-left: 20px solid #dd3333; }
+.h1_8 {
+    border-bottom: 7px solid #c7aae2;
+    margin-bottom: 0.4em;
+    padding-bottom: 0.3em;
+}
 
-.glyphicon.glyphicon-stop.gb6 { color: #dd3333; }
+.b8 {
+    border-left: 20px solid #c7aae2;
+}
 
-.t3 { color: #ffffff; background: #d657b4; }
+.glyphicon.glyphicon-stop.gb8 {
+    color: #c7aae2;
+}
 
-.t3 a { color: #ffffff !important; }
+.t6 {
+    color: #ffffff;
+    background: #dd3333;
+}
 
-.brd3 { border-left: 1.2em solid #d657b4; }
+.t6 a {
+    color: #ffffff !important;
+}
 
-.hr3 { border-bottom: 1px solid #d657b4; }
+.brd6 {
+    border-left: 1.2em solid #dd3333;
+}
 
-.h1_3 { border-bottom: 7px solid #d657b4; margin-bottom: 0.4em; padding-bottom: 0.3em; }
+.hr6 {
+    border-bottom: 1px solid #dd3333;
+}
 
-.b3 { border-left: 20px solid #d657b4; }
+.h1_6 {
+    border-bottom: 7px solid #dd3333;
+    margin-bottom: 0.4em;
+    padding-bottom: 0.3em;
+}
 
-.glyphicon.glyphicon-stop.gb3 { color: #d657b4; }
+.b6 {
+    border-left: 20px solid #dd3333;
+}
 
-.t4 { color: #ffffff; background: #1ea4bf; }
+.glyphicon.glyphicon-stop.gb6 {
+    color: #dd3333;
+}
 
-.t4 a { color: #ffffff !important; }
+.t3 {
+    color: #ffffff;
+    background: #d657b4;
+}
 
-.brd4 { border-left: 1.2em solid #1ea4bf; }
+.t3 a {
+    color: #ffffff !important;
+}
 
-.hr4 { border-bottom: 1px solid #1ea4bf; }
+.brd3 {
+    border-left: 1.2em solid #d657b4;
+}
 
-.h1_4 { border-bottom: 7px solid #1ea4bf; margin-bottom: 0.4em; padding-bottom: 0.3em; }
+.hr3 {
+    border-bottom: 1px solid #d657b4;
+}
 
-.b4 { border-left: 20px solid #1ea4bf; }
+.h1_3 {
+    border-bottom: 7px solid #d657b4;
+    margin-bottom: 0.4em;
+    padding-bottom: 0.3em;
+}
 
-.glyphicon.glyphicon-stop.gb4 { color: #1ea4bf; }
+.b3 {
+    border-left: 20px solid #d657b4;
+}
 
-.t10 { color: #ffffff; background: #666666; }
+.glyphicon.glyphicon-stop.gb3 {
+    color: #d657b4;
+}
 
-.t10 a { color: #ffffff !important; }
+.t4 {
+    color: #ffffff;
+    background: #1ea4bf;
+}
 
-.brd10 { border-left: 1.2em solid #666666; }
+.t4 a {
+    color: #ffffff !important;
+}
 
-.hr10 { border-bottom: 1px solid #666666; }
+.brd4 {
+    border-left: 1.2em solid #1ea4bf;
+}
 
-.h1_10 { border-bottom: 7px solid #666666; margin-bottom: 0.4em; padding-bottom: 0.3em; }
+.hr4 {
+    border-bottom: 1px solid #1ea4bf;
+}
 
-.b10 { border-left: 20px solid #666666; }
+.h1_4 {
+    border-bottom: 7px solid #1ea4bf;
+    margin-bottom: 0.4em;
+    padding-bottom: 0.3em;
+}
 
-.glyphicon.glyphicon-stop.gb10 { color: #666666; }
+.b4 {
+    border-left: 20px solid #1ea4bf;
+}
 
-.t9 { color: #ffffff; background: #76a533; }
+.glyphicon.glyphicon-stop.gb4 {
+    color: #1ea4bf;
+}
 
-.t9 a { color: #ffffff !important; }
+.t10 {
+    color: #ffffff;
+    background: #666666;
+}
 
-.brd9 { border-left: 1.2em solid #76a533; }
+.t10 a {
+    color: #ffffff !important;
+}
 
-.hr9 { border-bottom: 1px solid #76a533; }
+.brd10 {
+    border-left: 1.2em solid #666666;
+}
 
-.h1_9 { border-bottom: 7px solid #76a533; margin-bottom: 0.4em; padding-bottom: 0.3em; }
+.hr10 {
+    border-bottom: 1px solid #666666;
+}
 
-.b9 { border-left: 20px solid #76a533; }
+.h1_10 {
+    border-bottom: 7px solid #666666;
+    margin-bottom: 0.4em;
+    padding-bottom: 0.3em;
+}
 
-.glyphicon.glyphicon-stop.gb9 { color: #76a533; }
+.b10 {
+    border-left: 20px solid #666666;
+}
 
-.t1 { color:; background:; }
+.glyphicon.glyphicon-stop.gb10 {
+    color: #666666;
+}
 
-.t1 a { color: !important; }
+.t9 {
+    color: #ffffff;
+    background: #76a533;
+}
 
-.brd1 { border-left: 1.2em solid; }
+.t9 a {
+    color: #ffffff !important;
+}
 
-.hr1 { border-bottom: 1px solid; }
+.brd9 {
+    border-left: 1.2em solid #76a533;
+}
 
-.h1_1 { border-bottom: 7px solid; margin-bottom: 0.4em; padding-bottom: 0.3em; }
+.hr9 {
+    border-bottom: 1px solid #76a533;
+}
 
-.b1 { border-left: 20px solid; }
+.h1_9 {
+    border-bottom: 7px solid #76a533;
+    margin-bottom: 0.4em;
+    padding-bottom: 0.3em;
+}
 
-.glyphicon.glyphicon-stop.gb1 { color:; }
+.b9 {
+    border-left: 20px solid #76a533;
+}
 
+.glyphicon.glyphicon-stop.gb9 {
+    color: #76a533;
+}
+
+.t1 {
+    color:;
+    background:;
+}
+
+.t1 a {
+    color: !important;
+}
+
+.brd1 {
+    border-left: 1.2em solid;
+}
+
+.hr1 {
+    border-bottom: 1px solid;
+}
+
+.h1_1 {
+    border-bottom: 7px solid;
+    margin-bottom: 0.4em;
+    padding-bottom: 0.3em;
+}
+
+.b1 {
+    border-left: 20px solid;
+}
+
+.glyphicon.glyphicon-stop.gb1 {
+    color:;
+}
 
 /*PACE */
 
@@ -279,25 +476,30 @@ h1, h2, h3, h4, h5, h6 {
 .pace-inactive {
     display: none;
 }
+
 ul.howdoi {
     height: 300px;
     -webkit-column-count: 3;
     -moz-column-count: 3;
     column-count: 3; /*3 is just placeholder -- can be anything*/
 }
+
 ul.howdoi li {
     display: inline-block;
     padding-bottom: 20px;
     font-size: 0.9em !important;
 }
+
 ul.howdoi li a {
     color: rgb(0, 162, 232);
 }
+
 body {
     font-size: 16px;
-    font-family: "Open Sans",'Helvetica Neue',arial,verdana,helvetica,sans-serif !important;
+    font-family: "Open Sans", 'Helvetica Neue', arial, verdana, helvetica, sans-serif !important;
     font-weight: 400;
 }
+
 .tagcloud span {
     margin-right: 0.5em;
 }
@@ -386,7 +588,7 @@ to no.
     list-style-type: none;
 }
 
-html>body .entry ul,
+html > body .entry ul,
 .gform_wrapper ul {
     text-indent: 0;
 }
@@ -541,9 +743,9 @@ html>body .entry ul,
     overflow: hidden;
 }
 
-.gform_wrapper .ginput_left input:focus+label,
-.gform_wrapper .ginput_right input:focus+label,
-.gform_wrapper .ginput_full input:focus+label {
+.gform_wrapper .ginput_left input:focus + label,
+.gform_wrapper .ginput_right input:focus + label,
+.gform_wrapper .ginput_full input:focus + label {
     font-weight: bold;
 }
 
@@ -560,7 +762,7 @@ html>body .entry ul,
     width: 100px !important;
 }
 
-.gform_wrapper .ginput_complex .ginput_left  {
+.gform_wrapper .ginput_complex .ginput_left {
     width: 50%;
     float: left;
 }
@@ -765,7 +967,6 @@ html>body .entry ul,
 
 /* radio and checkbox styling - justifies lenghty labels ------------------------------------------------------*/
 
-
 .gform_wrapper .gfield_checkbox li,
 .gform_wrapper .gfield_radio li {
     position: relative;
@@ -825,7 +1026,7 @@ html>body .entry ul,
     padding: 0 0 10px 0;
 }
 
-.gfield_date_year+.gfield_description {
+.gfield_date_year + .gfield_description {
     padding: 0;
 }
 
@@ -877,7 +1078,7 @@ html>body .entry ul,
 }
 
 .gform_wrapper li.gfield.gfield_creditcard_warning div.gfield_creditcard_warning_message {
-    font-size:1em;
+    font-size: 1em;
     font-family: "Lucida Grande", "Lucida Sans", "Lucida Sans Unicode", "DejaVu Sans", "Bitstream Vera Sans", "Liberation Sans", Verdana, "Verdana Ref", sans-serif;
     padding: 10px 20px 10px 45px;
     min-height: 25px;
@@ -887,7 +1088,7 @@ html>body .entry ul,
     background-color: #790000;
     border-bottom: 1px solid #620101;
     color: #FFF;
-    text-shadow: 0 1px 1px rgba(0,0,0,0.50);
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.50);
     line-height: 1.3em;
     letter-spacing: 0.2pt;
 }
@@ -930,7 +1131,7 @@ li.gfield + li.gfield.gfield_creditcard_warning {
 }
 
 .gform_wrapper li.gfield.gfield_error.gfield_contains_required label.gfield_label,
-.gform_wrapper li.gfield.gfield_error.gfield_contains_required div.ginput_container  {
+.gform_wrapper li.gfield.gfield_error.gfield_contains_required div.ginput_container {
     margin-top: 12px;
 }
 
@@ -947,7 +1148,7 @@ li.gfield + li.gfield.gfield_creditcard_warning {
     font-weight: bold;
 }
 
-div.gf_page_steps+div.validation_error {
+div.gf_page_steps + div.validation_error {
     margin-top: 16px;
 }
 
@@ -1027,8 +1228,8 @@ div.gf_page_steps+div.validation_error {
     line-height: 1.3em;
 }
 
-.gform_wrapper ul.gfield_radio li input[type="radio"]:checked+label,
-.gform_wrapper ul.gfield_checkbox li input[type="checkbox"]:checked+label {
+.gform_wrapper ul.gfield_radio li input[type="radio"]:checked + label,
+.gform_wrapper ul.gfield_checkbox li input[type="checkbox"]:checked + label {
     font-weight: bold;
 }
 
@@ -1040,7 +1241,6 @@ div.gf_page_steps+div.validation_error {
 }
 
 /* tame those pesky hidden fields ------------------------------------------------------*/
-
 
 .gform_wrapper input[type=hidden],
 .gform_wrapper input.gform_hidden,
@@ -1059,13 +1259,12 @@ div.gf_page_steps+div.validation_error {
 
 /* additional spacing and padding tweaks ------------------------------------------------------*/
 
-
 .gform_wrapper ul.gfield_checkbox li,
 .gform_wrapper ul.gfield_radio li {
     padding: 0 !important;
 }
 
-.gform_wrapper ul.gfield_radio li input+input {
+.gform_wrapper ul.gfield_radio li input + input {
     margin-left: 4px;
 }
 
@@ -1097,7 +1296,6 @@ div.gf_page_steps+div.validation_error {
 
 /* HTML field default margins -----------------------------------------------------*/
 
-
 .gform_wrapper .left_label li.gfield_html_formatted,
 .gform_wrapper .right_label li.gfield_html_formatted {
     margin-left: 32%;
@@ -1109,13 +1307,11 @@ div.gf_page_steps+div.validation_error {
 
 /* ajax forms ------------------------------------------------------*/
 
-
 .gform_wrapper .gform_ajax_spinner {
     padding-left: 10px;
 }
 
 /* hide the honeypot field  ------------------------------------------------------*/
-
 
 .gform_validation_container,
 .gform_wrapper .gform_validation_container,
@@ -1128,7 +1324,6 @@ body .gform_wrapper ul.gform_fields li.gfield.gform_validation_container {
 }
 
 /* Really Simple Captcha ------------------------------------------------------*/
-
 
 .gform_wrapper .gfield_captcha_input_container {
     padding-top: 3px;
@@ -1165,7 +1360,6 @@ body .gform_wrapper ul.gform_fields li.gfield.gform_validation_container {
 
 /* math challenge ------------------------------------------------------*/
 
-
 .gform_wrapper .math_small input {
     width: 69px;
 }
@@ -1189,7 +1383,6 @@ body .gform_wrapper ul.gform_fields li.gfield.gform_validation_container {
 
 /* textarea character counter ------------------------------------------------------*/
 
-
 .gform_wrapper div.charleft {
     font-size: 11px;
     margin-top: 4px;
@@ -1211,7 +1404,7 @@ body .gform_wrapper ul.gform_fields li.gfield.gform_validation_container {
     color: #A1A1A1;
 }
 
-.gform_wrapper li.gf_hide_charleft div.charleft  {
+.gform_wrapper li.gf_hide_charleft div.charleft {
     display: none !important;
 }
 
@@ -1223,7 +1416,6 @@ body .gform_wrapper ul.gform_fields li.gfield.gform_validation_container {
 }
 
 /* pricing fields ------------------------------------------------------*/
-
 
 .gform_wrapper .ginput_price {
     filter: alpha(opacity=70);
@@ -1267,12 +1459,11 @@ body .gform_wrapper ul.gform_fields li.gfield.gform_validation_container {
     padding: 16px 0 0 0;
 }
 
-.gform_wrapper .gform_page_footer .button.gform_button  {
+.gform_wrapper .gform_page_footer .button.gform_button {
     margin-right: 10px;
 }
 
 /* multi-page progress bar  ------------------------------------------------------*/
-
 
 .gform_wrapper .gf_progressbar_wrapper {
     clear: both;
@@ -1307,17 +1498,17 @@ body .gform_wrapper ul.gform_fields li.gfield.gform_validation_container {
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     border-radius: 4px;
-    -moz-box-shadow: 0 0 4px 0 rgba(0,0,0,0.2);
-    -webkit-box-shadow: 0 0 4px 0 rgba(0,0,0,0.2);
-    box-shadow: 0 0 4px 0 rgba(0,0,0,0.2);
+    -moz-box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.2);
+    -webkit-box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.2);
+    box-shadow: 0 0 4px 0 rgba(0, 0, 0, 0.2);
 }
 
 .gform_wrapper .gf_progressbar_percentage {
     height: 20px;
     text-align: right;
-    font-family: helvetica,arial,sans-serif;
+    font-family: helvetica, arial, sans-serif;
     font-size: 13px !important;
-    text-shadow: 0 1px 1px rgba(0,0,0,0.50);
+    text-shadow: 0 1px 1px rgba(0, 0, 0, 0.50);
 }
 
 .gform_wrapper .gf_progressbar_percentage span {
@@ -1375,7 +1566,6 @@ body .gform_wrapper ul.gform_fields li.gfield.gform_validation_container {
 
 /* multi-page steps ------------------------------------------------------*/
 
-
 .gform_wrapper .gf_page_steps {
     width: 99%;
     margin: 0 0 8px 0;
@@ -1393,7 +1583,7 @@ body .gform_wrapper ul.gform_fields li.gfield.gform_validation_container {
     -moz-opacity: 0.2;
     -khtml-opacity: 0.2;
     opacity: 0.2;
-    font-family: arial,sans-serif;
+    font-family: arial, sans-serif;
     display: -moz-inline-stack;
     display: inline-block;
     zoom: 1;
@@ -1402,7 +1592,7 @@ body .gform_wrapper ul.gform_fields li.gfield.gform_validation_container {
 .gform_wrapper .gf_step span.gf_step_number {
     font-size: 20px;
     float: left;
-    font-family: arial,sans-serif;
+    font-family: arial, sans-serif;
 }
 
 .gform_wrapper .gf_step.gf_step_active {
@@ -1420,7 +1610,6 @@ body .gform_wrapper ul.gform_fields li.gfield.gform_validation_container {
 }
 
 /* password strength indicator -----------------------------------------------------------------*/
-
 
 .gform_wrapper .gfield_password_strength {
     border: 1px solid #DDD;
@@ -1454,7 +1643,6 @@ body .gform_wrapper ul.gform_fields li.gfield.gform_validation_container {
 
 /* reset the default list styles for the HTML blocks -----------------------------------------------------------------*/
 
-
 body .gform_wrapper div.gform_body ul.gform_fields li.gfield.gfield_html ul li,
 body .gform_wrapper form div.gform_body ul.gform_fields li.gfield.gfield_html ul li {
     list-style-type: disc !important;
@@ -1472,15 +1660,15 @@ body .gform_wrapper form div.gform_body ul.gform_fields li.gfield.gfield_html ul
 
 body .gform_wrapper div.gform_body ul.gform_fields li.gfield.gfield_html ol li,
 body .gform_wrapper form div.gform_body ul.gform_fields li.gfield.gfield_html ol li {
-    list-style-type: decimal!important;
-    overflow:visible;
+    list-style-type: decimal !important;
+    overflow: visible;
     margin: 0 0 0.5em;
     padding-left: 0;
 }
 
 body .gform_wrapper div.gform_body ul.gform_fields li.gfield.gfield_html ol,
 body .gform_wrapper form div.gform_body ul.gform_fields li.gfield.gfield_html ol {
-    list-style-type: decimal!important;
+    list-style-type: decimal !important;
     margin: 1em 0 1.5em 2.0em;
     padding-left: 0;
 }
@@ -1514,7 +1702,6 @@ body .gform_wrapper div.gform_body ul.gform_fields li.gfield.gfield_html dl dd {
 
 /* list fields added in v.1.6 -----------------------------------------------------------------*/
 
-
 .gform_wrapper table.gfield_list,
 .gform_wrapper table.gfield_list caption,
 .gform_wrapper table.gfield_list tbody,
@@ -1533,7 +1720,7 @@ body .gform_wrapper div.gform_body ul.gform_fields li.gfield.gfield_html dl dd {
 
 .gform_wrapper table.gfield_list {
     border-spacing: 0;
-    border-collapse:collapse;
+    border-collapse: collapse;
 }
 
 .gform_wrapper table.gfield_list thead th {
@@ -1553,12 +1740,12 @@ body .gform_wrapper div.gform_body ul.gform_fields li.gfield.gfield_html dl dd {
 
 .gform_wrapper table.gfield_list th,
 .gform_wrapper table.gfield_list td {
-    padding:0 0 0.5em 0;
+    padding: 0 0 0.5em 0;
 }
 
 .gform_wrapper table.gfield_list th + th,
 .gform_wrapper table.gfield_list td + td {
-    padding:0 0 0.5em 0.7em;
+    padding: 0 0 0.5em 0.7em;
 }
 
 .gform_wrapper .left_label .gfield_list, .gform_wrapper .right_label .gfield_list {
@@ -1577,7 +1764,7 @@ body .gform_wrapper div.gform_body ul.gform_fields li.gfield.gfield_html dl dd {
     width: 46%;
 }
 
-.gform_wrapper .gfield_list input{
+.gform_wrapper .gfield_list input {
     width: 98%;
 }
 
@@ -1594,7 +1781,6 @@ body .gform_wrapper div.gform_body ul.gform_fields li.gfield.gfield_html dl dd {
 }
 
 /* enhanced UI/select styles added in v.1.6 -----------------------------------------------------------------*/
-
 
 .gform_wrapper select.chzn-select {
     visibility: hidden;
@@ -1617,10 +1803,10 @@ body .gform_wrapper div.gform_body ul.gform_fields li.gfield.gfield_html dl dd {
     position: absolute;
     top: 29px;
     left: 0;
-    -webkit-box-shadow: 0 4px 5px rgba(0,0,0,.15);
-    -moz-box-shadow: 0 4px 5px rgba(0,0,0,.15);
-    -o-box-shadow: 0 4px 5px rgba(0,0,0,.15);
-    box-shadow: 0 4px 5px rgba(0,0,0,.15);
+    -webkit-box-shadow: 0 4px 5px rgba(0, 0, 0, .15);
+    -moz-box-shadow: 0 4px 5px rgba(0, 0, 0, .15);
+    -o-box-shadow: 0 4px 5px rgba(0, 0, 0, .15);
+    box-shadow: 0 4px 5px rgba(0, 0, 0, .15);
     z-index: 999;
 }
 
@@ -1629,9 +1815,10 @@ body .gform_wrapper div.gform_body ul.gform_fields li.gfield.gfield_html dl dd {
     background-image: -webkit-gradient(linear, left bottom, left top, color-stop(0, #EEE), color-stop(0.5, white));
     background-image: -webkit-linear-gradient(center bottom, #EEE 0%, white 50%);
     background-image: -moz-linear-gradient(center bottom, #EEE 0%, white 50%);
-    background-image: -o-linear-gradient(top, #EEE 0%,#FFF 50%);
-    background-image: -ms-linear-gradient(top, #EEE 0%,#FFF 50%); filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#EEE', endColorstr='#FFF',GradientType=0 );
-    background-image: linear-gradient(top, #EEE 0%,#FFF 50%);
+    background-image: -o-linear-gradient(top, #EEE 0%, #FFF 50%);
+    background-image: -ms-linear-gradient(top, #EEE 0%, #FFF 50%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#EEE', endColorstr='#FFF', GradientType=0);
+    background-image: linear-gradient(top, #EEE 0%, #FFF 50%);
     -webkit-border-radius: 4px;
     -moz-border-radius: 4px;
     border-radius: 4px;
@@ -1639,7 +1826,8 @@ body .gform_wrapper div.gform_body ul.gform_fields li.gfield.gfield_html dl dd {
     -webkit-background-clip: padding-box;
     background-clip: padding-box;
     border: 1px solid #AAA;
-    display: block; overflow: hidden;
+    display: block;
+    overflow: hidden;
     white-space: nowrap;
     position: relative;
     height: 26px;
@@ -1671,9 +1859,9 @@ body .gform_wrapper div.gform_body ul.gform_fields li.gfield.gfield_html dl dd {
     background-image: -webkit-linear-gradient(center bottom, #CCC 0%, #EEE 60%);
     background-image: -moz-linear-gradient(center bottom, #CCC 0%, #EEE 60%);
     background-image: -o-linear-gradient(bottom, #CCC 0%, #EEE 60%);
-    background-image: -ms-linear-gradient(top, #CCC 0%,#EEE 60%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#CCC', endColorstr='#EEE',GradientType=0 );
-    background-image: linear-gradient(top, #CCC 0%,#EEE 60%);
+    background-image: -ms-linear-gradient(top, #CCC 0%, #EEE 60%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#CCC', endColorstr='#EEE', GradientType=0);
+    background-image: linear-gradient(top, #CCC 0%, #EEE 60%);
     border-left: 1px solid #AAA;
     position: absolute;
     right: 0;
@@ -1685,7 +1873,7 @@ body .gform_wrapper div.gform_body ul.gform_fields li.gfield.gfield_html dl dd {
 
 .gform_wrapper .chzn-container-single .chzn-single div b {
     background-image: url(../images/chosen-sprite.png);
-    background-position:  0 1px;
+    background-position: 0 1px;
     background-repeat: no-repeat;
     display: block;
     width: 100%;
@@ -1704,9 +1892,9 @@ body .gform_wrapper div.gform_body ul.gform_fields li.gfield.gfield_html dl dd {
     background: url(../images/chosen-sprite.png) 100% -20px no-repeat, -webkit-linear-gradient(center bottom, white 85%, #EEE 99%);
     background: url(../images/chosen-sprite.png) 100% -20px no-repeat, -moz-linear-gradient(center bottom, white 85%, #EEE 99%);
     background: url(../images/chosen-sprite.png) 100% -20px no-repeat, -o-linear-gradient(bottom, white 85%, #EEE 99%);
-    background: url(../images/chosen-sprite.png) 100% -20px no-repeat, -ms-linear-gradient(top, #FFF 85%,#EEE 99%);
-    background: url(../images/chosen-sprite.png) 100% -20px no-repeat, -ms-linear-gradient(top, #FFF 85%,#EEE 99%);
-    background: url(../images/chosen-sprite.png) 100% -20px no-repeat, linear-gradient(top, #FFF 85%,#EEE 99%);
+    background: url(../images/chosen-sprite.png) 100% -20px no-repeat, -ms-linear-gradient(top, #FFF 85%, #EEE 99%);
+    background: url(../images/chosen-sprite.png) 100% -20px no-repeat, -ms-linear-gradient(top, #FFF 85%, #EEE 99%);
+    background: url(../images/chosen-sprite.png) 100% -20px no-repeat, linear-gradient(top, #FFF 85%, #EEE 99%);
     margin: 1px 0;
     padding: 4px 20px 4px 5px;
     outline: 0;
@@ -1730,16 +1918,17 @@ body .gform_wrapper div.gform_body ul.gform_fields li.gfield.gfield_html dl dd {
     background-image: -webkit-linear-gradient(center bottom, white 85%, #EEE 99%);
     background-image: -moz-linear-gradient(center bottom, white 85%, #EEE 99%);
     background-image: -o-linear-gradient(bottom, white 85%, #EEE 99%);
-    background-image: -ms-linear-gradient(top, #FFF 85%,#EEE 99%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFF', endColorstr='#EEE',GradientType=0 );
-    background-image: linear-gradient(top, #FFF 85%,#EEE 99%);
+    background-image: -ms-linear-gradient(top, #FFF 85%, #EEE 99%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFF', endColorstr='#EEE', GradientType=0);
+    background-image: linear-gradient(top, #FFF 85%, #EEE 99%);
     border: 1px solid #AAA;
     margin: 0;
     padding: 0;
     cursor: text;
     overflow: hidden;
     height: auto !important;
-    height: 1%; position: relative;
+    height: 1%;
+    position: relative;
 }
 
 .gform_wrapper .chzn-container-multi .chzn-choices li {
@@ -1782,9 +1971,9 @@ body .gform_wrapper div.gform_body ul.gform_fields li.gfield.gfield_html dl dd {
     background-image: -webkit-linear-gradient(center bottom, #E4E4E4 0%, #EEE 70%);
     background-image: -moz-linear-gradient(center bottom, #E4E4E4 0%, #EEE 70%);
     background-image: -o-linear-gradient(bottom, #E4E4E4 0%, #EEE 70%);
-    background-image: -ms-linear-gradient(top, #E4E4E4 0%,#EEE 70%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#E4E4E4', endColorstr='#EEE',GradientType=0 );
-    background-image: linear-gradient(top, #E4E4E4 0%,#EEE 70%);
+    background-image: -ms-linear-gradient(top, #E4E4E4 0%, #EEE 70%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#E4E4E4', endColorstr='#EEE', GradientType=0);
+    background-image: linear-gradient(top, #E4E4E4 0%, #EEE 70%);
     color: #333;
     border: 1px solid #B4B4B4;
     line-height: 13px;
@@ -1837,7 +2026,7 @@ body .gform_wrapper div.gform_body ul.gform_fields li.gfield.gfield_html dl dd {
 }
 
 .gform_wrapper .chzn-container .chzn-results li {
-    display:none;
+    display: none;
     line-height: 80%;
     padding: 7px 7px 8px;
     margin: 0;
@@ -1881,10 +2070,10 @@ body .gform_wrapper div.gform_body ul.gform_fields li.gfield.gfield_html dl dd {
 }
 
 .gform_wrapper .chzn-container-active .chzn-single {
-    -webkit-box-shadow: 0 0 5px rgba(0,0,0,.3);
-    -moz-box-shadow: 0 0 5px rgba(0,0,0,.3);
-    -o-box-shadow: 0 0 5px rgba(0,0,0,.3);
-    box-shadow: 0 0 5px rgba(0,0,0,.3);
+    -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, .3);
+    -moz-box-shadow: 0 0 5px rgba(0, 0, 0, .3);
+    -o-box-shadow: 0 0 5px rgba(0, 0, 0, .3);
+    box-shadow: 0 0 5px rgba(0, 0, 0, .3);
 }
 
 .gform_wrapper .chzn-container-active .chzn-single-with-drop {
@@ -1898,14 +2087,14 @@ body .gform_wrapper div.gform_body ul.gform_fields li.gfield.gfield_html dl dd {
     background-image: -webkit-linear-gradient(center bottom, white 0%, #EEE 50%);
     background-image: -moz-linear-gradient(center bottom, white 0%, #EEE 50%);
     background-image: -o-linear-gradient(bottom, white 0%, #EEE 50%);
-    background-image: -ms-linear-gradient(top, #FFF 0%,#EEE 50%);
-    filter: progid:DXImageTransform.Microsoft.gradient( startColorstr='#FFF', endColorstr='#EEE',GradientType=0 );
-    background-image: linear-gradient(top, #FFF 0%,#EEE 50%);
-    -webkit-border-bottom-left-radius : 0;
+    background-image: -ms-linear-gradient(top, #FFF 0%, #EEE 50%);
+    filter: progid:DXImageTransform.Microsoft.gradient(startColorstr='#FFF', endColorstr='#EEE', GradientType=0);
+    background-image: linear-gradient(top, #FFF 0%, #EEE 50%);
+    -webkit-border-bottom-left-radius: 0;
     -webkit-border-bottom-right-radius: 0;
-    -moz-border-radius-bottomleft : 0;
+    -moz-border-radius-bottomleft: 0;
     -moz-border-radius-bottomright: 0;
-    border-bottom-left-radius : 0;
+    border-bottom-left-radius: 0;
     border-bottom-right-radius: 0;
 }
 
@@ -1919,10 +2108,10 @@ body .gform_wrapper div.gform_body ul.gform_fields li.gfield.gfield_html dl dd {
 }
 
 .gform_wrapper .chzn-container-active .chzn-choices {
-    -webkit-box-shadow: 0 0 5px rgba(0,0,0,.3);
-    -moz-box-shadow: 0 0 5px rgba(0,0,0,.3);
-    -o-box-shadow: 0 0 5px rgba(0,0,0,.3);
-    box-shadow: 0 0 5px rgba(0,0,0,.3);
+    -webkit-box-shadow: 0 0 5px rgba(0, 0, 0, .3);
+    -moz-box-shadow: 0 0 5px rgba(0, 0, 0, .3);
+    -o-box-shadow: 0 0 5px rgba(0, 0, 0, .3);
+    box-shadow: 0 0 5px rgba(0, 0, 0, .3);
 }
 
 .gform_wrapper .chzn-container-active .chzn-choices .search-field input {
@@ -1991,14 +2180,13 @@ body .gform_wrapper div.gform_body ul.gform_fields li.gfield.gfield_html dl dd {
     background: url(../images/chosen-sprite.png) -38px -20px no-repeat, -webkit-linear-gradient(center bottom, white 85%, #EEE 99%);
     background: url(../images/chosen-sprite.png) -38px -20px no-repeat, -moz-linear-gradient(center bottom, white 85%, #EEE 99%);
     background: url(../images/chosen-sprite.png) -38px -20px no-repeat, -o-linear-gradient(bottom, white 85%, #EEE 99%);
-    background: url(../images/chosen-sprite.png) -38px -20px no-repeat, -ms-linear-gradient(top, #FFF 85%,#EEE 99%);
-    background: url(../images/chosen-sprite.png) -38px -20px no-repeat, -ms-linear-gradient(top, #FFF 85%,#EEE 99%);
-    background: url(../images/chosen-sprite.png) -38px -20px no-repeat, linear-gradient(top, #FFF 85%,#EEE 99%);
+    background: url(../images/chosen-sprite.png) -38px -20px no-repeat, -ms-linear-gradient(top, #FFF 85%, #EEE 99%);
+    background: url(../images/chosen-sprite.png) -38px -20px no-repeat, -ms-linear-gradient(top, #FFF 85%, #EEE 99%);
+    background: url(../images/chosen-sprite.png) -38px -20px no-repeat, linear-gradient(top, #FFF 85%, #EEE 99%);
     padding: 4px 5px 4px 20px;
 }
 
 /* credit card icons ------------------------------------------------------*/
-
 
 .gform_wrapper .gform_card_icon_container {
     margin: 8px 0 6px 0;
@@ -2161,11 +2349,10 @@ body .gform_wrapper div.gform_body ul.gform_fields li.gfield.gfield_html dl dd {
 
 /* credit card fields ------------------------------------------------------*/
 
-
 .gform_card_icon_container input[type=radio]#gform_payment_method_creditcard {
     float: left;
     position: relative;
-    top: 4px!important
+    top: 4px !important
 }
 
 .gform_wrapper .ginput_complex .ginput_cardinfo_left,
@@ -2239,13 +2426,13 @@ body .gform_wrapper div.gform_body ul.gform_fields li.gfield.gfield_html dl dd {
 }
 
 .right_label .gform_fileupload_multifile,
-.left_label .gform_fileupload_multifile{
+.left_label .gform_fileupload_multifile {
     margin-left: 31%;
 }
 
-.gform_delete{
-    vertical-align:middle;
-    cursor:pointer;
+.gform_delete {
+    vertical-align: middle;
+    cursor: pointer;
 }
 
 /* fix recaptcha line height issue ------------------------------------------------------*/
@@ -2266,8 +2453,7 @@ body .gform_wrapper form .gform_body .gform_fields .gfield .ginput_container #re
 .fancybox-wrap object,
 .fancybox-nav,
 .fancybox-nav span,
-.fancybox-tmp
-{
+.fancybox-tmp {
     padding: 0;
     margin: 0;
     border: 0;
@@ -2316,7 +2502,7 @@ body .gform_wrapper form .gform_body .gform_fields .gfield .ginput_container #re
 
 .fancybox-error {
     color: #444;
-    font: 14px/20px "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font: 14px/20px "Helvetica Neue", Helvetica, Arial, sans-serif;
     margin: 0;
     padding: 15px;
     white-space: nowrap;
@@ -2373,7 +2559,7 @@ body .gform_wrapper form .gform_body .gform_fields .gfield .ginput_container #re
     cursor: pointer;
     text-decoration: none;
     background: transparent url(blank.gif); /* helps IE */
-    -webkit-tap-highlight-color: rgba(0,0,0,0);
+    -webkit-tap-highlight-color: rgba(0, 0, 0, 0);
     z-index: 8040;
 }
 
@@ -2459,7 +2645,7 @@ body .gform_wrapper form .gform_body .gform_fields .gfield .ginput_container #re
 
 .fancybox-title {
     visibility: hidden;
-    font: normal 13px/20px "Helvetica Neue",Helvetica,Arial,sans-serif;
+    font: normal 13px/20px "Helvetica Neue", Helvetica, Arial, sans-serif;
     position: relative;
     text-shadow: none;
     z-index: 8050;
@@ -2515,9 +2701,7 @@ body .gform_wrapper form .gform_body .gform_fields .gfield .ginput_container #re
 }
 
 /*Retina graphics!*/
-@media only screen and (-webkit-min-device-pixel-ratio: 1.5),
-only screen and (min--moz-device-pixel-ratio: 1.5),
-only screen and (min-device-pixel-ratio: 1.5){
+@media only screen and (-webkit-min-device-pixel-ratio: 1.5), only screen and (min--moz-device-pixel-ratio: 1.5), only screen and (min-device-pixel-ratio: 1.5) {
 
     #fancybox-loading, .fancybox-close, .fancybox-prev span, .fancybox-next span {
         background-image: url(fancybox_sprite@2x.png);

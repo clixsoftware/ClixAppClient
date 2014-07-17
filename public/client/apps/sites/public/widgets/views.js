@@ -1,35 +1,32 @@
 define([
-    "app",
-    "common/views",
-    "tpl!apps/sites/public/widgets/templates/featured_posts.tpl",
-    "tpl!apps/sites/public/widgets/templates/featured_post_item.tpl",
-    "tpl!apps/sites/public/widgets/templates/no_item_found.tpl",
-    "tpl!apps/sites/public/widgets/templates/home_posts.tpl",
-    "tpl!apps/sites/public/widgets/templates/home_posts_item.tpl",
-    "tpl!apps/sites/public/widgets/templates/home_posts_image_item.tpl",
-    "tpl!apps/sites/public/widgets/templates/home_posts_item_small_media.tpl",
+        "app",
+        "common/views",
+        "tpl!apps/sites/public/widgets/templates/featured_posts.tpl",
+        "tpl!apps/sites/public/widgets/templates/featured_post_item.tpl",
+        "tpl!apps/sites/public/widgets/templates/no_item_found.tpl",
+        "tpl!apps/sites/public/widgets/templates/home_posts.tpl",
+        "tpl!apps/sites/public/widgets/templates/home_posts_item.tpl",
+        "tpl!apps/sites/public/widgets/templates/home_posts_image_item.tpl",
+        "tpl!apps/sites/public/widgets/templates/home_posts_item_small_media.tpl",
         "tpl!apps/sites/public/widgets/templates/home_posts_item_small_no_media.tpl",
-    "tpl!apps/sites/public/widgets/templates/home_posts_item_headline.tpl",
-    "tpl!apps/sites/public/widgets/templates/calendar_posts.tpl",
-    "tpl!apps/sites/public/widgets/templates/ad_post.tpl",
-    "tpl!apps/sites/public/widgets/templates/howdoi_most_active.tpl",
-    "tpl!apps/sites/public/widgets/templates/recently_updated.tpl",
-    "tpl!apps/sites/public/widgets/templates/breadcrumb.tpl",
-    "tpl!apps/sites/public/widgets/templates/how_do_i_item.tpl",
-    "tpl!apps/sites/public/widgets/templates/home_events.tpl",
-    "tpl!apps/sites/public/widgets/templates/home_event_item.tpl"
-],
-    function ( IntranetManager, GlobalViews, featuredPostsTpl, featuredPostItemTpl,
-               noItemTpl, homePostsTpl, homePostItemTpl, homePostImageItemTpl, homePostItemSmallMediaTpl,homePostItemSmallNoMediaTpl,
-               homePostItemHeadlineTpl,  calendarPostsTpl, adPostTpl,howDoIMostActiveTpl,
-               recentUpdatedTpl, breadcrumbTpl, howDoITpl, homeEventTpl, homeEventItemTpl) {
+        "tpl!apps/sites/public/widgets/templates/home_posts_item_headline.tpl",
+        "tpl!apps/sites/public/widgets/templates/calendar_posts.tpl",
+        "tpl!apps/sites/public/widgets/templates/ad_post.tpl",
+        "tpl!apps/sites/public/widgets/templates/howdoi_most_active.tpl",
+        "tpl!apps/sites/public/widgets/templates/recently_updated.tpl",
+        "tpl!apps/sites/public/widgets/templates/breadcrumb.tpl",
+        "tpl!apps/sites/public/widgets/templates/how_do_i_item.tpl",
+        "tpl!apps/sites/public/widgets/templates/home_events.tpl",
+        "tpl!apps/sites/public/widgets/templates/home_event_item.tpl"
+    ],
+    function (IntranetManager, GlobalViews, featuredPostsTpl, featuredPostItemTpl, noItemTpl, homePostsTpl, homePostItemTpl, homePostImageItemTpl, homePostItemSmallMediaTpl, homePostItemSmallNoMediaTpl, homePostItemHeadlineTpl, calendarPostsTpl, adPostTpl, howDoIMostActiveTpl, recentUpdatedTpl, breadcrumbTpl, howDoITpl, homeEventTpl, homeEventItemTpl) {
 
         IntranetManager.module("SiteManager.Widgets.Views",
-            function ( Views, IntranetManager, Backbone, Marionette, $, _ ) {
+            function (Views, IntranetManager, Backbone, Marionette, $, _) {
 
                 Views.HowDoIItemView = Marionette.ItemView.extend({
 
-                    initialize: function(options){
+                    initialize: function (options) {
                         //  console.log('index of model ' + options.index);
                         this.model.set('index', options.index);
                     },
@@ -38,7 +35,7 @@ define([
 
                     tagName: 'li',
 
-                    onRender: function(){
+                    onRender: function () {
                         console.log('<< Views.HowDoIItemView - Loaded***DONE ***  >>');
                     }
                 });
@@ -54,14 +51,14 @@ define([
 
                     className: 'category-block',
 
-                    itemViewOptions: function(model){
+                    itemViewOptions: function (model) {
                         return {
-                            index: this.collection.indexOf(model) +1
+                            index: this.collection.indexOf(model) + 1
                         }
                     },
 
-                    onRender: function(){
-                       // alert('rendering how do i most active');
+                    onRender: function () {
+                        // alert('rendering how do i most active');
                         console.log('<< Views.HowDoIMostActiveView - Loaded***DONE ***  >>');
                     }
                 });
@@ -78,13 +75,13 @@ define([
 
                     className: 'category-block',
 
-                    itemViewOptions: function(model){
+                    itemViewOptions: function (model) {
                         return {
-                            index: this.collection.indexOf(model) +1
+                            index: this.collection.indexOf(model) + 1
                         }
                     },
 
-                    onRender: function(){
+                    onRender: function () {
                         // alert('rendering how do i most active');
                         console.log('<< Views.HowDoIMostActiveView - Loaded***DONE ***  >>');
                     }
@@ -94,7 +91,7 @@ define([
                 Views.BreadcrumbView = Marionette.ItemView.extend({
                     template: breadcrumbTpl,
 
-                    onRender: function(){
+                    onRender: function () {
                         console.log('<< Views.BreadcrumbView - Loaded ***DONE ***  >>');
                     }
                 });
@@ -103,7 +100,7 @@ define([
                 Views.RecentlyUpdatedView = Marionette.ItemView.extend({
                     template: recentUpdatedTpl,
 
-                    onRender: function(){
+                    onRender: function () {
                         console.log('<< Views.RecentlyUpdatedView - Loaded ***DONE ***  >>');
                     }
                 });
@@ -111,7 +108,7 @@ define([
                 Views.CalendarPostsView = Marionette.ItemView.extend({
                     template: calendarPostsTpl,
 
-                    onRender: function(){
+                    onRender: function () {
                         console.log('<< Views.CalendarPostsView - Loaded ***DONE ***  >>');
                     }
                 });
@@ -120,7 +117,7 @@ define([
                 Views.AdPostView = Marionette.ItemView.extend({
                     template: adPostTpl,
 
-                    onRender: function(){
+                    onRender: function () {
                         console.log('<< Views.AdPostView - Loaded ***DONE ***  >>');
                     }
                 });
@@ -129,7 +126,7 @@ define([
                 Views.Top5NewsView = Marionette.ItemView.extend({
                     template: featuredPostsTpl,
 
-                    onRender: function(){
+                    onRender: function () {
                         console.log('<< Views.Top5NewsView - Loaded to layoutZone1 ***DONE ***  >>');
                     }
                 });
@@ -138,11 +135,10 @@ define([
                 Views.NoItemFoundView = Marionette.ItemView.extend({
                     template: noItemTpl,
 
-                    onRender: function(){
+                    onRender: function () {
                         console.log('<< Views.NoItemFoundView - Loaded ***DONE ***  >>');
                     }
                 });
-
 
                 Views.PostItemView = Marionette.ItemView.extend({
                     template: homePostItemTpl,
@@ -150,14 +146,14 @@ define([
                     className: 'item item-post',
 
                     ui: {
-                      media : '.js-media'
+                        media: '.js-media'
                     },
 
-                    onBeforeRender: function(){
+                    onBeforeRender: function () {
                         var attachments = this.model.get('attachments');
 
-                        if(attachments != null){
-                            if(attachments["images"]){
+                        if (attachments != null) {
+                            if (attachments["images"]) {
                                 this.template = homePostImageItemTpl;
                                 this.model.set('media_image', attachments.images[0]);
 
@@ -167,10 +163,10 @@ define([
                         }
                     },
 
-                    onRender: function(){
-                       //console.log(this.model.get('media_image'));
+                    onRender: function () {
+                        //console.log(this.model.get('media_image'));
 
-                       console.log('<< Views.PostItemView - Loaded ***DONE ***  >>');
+                        console.log('<< Views.PostItemView - Loaded ***DONE ***  >>');
                     }
                 });
 
@@ -181,11 +177,11 @@ define([
 
                     emptyView: Views.NoItemFoundView,
 
-                    className: 'widget home featured posts ui four items',
+                    className: 'widget category-block',
 
                     itemViewContainer: 'div ',
 
-                    onRender: function(){
+                    onRender: function () {
                         console.log('<< Views.FeaturedPostsView - Loaded  ***DONE ***  >>');
                     }
                 });
@@ -193,7 +189,7 @@ define([
                 Views.HomeNewsPostItem = Marionette.ItemView.extend({
 
 
-                    initialize: function(options){
+                    initialize: function (options) {
                         //  console.log('index of model ' + options.index);
                         this.model.set('index', options.index);
                     },
@@ -205,17 +201,17 @@ define([
 
                     className: 'item box-generic',
 
-                    onBeforeRender: function(){
-                      /*  if(this.model.get('index') > 2 && this.model.get('index') < 6){
-                            this.template = homePostItemSmallMediaTpl;
-                        }*/
-                        if(this.model.get('index') >= 6){
+                    onBeforeRender: function () {
+                        /*  if(this.model.get('index') > 2 && this.model.get('index') < 6){
+                         this.template = homePostItemSmallMediaTpl;
+                         }*/
+                        if (this.model.get('index') >= 6) {
                             this.template = homePostItemHeadlineTpl;
-                        }else{
+                        } else {
                             var attachments = this.model.get('attachments');
 
-                            if(attachments != null){
-                                if(attachments["images"]){
+                            if (attachments != null) {
+                                if (attachments["images"]) {
                                     this.template = homePostItemSmallMediaTpl;
                                     this.model.set('media_image', attachments.images[0]);
                                 }
@@ -225,35 +221,34 @@ define([
                         }
 
                     },
-                    onRender: function(){
+                    onRender: function () {
 
                         //console.log(this.$el.addClass('ttestst' + this.model.get('index')));
                         console.log('<< Views.HomeNewsPostItem - Loaded ***DONE ***  >>');
                     }
                 });
 
-
                 Views.HomeNewsPostsView = Marionette.CompositeView.extend({
 
                     template: homePostsTpl,
 
-                   itemView: Views.HomeNewsPostItem,
+                    itemView: Views.HomeNewsPostItem,
 
                     emptyView: Views.NoItemFoundView,
 
-                   tagName: 'section',
+                    tagName: 'section',
 
-                   className: 'most_popular_block',
+                    className: 'most_popular_block',
 
-                   itemViewContainer: 'div#ht-feature-news',
+                    itemViewContainer: 'div#ht-feature-news',
 
-                    itemViewOptions: function(model){
+                    itemViewOptions: function (model) {
                         return {
-                            index: this.collection.indexOf(model) +1
+                            index: this.collection.indexOf(model) + 1
                         }
                     },
 
-                    onRender: function(){
+                    onRender: function () {
                         console.log('<< Views.FeaturedPostsView - Loaded  ***DONE ***  >>');
                     }
                 });
@@ -261,7 +256,7 @@ define([
                 Views.HomeEventsPostItem = Marionette.ItemView.extend({
 
 
-                    initialize: function(options){
+                    initialize: function (options) {
                         //  console.log('index of model ' + options.index);
                         this.model.set('index', options.index);
                     },
@@ -269,22 +264,21 @@ define([
 
                     className: 'item box-generic',
 
-/*                    onBeforeRender: function(){
-                        *//*  if(this.model.get('index') > 2 && this.model.get('index') < 6){
-                         this.template = homePostItemSmallMediaTpl;
-                         }*//*
-                        if(this.model.get('index') >= 6){
-                            this.template = homePostItemHeadlineTpl;
-                        }
+                    /*                    onBeforeRender: function(){
+                     *//*  if(this.model.get('index') > 2 && this.model.get('index') < 6){
+                     this.template = homePostItemSmallMediaTpl;
+                     }*//*
+                     if(this.model.get('index') >= 6){
+                     this.template = homePostItemHeadlineTpl;
+                     }
 
-                    },*/
-                    onRender: function(){
+                     },*/
+                    onRender: function () {
 
                         //console.log(this.$el.addClass('ttestst' + this.model.get('index')));
                         console.log('<< Views.HomeEventsPostItem - Loaded ***DONE ***  >>');
                     }
                 });
-
 
                 Views.HomeEventsPostsView = Marionette.CompositeView.extend({
 
@@ -300,13 +294,13 @@ define([
 
                     itemViewContainer: 'div#ht-events',
 
-                    itemViewOptions: function(model){
+                    itemViewOptions: function (model) {
                         return {
-                            index: this.collection.indexOf(model) +1
+                            index: this.collection.indexOf(model) + 1
                         }
                     },
 
-                    onRender: function(){
+                    onRender: function () {
                         console.log('<< Views.HomeEventsPostsView - Loaded  ***DONE ***  >>');
                     }
                 });

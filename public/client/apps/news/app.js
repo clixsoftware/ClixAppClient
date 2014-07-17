@@ -56,7 +56,7 @@ define(
                      "sites/:appId/news*//*slug": 'loadPostPublicDisplay',*/
                     ":feature/:alias/news": 'loadPublicNewsHome',
                     ":feature/:alias/news/categories/:code/*slug": 'loadPostsByCategory',
-                    ":feature/:alias/news/:postId/*slug": 'loadPostPublicDisplay'
+                    ":feature/:alias/news/*info": 'loadPostPublicDisplay'
 
                 }
 
@@ -189,7 +189,13 @@ define(
                 },
 
 
-                loadPostPublicDisplay: function (feature, alias, postId, slug) {
+                loadPostPublicDisplay: function (feature, alias, info) {
+
+                    var newsInfo = info.split('-');
+
+                    var postId = newsInfo[0];
+                    var slug = newsInfo[1];
+                    //alert(postId);
                     var opts = {
                         post_id: postId,
                         feature: feature,
@@ -234,7 +240,7 @@ define(
 
                 },
 
-                loadPostsByCategory: function(feature, alias, category, slug){
+                loadPostsByCategory: function (feature, alias, category, slug) {
                     var options = {
                         feature: feature,
                         alias: alias,
@@ -320,7 +326,7 @@ define(
                 },
 
 
-                loadCategoryHeader: function(options){
+                loadCategoryHeader: function (options) {
                     require([
                         "apps/news/public/entities/categories/show/controller"
                     ], function (ShowController) {
@@ -330,7 +336,7 @@ define(
                 },
 
 
-                loadCategoryList: function(objectId){
+                loadCategoryList: function (objectId) {
                     require([
                         "apps/news/public/entities/categories/list/controller"
                     ], function (ListController) {

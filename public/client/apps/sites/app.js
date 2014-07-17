@@ -7,8 +7,8 @@ define(
     [
         "app"
     ],
-    function ( IntranetManager ) {
-        IntranetManager.module("SiteManager", function ( SiteManager, IntranetManager, Backbone, Marionette, $, _ ) {
+    function (IntranetManager) {
+        IntranetManager.module("SiteManager", function (SiteManager, IntranetManager, Backbone, Marionette, $, _) {
 
             SiteManager.startWithParent = false;
 
@@ -26,7 +26,7 @@ define(
                 init: function () {
                     require([
                         "apps/sites/common/controller"
-                    ], function ( CommonController ) {
+                    ], function (CommonController) {
                         //alert('init layout');
                         CommonController.setupAppLayout();
                     });
@@ -40,7 +40,7 @@ define(
 
         });
 
-        IntranetManager.module("Routers.SiteManager", function ( SiteManagerRouter, IntranetManager, Backbone, Marionette, $, _ ) {
+        IntranetManager.module("Routers.SiteManager", function (SiteManagerRouter, IntranetManager, Backbone, Marionette, $, _) {
 
             SiteManagerRouter.Router = Marionette.AppRouter.extend({
 
@@ -55,7 +55,7 @@ define(
 
             });
 
-            var executeAction = function ( action, arg ) {
+            var executeAction = function (action, arg) {
                 IntranetManager.startSubApp("SiteManager");
                 action(arg);
                 //IntranetManager.execute("set:active:header", "contacts");
@@ -63,22 +63,22 @@ define(
 
             var API = {
 
-                init: function ( cb ) {
+                init: function (cb) {
 
                     require([
                         "apps/sites/public/common/controller"
-                    ], function ( CommonController ) {
+                    ], function (CommonController) {
                         //alert('init layout');
                         executeAction(CommonController.setupAppLayout, cb);
                     });
 
                 },
 
-                initBackend: function ( cb ) {
+                initBackend: function (cb) {
 
                     require([
                         "apps/sites/backend/common/controller"
-                    ], function ( CommonController ) {
+                    ], function (CommonController) {
                         //alert('init layout');
                         executeAction(CommonController.setupAppLayout, cb);
                     });
@@ -86,13 +86,13 @@ define(
                 },
 
 
-                loadTestSite:function(alias){
+                loadTestSite: function (alias) {
 
                     alert('Loading the test site ' + alias);
                 },
 
-                loadRoot: function(){
-                  // alert('inside the root');
+                loadRoot: function () {
+                    // alert('inside the root');
                     IntranetManager.trigger('sites:default:show');
                 },
 
@@ -103,7 +103,7 @@ define(
                     var cb = function () {
                         require([
                             "apps/sites/public/entities/sites/show/controller"
-                        ], function ( ShowController ) {
+                        ], function (ShowController) {
                             ShowController.displayHomePage(alias);
                         });
                     };
@@ -117,7 +117,7 @@ define(
                     // var cb = function () {
                     require([
                         "apps/sites/public/widgets/controller"
-                    ], function ( WidgetsController ) {
+                    ], function (WidgetsController) {
                         WidgetsController.displayFeaturedPosts(alias);
                     });
                     //};
@@ -132,7 +132,7 @@ define(
                     // var cb = function () {
                     require([
                         "apps/sites/public/widgets/controller"
-                    ], function ( WidgetsController ) {
+                    ], function (WidgetsController) {
                         WidgetsController.displayHomeNewsPosts(alias);
                     });
                     // };
@@ -146,7 +146,7 @@ define(
                     // var cb = function () {
                     require([
                         "apps/sites/public/widgets/controller"
-                    ], function ( WidgetsController ) {
+                    ], function (WidgetsController) {
                         WidgetsController.displayHomeEventsPosts(alias);
                     });
                     // };
@@ -158,7 +158,7 @@ define(
                 loadHowDoIMostActive: function (alias) {
                     require([
                         "apps/sites/public/widgets/controller"
-                    ], function ( WidgetsController ) {
+                    ], function (WidgetsController) {
                         WidgetsController.displayHowDoIMostActive(alias);
                     });
                 },
@@ -167,7 +167,7 @@ define(
                 loadHowDoIRecent: function (alias) {
                     require([
                         "apps/sites/public/widgets/controller"
-                    ], function ( WidgetsController ) {
+                    ], function (WidgetsController) {
                         WidgetsController.displayHowDoIRecent(alias);
                     });
                 },
@@ -176,7 +176,7 @@ define(
                 loadAtoZUpdates: function (alias) {
                     require([
                         "apps/sites/widgets/controller"
-                    ], function ( WidgetsController ) {
+                    ], function (WidgetsController) {
                         WidgetsController.displayRecentlyUpdated(alias);
                     });
                 },
@@ -184,7 +184,7 @@ define(
                 loadBreadCrumb: function () {
                     require([
                         "apps/sites/widgets/controller"
-                    ], function ( WidgetsController ) {
+                    ], function (WidgetsController) {
                         WidgetsController.displayBreadcrumb();
                     });
                 },
@@ -192,36 +192,39 @@ define(
                 //BackEnd Views & Controls
 
 
-                backendLoadSiteList: function(){
+                backendLoadSiteList: function () {
 
                     var cb = function () {
                         require([
                             "apps/sites/backend/entities/sites/list/controller"
-                        ], function ( ListController ) {
+                        ], function (ListController) {
                             ListController.displayList();
                         });
                     };
 
-                    IntranetManager.trigger("sites:backend:init",  cb);
+                    IntranetManager.trigger("sites:backend:init", cb);
                 },
 
-                backendLoadListHeader: function(model){
+                backendLoadListHeader: function (model) {
                     require([
                         "apps/sites/backend/widgets/controller"
-                    ], function ( WidgetsController ) {
+                    ], function (WidgetsController) {
                         WidgetsController.displayListHeader(model);
                     });
                 }
 
-               };
+            };
 
-            IntranetManager.on("sites:init", function ( cb ) {
+            IntranetManager.on("sites:init", function (cb) {
                 API.init(cb);
             });
 
             IntranetManager.on('sites:default:show', function () {
                 IntranetManager.navigate("/sites/default");
+
                 API.loadHomePage('default');
+                IntranetManager.trigger("headermanager:start");
+                IntranetManager.trigger("footer:start");
             });
 
             IntranetManager.on('sites:news:posts:featured', function (alias) {
@@ -257,12 +260,12 @@ define(
 
             //Backend
 
-            IntranetManager.on("sites:backend:init", function ( cb ) {
+            IntranetManager.on("sites:backend:init", function (cb) {
                 API.initBackend(cb);
             });
 
             //Widgets & Helpers
-            IntranetManager.on("sites:backend:list:header:show", function ( model ) {
+            IntranetManager.on("sites:backend:list:header:show", function (model) {
                 API.backendLoadListHeader(model);
             });
 

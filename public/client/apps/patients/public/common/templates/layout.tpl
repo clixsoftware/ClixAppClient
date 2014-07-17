@@ -4,7 +4,7 @@
     }
 </style>
 
-<div id="layout-left-aside" class="col-lg-3 col-md-3 col-sm-5">
+<div id="layout-left-aside" class="classifieds">
     <div id="layout-zone-1"></div>
     <div id="layout-zone-2"></div>
     <div id="layout-zone-3"></div>

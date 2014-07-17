@@ -7,24 +7,19 @@
 define([
     "app",
     "apps/footer/common/controller"
-], function ( IntranetManager, CommonController ) {
-    IntranetManager.module("FooterManager", function (
-        FooterManager,
-        IntranetManager,
-        Backbone,
-        Marionette,
-        $, _ ) {
+], function (IntranetManager, CommonController) {
+    IntranetManager.module("FooterManager", function (FooterManager, IntranetManager, Backbone, Marionette, $, _) {
 
         var API = {
             loadLayout: function () {
                 CommonController.setupLayout();
             },
 
-            loadNavigation: function(){
+            loadNavigation: function () {
                 CommonController.setupNavigation();
             },
 
-            loadFeedbackForm: function(){
+            loadFeedbackForm: function () {
                 CommonController.showFeedbackForm();
             }
         };
@@ -35,13 +30,13 @@ define([
         });
 
 
-        IntranetManager.on("footer:start", function(){
-           //API.loadLayout();
-           //API.loadNavigation();
+        IntranetManager.on("footer:start", function () {
+            API.loadLayout();
+            //API.loadNavigation();
         });
 
-        IntranetManager.on("footer:show:feedback", function(){
-          API.loadFeedbackForm();
+        IntranetManager.on("footer:show:feedback", function () {
+            API.loadFeedbackForm();
         });
 
 

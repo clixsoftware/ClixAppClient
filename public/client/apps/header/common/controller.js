@@ -9,10 +9,10 @@ define([
     "apps/header/common/views",
     "apps/header/entities/sitenav/list/views",
     "apps/header/entities/utilitynav/list/views"
-], function ( IntranetManager, CommonViews, SiteNavListViews, UtilityNavViews ) {
+], function (IntranetManager, CommonViews, SiteNavListViews, UtilityNavViews) {
 
     IntranetManager.module("HeaderManager.Common",
-        function ( Common, IntranetManager, Backbone, Marionette, $, _ ) {
+        function (Common, IntranetManager, Backbone, Marionette, $, _) {
 
             Common.Controller = {
 
@@ -51,9 +51,9 @@ define([
                     var view = new CommonViews.SiteSearchView();
 
 
-/*                    view.on('sidebar:close', function () {
-                        //alert('closing the side bar');
-                    });*/
+                    /*                    view.on('sidebar:close', function () {
+                     //alert('closing the side bar');
+                     });*/
 
                     return view;
                 },
@@ -69,21 +69,28 @@ define([
 
                     IntranetManager.headerLayout.on("show", function () {
 
+                        IntranetManager.siteMobileNav.reset();
+                        IntranetManager.siteBrand.reset();
+                        IntranetManager.siteSearch.reset();
+
                         IntranetManager.siteMobileNav.show(that.getMobileNavView());
                         IntranetManager.siteBrand.show(that.getBrandMenuView());
                         IntranetManager.siteSearch.show(that.getSiteSearchView());
                         //setup the navigation
                         that.setupNavigation();
                         that.setupUtilityNavigation();
-
+                        // alert('loading the header');
                     });
 
+                    IntranetManager.siteHeader.reset();
                     IntranetManager.siteHeader.show(IntranetManager.headerLayout);
                 },
 
-                setActiveHeader: function ( headerUrl ) {
+                setActiveHeader: function (headerUrl) {
                     var links = IntranetManager.request('sitenav:entities');
-                    var headerToSelect = links.find(function ( header ) {return header.get("url") === headerUrl; });
+                    var headerToSelect = links.find(function (header) {
+                        return header.get("url") === headerUrl;
+                    });
                     headerToSelect.select();
                     links.trigger("reset");
                 },
@@ -101,13 +108,14 @@ define([
 
                         });
 
-                        headers.on('itemview:navigate', function ( childview, model ) {
+                        headers.on('itemview:navigate', function (childview, model) {
 
                             var trigger = model.get('navigationTrigger');
                             IntranetManager.trigger(trigger);
 
                         });
 
+                        IntranetManager.siteNavigationBar.reset();
                         IntranetManager.siteNavigationBar.show(headers);
 
 
@@ -129,13 +137,13 @@ define([
 
                         });
 
-                        headers.on('itemview:navigate', function ( childview, model ) {
+                        headers.on('itemview:navigate', function (childview, model) {
 
                             var trigger = model.get('navigationTrigger');
                             IntranetManager.trigger(trigger);
 
                         });
-
+                        IntranetManager.utilityNavBar.reset();
                         IntranetManager.utilityNavBar.show(headers);
 
 

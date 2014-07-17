@@ -1,68 +1,68 @@
 define([
     "app",
     "cookie"
-], function ( IntranetManager ) {
+], function (IntranetManager) {
 
     IntranetManager.module("AuthManager.Entities",
-        function ( Entities, IntranetManager, Backbone, Marionette, $, _ ) {
+        function (Entities, IntranetManager, Backbone, Marionette, $, _) {
 
             Entities.SessionModel = Backbone.Model.extend({
-                url : '/api/session',
+                url: '/api/session',
 
-                initialize : function(){
+                initialize: function () {
                     //Ajax Request Configuration
                     //To Set The CSRF Token To Request Header
                     $.ajaxSetup({
-                        headers : {
-                           // 'X-CSRF-Token' : csrf
+                        headers: {
+                            // 'X-CSRF-Token' : csrf
                         }
                     });
 
                 },
-                validate: function ( attrs, options ) {
+                validate: function (attrs, options) {
 
                     var errors = {};
-                    if (! attrs.email) {
+                    if (!attrs.email) {
                         errors.title = "can't be blank";
                     }
-                    if (! attrs.password) {
+                    if (!attrs.password) {
                         errors.alias = "can't be blank";
                     }
-                    else{
+                    else {
                         if (attrs.email.length < 2) {
                             errors.alias = "is too short";
                         }
                     }
-                    if( ! _.isEmpty(errors)){
+                    if (!_.isEmpty(errors)) {
                         return errors;
                     }
 
                     alert(attrs.email);
 
-                   //alert('errors found ' + errors.length);
+                    //alert('errors found ' + errors.length);
                 },
-                login : function(credentials){
+                login: function (credentials) {
                     //console.log(JSON.stringify(credentials));
 
                     //alert(this.isValid);
                     var that = this;
                     var login = $.ajax({
-                        url :  'http://localhost:3100/api/v1/auth/login', //this.url + '/session',
-                        data : credentials,
-                        type : 'POST',
+                        url: IntranetManager.opts.API + 'auth/login', //this.url + '/session',
+                        data: credentials,
+                        type: 'POST',
                         statusCode: {
-                            404: function(err){
-                               // alert('invalid username or password');
+                            404: function (err) {
+                                // alert('invalid username or password');
                                 console.log(JSON.stringify(err));
-                                alert(err.responseJSON.item.message);
+                                //  alert(err.responseJSON.item.message);
                             }
                         }
 
                     });
-                    login.done(function(response, err){
-                        alert(err);
+                    login.done(function (response, err) {
+                        //alert(err);
                         console.log(JSON.stringify(response));
-                        if(response.success){
+                        if (response.success) {
                             that.set('authenticated', response.authenticated);
                             that.set('user', response.user);
                             $.cookie('hospitalnet-auth', response.authenticated, { expires: 7, path: '/' });
@@ -71,9 +71,9 @@ define([
                             IntranetManager.Auth.user = response.user;
                             IntranetManager.Auth.isAuthenticated = true;
                             IntranetManager.Auth.userId = response.user.username;
-                            IntranetManager.trigger('homepage:show');
+                            IntranetManager.trigger('sites:default:show');
                             IntranetManager.trigger('user:logged:in');
-                        }else{
+                        } else {
                             alert('Could not log in the user');
 
                             console.log('login failed ' + response.item.message)
@@ -86,24 +86,24 @@ define([
 
             Entities.SignupModel = Backbone.Model.extend({
 
-                urlRoot: "http://localhost:3100/api/v1/auth/signup",
+                urlRoot: IntranetManager.opts.API + 'auth/signup',
 
                 defaults: {
-                   // first_name: "New Workspace"
+                    // first_name: "New Workspace"
                 },
 
-                validate: function ( attrs, options ) {
+                validate: function (attrs, options) {
 
                     var errors = {};
-                    if (! attrs.email) {
+                    if (!attrs.email) {
                         errors.email = "can't be blank";
                     }
 
-                    if (! attrs.password) {
+                    if (!attrs.password) {
                         errors.password = "can't be blank";
                     }
 
-                    if (! attrs.confirm_password) {
+                    if (!attrs.confirm_password) {
                         errors.confirm_password = "can't be blank";
                     }
 
@@ -112,7 +112,7 @@ define([
                         errors.password = "passwords do not match";
                     }
 
-                    if( ! _.isEmpty(errors)){
+                    if (!_.isEmpty(errors)) {
                         return errors;
                     }
 
