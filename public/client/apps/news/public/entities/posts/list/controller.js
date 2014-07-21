@@ -210,60 +210,6 @@ define([
                                         console.log('fetched app and news')
                                     });
 
-
-                               /* $.when(fetchingApp).done(function(fetchedApp){
-
-                                    if(fetchedApp){
-                                        console.log('Application exist continue ');
-
-
-                                        require(["entities/news_post"],
-                                            function () {
-                                                console.log('List news app post records');
-                                                //fetch posts
-                                                var fetchingRecords = IntranetManager.request('news:posts:search', 'parent_app=' + appId);
-
-                                                $.when(fetchingRecords).done(function ( fetchedRecords ) {
-
-                                                    // alert(fetchedRecords);
-
-                                                    var listView = List.Controller.getListView(fetchedRecords);
-                                                    //console.log(JSON.stringify(fetchedRecords));
-
-                                                    if (fetchedRecords != undefined) {
-
-                                                        IntranetManager.layoutHeader.show(List.Controller.getHeaderView(fetchedApp));
-
-                                                        IntranetManager.layoutContent.show(listView);
-
-                                                        IntranetManager.layoutSearch.show(List.Controller.getListSearchView());
-
-                                                        IntranetManager.trigger('newsmanager:app:categories', appId);
-
-                                                        IntranetManager.layoutZone2.reset();
-
-
-                                                    } else {
-                                                        console.log('no records found');
-
-
-                                                        IntranetManager.layoutZone1.show(that.getBlankHelpView());
-                                                        IntranetManager.layoutContent.show(that.getBlankView(appId));
-                                                        IntranetManager.layoutSearch.reset();
-                                                        IntranetManager.layoutHeader.reset();
-                                                    }
-
-                                                });
-
-
-                                            }
-                                        );
-
-                                    }else{
-                                        console.log('application record found');
-                                    }
-                                });*/
-
                             });
 
 
@@ -312,8 +258,28 @@ define([
                                 IntranetManager.layoutContent.reset();
                                 IntranetManager.layoutContent.show(new that.getNewsHomeView(posts));
 
-                                IntranetManager.trigger('news:public:category:list', parentApp.get('uuid'));
-                                    //console.log('posts found');
+
+
+                                var taxoptions = {
+                                    parentFeature: app.get('parent_application_feature'),
+                                    appFeature: 'news',
+                                    appAlias: app.get('parent_application_alias'),
+                                    parentId: app.get('parent_application'),
+                                    objectId: app.get('uuid'),
+                                    categories: app.get('categories'),
+                                    tags: app.get('tags'),
+                                    url: ''
+                                };
+
+                                console.group("app");
+                                console.log(app);
+                                console.groupEnd();
+
+                                console.group("taxoptions");
+                                console.log(taxoptions);
+                                console.groupEnd();
+                               // IntranetManager.trigger('news:public:category:list', parentApp.get('uuid'));
+                                IntranetManager.trigger('core:object:categories', taxoptions );
 
                         })
                             .fail(function(error){
@@ -324,117 +290,6 @@ define([
 
 
                     });
-
-                        /*                        var cb = function () {
-
-                                                    require(['entities/app'], function(){
-
-                                                        var query = 'alias=' + alias + '&parent_feature=' + NewsManager.feature.id;
-
-                                                        var fetchingApp = IntranetManager.request('appmodel:search', query);
-
-                                                        $.when(fetchingApp).done(function(fetchedApp){
-
-                                                            console.log('<< showPublicNewsHome: fetch app completed  >>');
-
-                                                            if(fetchedApp){
-
-                                                                console.log('<< showPublicNewsHome: fetch app success >>');
-
-                                                                IntranetManager.trigger('news:public:app:channels:list', fetchedApp);
-
-                                                               // IntranetManager.trigger('newsmanager:public:popular:posts:global');
-
-                                                                //get the parent application
-                                                                var query2 = fetchedApp.at(0).get('parent_app');
-
-                                                                var fetchingParentApp = IntranetManager.request('appmodel:entity',  query2);
-
-                                                                console.log('@@ Fetching Application App using = ' + query2);
-
-                                                                $.when(fetchingParentApp).done(function(fetchedParentApp){
-
-                                                                    console.log('++ Fetching App Completed');
-
-                                                                    if(fetchedParentApp){
-
-                                                                        console.log('++ Fetching App Success');
-
-                                                                        console.log('*** Parent App Name ' + fetchedParentApp.get('title'));
-
-                                                                        IntranetManager.trigger('app:show:navigation', fetchedParentApp);
-
-                                                                    }
-
-                                                                });
-
-                                                                require(["entities/news_post"],
-                                                                    function () {
-
-                                                                        var appId = fetchedApp.at(0).get('id');
-
-                                                                        console.log('Get News Postings for News App ID = ' + appId  );
-
-                                                                        //fetch posts
-                                                                        var fetchingRecords = IntranetManager.request('news:posts:search:app', appId);
-
-                                                                        $.when(fetchingRecords).done(function ( fetchedRecords ) {
-
-
-                                                                            if (fetchedRecords != undefined) {
-
-                                                                                console.log(fetchedRecords.at(1).get('title'));
-                                                                                var grouped = new Backbone.buildGroupedCollection({
-                                                                                    collection: fetchedRecords,
-                                                                                     groupBy: function (post) {
-                                                                                    return post.get('category');
-                                                                                }
-                                                                                });
-                                                                                //var listView = new Marionette.CollectionView();
-
-                                                                               grouped.each(function(group, index, list){
-                                                                                  console.log(group.id);
-                                                                                   //listView.appendHtml(List.Controller.getPublicNewsHomeView(group.vc));
-                                                                                   //IntranetManager.layoutContent.show(listView);
-                                                                               });
-
-                                                                                console.log(grouped.at(1).get('id'));
-
-                                                                                var listView = List.Controller.getPublicNewsHomeView(grouped);
-                                                                                IntranetManager.layoutContent.show(listView);
-
-
-
-                                                                            } else {
-
-                                                                                console.log('XXX No News Post Found , rendering Blank,');
-                                                                                console.log('TODO: change public blank view,');
-                                                                                //TODO: change public blank view
-
-                                                                                IntranetManager.layoutZone1.show(that.getBlankHelpView());
-                                                                                IntranetManager.layoutContent.show(that.getBlankView(appId));
-                                                                                IntranetManager.layoutSearch.reset();
-                                                                                IntranetManager.layoutHeader.reset();
-                                                                            }
-
-                                                                        });
-
-
-                                                                    }
-                                                                );
-
-                                                            }else{
-                                                                console.log('application record found');
-                                                            }
-                                                        });
-
-                                                    });
-
-
-                                                };
-
-                                                IntranetManager.trigger("news:public:init", cb);
-                                                console.groupEnd();*/
 
                     }
                 }
