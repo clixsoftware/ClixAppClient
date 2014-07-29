@@ -24,10 +24,7 @@ define([
                     setupAppLayout: function (next) {
                         var that = this;
 
-                       // if (HomeManager.started === false || HomeManager.started === undefined) {
                             console.log('<<Setup Home Page layout>>');
-                            //console.log('Init site manager setup : ');
-
 
                             require(["entities/feature"],
                                 function () {
@@ -39,7 +36,7 @@ define([
                                        // console.log('an error occurred do we reach here');
                                         // alert(feature);
                                         if (!feature) {
-                                            throw new Error('Feature HomePage is not installed');
+                                            throw new Error('Feature Site Manager is not installed');
                                         }
 
                                         SiteManager.feature = {
@@ -59,22 +56,12 @@ define([
                                         }
                                     })
                                         .fail(function (error) {
-                                            alert(error);
-                                            console.log('Go to 404 page');
-                                            /*//TODO: navigate to 404 pages*/
+                                            IntranetManager.trigger(IntranetManager.opts.errorAction, error);
                                         });
 
                                 }
                             );
 
-
-                     //   } else {
-
-                      //      if (next) {
-                      //          next();
-                      //      }
-
-                      //  }
                     }
                 };
 

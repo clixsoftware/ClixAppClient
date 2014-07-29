@@ -32,7 +32,8 @@ define(
                 appRoutes: {
                     ":feature/:alias/calendar": 'loadPostList',
                     ":feature/:alias/calendar/index.html": 'loadPostList',
-                    ":feature/:alias/calendar/:id/*slug": 'loadPostDetails'
+                    //":feature/:alias/calendar/:id/*slug": 'loadPostDetails',
+                    ":feature/:alias/calendar/*info": 'loadPostDetails'
                 }
 
             });
@@ -59,13 +60,20 @@ define(
 
                 },
 
-                loadPostDetails: function (feature, alias, id, slug) {
+                loadPostDetails: function (feature, alias, info) {
+
+                    var itemInfo = info.split('-');
+
+                    var postId = itemInfo[0];
+                    var slug = itemInfo[1];
 
                     var opts = {
-                        id: id,
+                        post_id: postId,
                         feature: feature,
-                        alias: alias
+                        alias: alias,
+                        slug: slug
                     };
+
                     var cb = function () {
                         require([
                             "apps/calendar/public/entities/posts/show/controller"
@@ -112,7 +120,7 @@ define(
 
 
         });
-
+        console.info('--- Calendar App loaded ---');
         return IntranetManager.CalendarManagerRouter;
     });
 

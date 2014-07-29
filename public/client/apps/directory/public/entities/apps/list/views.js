@@ -52,17 +52,17 @@ define(["app",
 
                     template: listTpl,
 
-                    itemView: Views.ListItemView,
+                    childView: Views.ListItemView,
 
-                    itemViewContainer: 'div'
+                    childViewContainer: 'div'
 
                 });
 
                 Views.ListView = Marionette.CollectionView.extend({
-                    itemView: Views.ListCategoryView
+                    childView: Views.ListCategoryView
                 });
 
-                Views.LayoutView = Marionette.Layout.extend({
+                Views.LayoutView = Marionette.LayoutView.extend({
                    template: layoutTpl
                 });
 

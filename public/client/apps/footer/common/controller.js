@@ -30,7 +30,9 @@ define([
 
                 getMainMenuView: function () {
 
-                    return new CommonViews.MainMenuView();
+                    return new CommonViews.MainMenuView({
+                        model: IntranetManager.appSettings
+                    });
                 },
 
                 getAltMenuView: function () {
@@ -71,7 +73,7 @@ define([
 
                         var view = that.getFeedbackFormView(newRecord);
 
-                        console.log(newRecord);
+                      //  console.log(newRecord);
 
                         Backbone.Validation.bind(view);
 

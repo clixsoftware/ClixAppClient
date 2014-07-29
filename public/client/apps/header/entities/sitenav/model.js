@@ -39,7 +39,11 @@ define([
                 Entities.siteNavItems = new Entities.SiteNavCollection([
                    // {name: 'Home', url:'/sites/default', navigationTrigger: 'home:show', icon: 'home'},
                     {name: 'How Do I?', url:'/how-do-i/default', navigationTrigger: 'home:show', icon: 'home'},
-                    {name: 'News', url:'/sites/default/news', navigationTrigger: 'home:show', icon: 'home'},
+                    {   name: 'News',
+                        url: IntranetManager.appSettings.get('default_site') + '/news',
+                        navigationTrigger: 'home:show',
+                        icon: 'home'
+                    },
                     {name: 'Staff Directory', url:'/directory/staff', navigationTrigger: 'home:show', icon: 'home'}
 
                 ]);

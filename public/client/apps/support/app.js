@@ -114,6 +114,38 @@ define(
 
                 },
 
+                loadIncidentReportForm: function(service){
+                    require([
+                        "apps/support/public/entities/services/new/incident_report_controller"
+                    ], function (NewController) {
+                        NewController.showServiceForm(service);
+                    });
+                },
+
+                loadNewsItemForm: function(service){
+                    require([
+                        "apps/support/public/entities/services/new/news_story_controller"
+                    ], function (NewController) {
+                        NewController.showServiceForm(service);
+                    });
+                },
+
+                loadEventItemForm: function(service){
+                    require([
+                        "apps/support/public/entities/services/new/event_item_controller"
+                    ], function (NewController) {
+                        NewController.showServiceForm(service);
+                    });
+                },
+
+                loadJobLetterForm: function(service){
+                    require([
+                        "apps/support/public/entities/services/new/job_letter_controller"
+                    ], function (NewController) {
+                        NewController.showServiceForm(service);
+                    });
+                },
+
                 loadFeedbackForm:function (alias) {
 
                     var cb = function () {
@@ -139,6 +171,35 @@ define(
                API.loadContactUpdateForm(service);
             });
 
+            IntranetManager.on('incident.report_form.new', function (service) {
+                API.loadIncidentReportForm(service);
+            });
+            IntranetManager.on('service.report_form.new', function (service) {
+                API.loadIncidentReportForm(service);
+            });
+
+
+            IntranetManager.on('service.salary_advance.new', function (service) {
+                API.loadContactUpdateForm(service);
+            });
+
+            IntranetManager.on('service.job_letter.new', function (service) {
+                API.loadJobLetterForm(service);
+            });
+
+            IntranetManager.on('service.time_off.new', function (service) {
+                API.loadContactUpdateForm(service);
+            });
+            IntranetManager.on('service.patient_med_request.new', function (service) {
+                API.loadContactUpdateForm(service);
+            });
+            IntranetManager.on('service.submit_new_item.new', function (service) {
+                API.loadNewsItemForm(service);
+            });
+            IntranetManager.on('service.submit_event_item.new', function (service) {
+                API.loadEventItemForm(service);
+            });
+
             IntranetManager.addInitializer(function () {
                 new SupportManagerRouter.Router({
                     controller: API
@@ -147,7 +208,7 @@ define(
 
 
         });
-
+        console.info('--- Support App loaded ---');
         return IntranetManager.SupportManagerRouter;
     });
 

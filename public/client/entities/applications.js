@@ -15,11 +15,11 @@ define([
         function ( Entities, IntranetManager, Backbone, Marionette, $, _ ) {
 
 
-            var apiEndPoint = 'applications';
+            var apiEndPoint = IntranetManager.opts.API()  +'applications';
 
             Entities.Application = Backbone.NestedModel.extend({
 
-                url: IntranetManager.opts.API + apiEndPoint/*,
+                url: apiEndPoint/*,
 
                 validation: {
                     title: {
@@ -38,17 +38,57 @@ define([
 
 
             Entities.ApplicationCollection = Backbone.Collection.extend({
-                url: IntranetManager.opts.API + apiEndPoint,
+                url: apiEndPoint,
                 model: Entities.Application,
                 comparator: "title"
             });
 
+            Entities.ApplicationSearchResults = Entities.ApplicationCollection.extend({
 
+                initialize: function () {
+                    /*                    _.bindAll(this, 'parse', 'url', 'pageInfo', 'nextPage', 'previousPage');
+                     typeof(options) != 'undefined' || (options = {});
+                     this.page = 1;
+                     typeof(this.perPage) != 'undefined' || (this.perPage = 10);*/
+                },
+
+                parse: function (resp) {
+                    this.page = resp.page;
+                    this.limit = resp.limit;
+                    this.total = resp.total;
+
+                    console.log('Total models = ' + this.total);
+                    return resp.models;
+
+                },
+
+                url: function () {
+                    var thisurl = this.baseUrl + '&' + $.param({page: this.page, limit: this.limit});
+                    console.log('paginated url ' + thisurl);
+                    return thisurl;
+                },
+
+                nextPage: function () {
+                    if (!this.pageInfo().next) {
+                        return false;
+                    }
+                    this.page = this.page + 1;
+                    return this.fetch();
+                },
+                previousPage: function () {
+                    if (!this.pageInfo().prev) {
+                        return false;
+                    }
+                    this.page = this.page - 1;
+                    return this.fetch();
+                }
+
+            });
 
             var API = {
 
                 getEndPoint: function(){
-                    return IntranetManager.opts.API + apiEndPoint;
+                    return apiEndPoint;
                 },
 
                 getEntities: function () {
@@ -67,11 +107,23 @@ define([
                 },
 
 
-                search: function(query){
+                search: function(criteria){
+                    var url = apiEndPoint  +  criteria;
+                    return this.getSearchResults(url);
+                },
 
-                    var url = apiEndPoint + '?' + query;
-                    return this.getDAOCollection(url);
 
+                getSearchResults: function(endpoint){
+
+                    console.group('getSearchResults: News Posts ');
+
+                    var collection = new Entities.ApplicationSearchResults();
+
+                    collection.url =  endpoint;
+
+                    console.log(collection.url);
+                    console.groupEnd();
+                    return this.getDAOdeferred(collection);
                 },
 
                  getDAOCollection: function(endpoint){
@@ -80,7 +132,7 @@ define([
 
                     var collection = new Entities.ApplicationCollection();
 
-                    collection.url = IntranetManager.opts.API + endpoint;
+                    collection.url = API.getEndPoint() + endpoint;
 
                     return this.getDAOdeferred(collection);
                 },
@@ -125,7 +177,8 @@ define([
             });
 
             IntranetManager.reqres.setHandler("applications:search:feature", function ( feature_alias ) {
-                return API.search('app_alias=' + feature_alias);
+
+                return API.search('?app_alias=' + feature_alias);
             });
 
 

@@ -1,7 +1,7 @@
 requirejs.config({
     baseUrl: "/client",
     paths: {
-        backbone: "vendor/backbone",
+        backbone: "vendor/backbone.1.1.2",
         "backbone.picky": "vendor/backbone.picky",
         "backbone.syphon": "vendor/backbone.syphon",
         "backbone.nested": "vendor/backbone.nested",
@@ -9,7 +9,7 @@ requirejs.config({
         // "jquery-ui": "vendor/jquery-ui",
         json2: "vendor/json2",
         localstorage: "vendor/backbone.localstorage",
-        marionette: "vendor/backbone.marionette",
+        marionette: "vendor/backbone.marionette.2.0.3",
         tpl: "vendor/tpl",
         underscore: "vendor/underscore",
         semantic: "vendor/semanticui/0.11.0/js/semantic",
@@ -28,6 +28,7 @@ requirejs.config({
         "backbone.virtual-collection": 'libs/backbone.virtual-collection',
         "backbone.grouped-collection": 'libs/backbone.groupedcollection',
         "backbone.stickit": 'libs/backbone.stickit',
+        "S": 'libs/string',
         "simple.pagination": "vendor/simple-pagination/jquery.simplePagination"
 
     },
@@ -57,20 +58,17 @@ requirejs.config({
         bootstrap: ["jquery"],
         cookie: ["jquery"],
         "jquery-plugins": ["jquery"],
-        "simple.pagination": ["jquery"],
-        // "metro-datepicker": ["jquery", "metro-calendar"],
-        //"metro-calendar": ["jquery", "metro-global","metro-core", "metro-locale"]
-
+        "simple.pagination": ["jquery"]
     }
 });
 
 require([
-    "app",
+    'app',
     'marionette',
     'underscore',
     'bootstrap',
-    "apps/header/app",
-    "apps/footer/app",
+    'apps/header/app',
+    'apps/footer/app',
     'backbone.validation'
 ], function ( IntranetManager, Marionette, _ ) {
 
@@ -81,6 +79,7 @@ require([
 
         valid: function ( view, attr, selector ) {
             var $el = view.$('[name=' + attr + ']'),
+
                 $group = $el.closest('.form-group');
 
             //remove the error div by name
@@ -92,6 +91,7 @@ require([
             $group.removeClass("has-error");
 
         },
+
         invalid: function ( view, attr, error, selector ) {
 
             alert(attr);
@@ -110,12 +110,29 @@ require([
         }
     });
 
-   // Backbone.Model.prototype.trigger = function() {
-   //     console.log('Event', arguments);
-   //     Backbone.Events.trigger.apply(this, arguments);
-   // };
+    var options = {
+        api_server_url: 'http://192.168.2.122:3100/api/v1/'
+    };
 
-    IntranetManager.start();
+    require([
+        "entities/settings"
+    ], function(){
+
+        var fetchingSettings = IntranetManager.request('settings:current', options.api_server_url)
+
+        fetchingSettings.then(function(settings){
+            console.group('--> Starting Application')
+            console.log('--> Get the application settings');
+            console.log(settings);
+            IntranetManager.appSettings =settings;
+            console.groupEnd()
+            IntranetManager.start();
+        })
+
+
+    });
+
+
 
 });
 

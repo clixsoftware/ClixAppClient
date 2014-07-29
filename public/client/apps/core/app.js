@@ -102,6 +102,14 @@ define(
                 API.displayImageGallery(attachments);
             });
 
+            IntranetManager.on('core:error:action', function (error) {
+                //API.displayImageGallery(attachments);
+                alert('An application error has occurred, Please contact the administrator');
+                console.group('Global Error Log');
+                console.error(error);
+                console.groupEnd();
+            });
+
             IntranetManager.addInitializer(function () {
                 new CoreManagerRouter.Router({
                     controller: API
@@ -111,6 +119,7 @@ define(
 
         });
 
+        console.info('--- Core App loaded ---');
         return IntranetManager.CoreManagerRouter;
     });
 

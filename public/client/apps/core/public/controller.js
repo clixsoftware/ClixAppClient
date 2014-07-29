@@ -1,9 +1,9 @@
 define([
     "app",
     "apps/core/public/views",
-    "moment",
-
-], function (IntranetManager, CorePublicViews) {
+    "S",
+    "moment"
+], function (IntranetManager, CorePublicViews, S) {
 
     IntranetManager.module("CoreManager.Public.Widgets.Show",
         function (Show, CoreManager, Backbone, Marionette, $, _) {
@@ -17,25 +17,35 @@ define([
 
                 },
 
-                showCategoriesWidget: function(options){
+                  showCategoriesWidget: function(options){
                     var that = this;
                     console.group('<< showCategoriesWidget>>');
                     console.log(options);
                     console.groupEnd();
 
-                    if(options.categories){
-                        options.collection = options.categories.trim().replace(/"/g, '').trim().split(',');
+                    if(options.collection.categories){
+
+                        var TermModel = Backbone.Model.extend({});
+
+                        var TermModelCollection = Backbone.Collection.extend({
+                            model: TermModel
+                        }) ;
+
+
+                        _.each(options.collection.categories, function(term){
+
+                            term.slug = S(term.title).slugify().s;
+                            term.show_url = S(options.url).template(term).s;
+                            console.log(term);
+                        })
+
+                        var termsCollection = new TermModelCollection(options.collection.categories);
 
                         options.view = 'categories';
 
-                        require([
-                            'entities/taxonomy'
-                        ], function(){
+                        IntranetManager.layoutZone2.reset();
+                        IntranetManager.layoutZone2.show(that.getCategoriesView(termsCollection));
 
-                            var tagCollection = IntranetManager.request('taxonomy:collection:set:categories', options);
-                            IntranetManager.layoutZone2.reset();
-                            IntranetManager.layoutZone2.show(that.getCategoriesView(tagCollection));
-                        });
 
                     }
 
@@ -52,26 +62,39 @@ define([
 
                 showTagsWidget: function(options){
                     var that = this;
-                    console.group('<< showCategoriesWidget>>');
+                    console.group('<< showTagsWidget>>');
                     console.log(options);
                     console.groupEnd();
 
-                    if(options.tags){
-                        options.collection = options.tags.trim().replace(/"/g, '').trim().split(',');
+                    if(options.collection.tags){
 
-                        options.view = 'tags';
+                        var Tag = Backbone.Model.extend({});
 
-                        require([
-                            'entities/taxonomy'
-                        ], function(){
+                        var TagCollection = Backbone.Collection.extend({
+                            model: Tag
+                        }) ;
 
-                            var tagCollection = IntranetManager.request('taxonomy:collection:set:tags', options);
-                            IntranetManager.layoutZone3.reset();
-                            IntranetManager.layoutZone3.show(that.getTagsView(tagCollection));
+                        var tags = new TagCollection();
+
+                        var id = 0;
+                        _.each(options.collection.tags, function(tag){
+                            id = id + 1;
+                            var item  = new Tag({
+                                id: id,
+                                title: tag,
+                                 slug : S(tag).slugify().s,
+                                 show_url: S(options.url).template({slug: S(tag).slugify().s}).s
+                            });
+
+
+                            tags.add(item);
                         });
 
-                    }
+                         IntranetManager.layoutZone3.reset();
+                        IntranetManager.layoutZone3.show(that.getTagsView(tags));
 
+
+                    }
 
                 },
 

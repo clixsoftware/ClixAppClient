@@ -10,7 +10,9 @@
         <div class="form-group input-md">
             <select name="cat" id="cat" class="form-control input-md">
                 <option value="0" selected="selected">All tasks and guides</option>
-
+                     <% items.each(function(category) { %>
+                                <option value="<%= category.get('uuid') %>" class="level-0"><%= category.get('title') %></option>
+                     <% }); %>
             </select>
         </div>
         <div class="form-group input-md">

@@ -156,7 +156,7 @@ define(
 
 
     });
-
+        console.info('--- Taxonomy App  loaded ---');
     return IntranetManager.AppManagerRouter;
 });
 

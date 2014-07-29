@@ -39,7 +39,7 @@ define([
                 Entities.utilityNavItems = new Entities.UtilityNavCollection([
                    // {name: 'A to Z', url:'/yp/default', navigationTrigger: 'home:show', icon: 'home'},
                     //{name: 'Document Finder', url:'/home/main/library', navigationTrigger: 'home:show', icon: 'home'},
-                    {name: 'Calendar', url:'/sites/default/calendar', navigationTrigger: 'home:show', icon: 'home'},
+                    {name: 'Calendar', url:IntranetManager.appSettings.get('default_site') + '/calendar', navigationTrigger: 'home:show', icon: 'home'},
                     {name: 'Projects', url:'/projects/default', navigationTrigger: 'home:show', icon: 'home'},
                     {name: 'Support', url:'/support/helpdesk', navigationTrigger: 'home:show', icon: 'home'}
 

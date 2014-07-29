@@ -35,7 +35,7 @@ define(["app",
                         e.preventDefault();
                         //  alert('submit for filter was clicked');
                         var criterion = this.$(".js-filter-criterion").val();
-                        this.trigger("people:search", criterion);
+                        this.trigger("posts:search", criterion);
                     },
 
                     onSetFilterCriterion: function (criterion) {
@@ -91,7 +91,7 @@ define(["app",
 
                     },
 
-                    itemViewOptions: function (model) {
+                    childViewOptions: function (model) {
                         return {
                             index: this.collection.indexOf(model) + 1
                         }
@@ -105,9 +105,9 @@ define(["app",
 
                     template: listTpl,
 
-                    itemView: Views.ListItemView,
+                    childView: Views.ListItemView,
 
-                    itemViewContainer: 'div'
+                    childViewContainer: 'div'
 
                     /*                    onRender: function() {
                      // $(this.$el).html(this.collection.pageInfo());
@@ -163,6 +163,7 @@ define(["app",
                             onPageClick: function (pageNumber, event) {
                                 // Callback triggered when a page is clicked
                                 // Page number is given as an optional parameter
+                               // alert('page click ' + pageNumber);
                                 that.trigger('change:page', pageNumber);
                             }
                         });
@@ -181,7 +182,7 @@ define(["app",
 
                 });
 
-                Views.LayoutView = Marionette.Layout.extend({
+                Views.LayoutView = Marionette.LayoutView.extend({
                     template: layoutTpl
                 });
 

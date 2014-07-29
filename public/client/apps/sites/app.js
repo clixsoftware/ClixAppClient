@@ -14,7 +14,7 @@ define(
 
             SiteManager.on("start", function () {
                 //API.init();
-                console.log('Starting SiteManager');
+                console.info('SiteManager.on.start"');
             });
 
             SiteManager.onStop = function () {
@@ -141,13 +141,13 @@ define(
 
                 },
 
-                loadHomeEventsPosts: function (alias) {
+                loadUpcomingEventsWidget: function (alias) {
 
                     // var cb = function () {
                     require([
                         "apps/sites/public/widgets/controller"
                     ], function (WidgetsController) {
-                        WidgetsController.displayHomeEventsPosts(alias);
+                        WidgetsController.displayUpcomingEvents(alias);
                     });
                     // };
 
@@ -155,20 +155,20 @@ define(
 
                 },
 
-                loadHowDoIMostActive: function (alias) {
+                loadPopularContentWidget: function (options) {
                     require([
                         "apps/sites/public/widgets/controller"
                     ], function (WidgetsController) {
-                        WidgetsController.displayHowDoIMostActive(alias);
+                        WidgetsController.displayPopularContentWidget(options);
                     });
                 },
 
 
-                loadHowDoIRecent: function (alias) {
+                loadRecentContentWidget: function (options) {
                     require([
                         "apps/sites/public/widgets/controller"
                     ], function (WidgetsController) {
-                        WidgetsController.displayHowDoIRecent(alias);
+                        WidgetsController.displayRecentContent(options);
                     });
                 },
 
@@ -220,9 +220,9 @@ define(
             });
 
             IntranetManager.on('sites:default:show', function () {
-                IntranetManager.navigate("/sites/default");
+                IntranetManager.navigate(IntranetManager.opts.defaultSite());
 
-                API.loadHomePage('default');
+                API.loadHomePage('corporate');
                 IntranetManager.trigger("headermanager:start");
                 IntranetManager.trigger("footer:start");
             });
@@ -232,30 +232,30 @@ define(
             });
 
 
-            IntranetManager.on('sites:howdoi:mostactive', function (alias) {
-                API.loadHowDoIMostActive(alias);
+            IntranetManager.on('sites:content:popular', function (alias) {
+
+                API.loadPopularContentWidget({
+                    modules: '["news", "howdoi"]',
+                    limit: 7
+                });
+
             });
 
-            IntranetManager.on('sites:howdoi:mostrecent', function (alias) {
-                API.loadHowDoIRecent(alias);
+            IntranetManager.on('sites:content:recent', function (alias) {
+                API.loadRecentContentWidget({
+                    modules: '["news", "howdoi"]',
+                    limit: 7
+                });
             });
 
-            IntranetManager.on('sites:atoz:recentupdates', function (alias) {
-                API.loadAtoZUpdates(alias);
-            });
-
-            IntranetManager.on('sites:breadcrumb:show', function () {
-                API.loadBreadCrumb();
-            });
-
-            //news
+           //news
             IntranetManager.on('sites:home:news:posts', function (alias) {
                 API.loadHomeNewsPosts(alias);
             });
 
             //events
-            IntranetManager.on('sites:home:events:posts', function (alias) {
-                API.loadHomeEventsPosts(alias);
+            IntranetManager.on('sites:events:posts:upcoming', function (alias) {
+                API.loadUpcomingEventsWidget(alias);
             });
 
             //Backend
@@ -279,6 +279,6 @@ define(
             });
 
         });
-
+        console.info('--- Sites App loaded ---');
         return IntranetManager.SiteManagerRouter;
     });

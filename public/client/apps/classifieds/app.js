@@ -29,9 +29,12 @@ define(
             ClassifiedsManagerRouter.Router = Marionette.AppRouter.extend({
 
                 appRoutes: {
+                    "classifieds": 'loadAppsPage',
+                    "classifieds/new": 'loadPostNewForm',
                     "classifieds/:alias": 'loadAppHomePage',
+                    "classifieds/:alias/page/:page": 'loadListPaging',
                     "classifieds/:alias/*slug": 'loadPostDetailsPage'
-                }
+                    }
 
             });
 
@@ -57,8 +60,22 @@ define(
 
                 },
 
+                loadAppsPage: function () {
 
-                loadAppHomePage: function (alias) {
+                    var cb = function () {
+                        require([
+                            "apps/classifieds/public/entities/apps/list/controller"
+                        ], function ( ListController ) {
+                            ListController.loadAppsHome();
+                        });
+                    };
+
+                    //alert('load apps');
+                    IntranetManager.trigger("classifieds:public:init", cb);
+
+                },
+
+               loadAppHomePage: function (alias) {
                     var options = {
                         feature: 'classifieds',
                         alias: alias
@@ -75,12 +92,31 @@ define(
                     IntranetManager.trigger("classifieds:public:init", cb);
                 },
 
+                loadListPaging: function (alias, page ) {
+
+                    var options = {
+                        alias: alias,
+                        page: page
+                    };
+
+                    var cb = function () {
+                        require([
+                            "apps/classifieds/public/entities/posts/list/controller"
+                        ], function (ListController) {
+                            ListController.showPostsList(options);
+
+                        });
+                    };
+                    IntranetManager.trigger("classifieds:public:init", cb);
+
+                },
+
                 loadPostDetailsPage: function (alias, options) {
 
                     var info = options.split('-');
 
                     var opts = {
-                        patientId: info[0],
+                        postId: info[0],
                         feature: 'classifieds',
                         alias: alias,
                         slug: info[1]
@@ -94,15 +130,57 @@ define(
                         });
                     };
 
-                    IntranetManager.trigger("classifieds:public:init", null);
+                    IntranetManager.trigger("classifieds:public:init", cb);
 
-                }
+                },
+
+                loadActionMenu: function (objectId) {
+                    require([
+                        "apps/classifieds/public/widgets/controller"
+                    ], function (WidgetsController) {
+                        WidgetsController.displayActionMenu();
+                    });
+
+                },
+
+                loadPostNewForm: function(){
+
+                    var cb = function () {
+                        require([
+                            "apps/classifieds/public/entities/posts/new/controller"
+                        ], function (NewController) {
+                            NewController.displayPostNewForm();
+                        });
+                    };
+
+                    IntranetManager.trigger("classifieds:public:init", cb);
+
+
+                },
+
+                loadRecentPostsWidget: function (options) {
+                    require([
+                        "apps/classifieds/public/widgets/controller"
+                    ], function (WidgetsController) {
+                        WidgetsController.displayRecentPosts(options);
+                    });
+
+                },
+
             };
 
             //PUBLIC TRIGGERS
 
             IntranetManager.on('classifieds:public:init', function (cb) {
                 API.initPublic(cb);
+            });
+
+            IntranetManager.on('classifieds:public:action:menu', function () {
+                API.loadActionMenu();
+            });
+
+            IntranetManager.on('classifieds:widget:recent:posts', function (options) {
+                API.loadRecentPostsWidget(options);
             });
 
             IntranetManager.addInitializer(function () {
@@ -113,7 +191,7 @@ define(
 
 
         });
-
+        console.info('--- Classifieds App loaded ---');
         return IntranetManager.ClassifiedsManagerRouter;
     });
 

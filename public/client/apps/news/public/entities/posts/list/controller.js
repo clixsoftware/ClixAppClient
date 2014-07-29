@@ -177,7 +177,6 @@ define([
 
                     },
 
-
                     listRecords: function (appId) {
                         console.group('NewsManager: Posts: listRecords');
 
@@ -220,7 +219,6 @@ define([
 
                     },
 
-
                     showPublicNewsHome: function (options) {
 
                         console.group('<< showPublicNewsHome : INIT >>');
@@ -258,8 +256,6 @@ define([
                                 IntranetManager.layoutContent.reset();
                                 IntranetManager.layoutContent.show(new that.getNewsHomeView(posts));
 
-
-
                                 var taxoptions = {
                                     parentFeature: app.get('parent_application_feature'),
                                     appFeature: 'news',
@@ -268,7 +264,7 @@ define([
                                     objectId: app.get('uuid'),
                                     categories: app.get('categories'),
                                     tags: app.get('tags'),
-                                    url: ''
+                                    url: app.get('path')
                                 };
 
                                 console.group("app");

@@ -1,100 +1,173 @@
-/*
- * Application: News Manager
- * Controller: News Manager Post New Controller
- * Module: NewsManager.Posts.New.Controller
- * */
-
-
 define([
     "app",
-    "apps/news/entities/posts/new/views",
-    "apps/news/common/views",
-    "apps/news/entities/posts/common/views"
-], function (IntranetManager, NewViews, CommonViews, PostsCommonViews) {
+    "apps/classifieds/public/entities/posts/new/views",
+    "Q",
+    "moment",
+    "jquery-plugins"
+], function ( IntranetManager, NewViews, Q ) {
 
-    IntranetManager.module("NewsManager.Posts.New",
-        function (New, IntranetManager, Backbone, Marionette, $, _) {
+    IntranetManager.module("ClassifiedsManager.Public.Posts.New",
+        function ( Show, ClassifiedsManager, Backbone, Marionette, $, _ ) {
 
-            New.Controller = {
+            Show.Controller = {
 
-                loadForm: function (id) {
+                getPostNewForm: function ( post ) {
 
+                    return new NewViews.PostNewFormView({
+                        model: post
+                    });
 
-                    var cb = function () {
-                        console.group('NewsManager: New: loadForm');
+                },
 
-                        console.log('App id ' + id);
-
-                        require([
-                            "entities/news_post",
-                            "entities/applications"
-                        ], function () {
+                displayPostNewForm: function ( ) {
 
 
-                            var fetchApp = IntranetManager.request('applications:entity', id);
-                            console.log('the returned ' + JSON.stringify(fetchApp));
+                    var that = this;
 
-                            fetchApp.then(function (app) {
-                                var newPost = IntranetManager.request("news:posts:entity:new");
+                    require(['entities/applications', 'entities/classifieds', 'entities/attachment'], function () {
 
-                                //newPost.set('edit_url', app.get('edit_url'));
-                                //newPost.set('createdby_user_id', app.get('createdby_user_id'));
-                                //newPost.set('updatedby_user_id', app.get('updatedby_user_id'));
-                                newPost.set('parent_application', id);
-                                // newPost.set('path', appmodel.get('path'));
-                                //newPost.set('url', appmodel.get('url'));
+                        console.group('@@ Classifieds - displayPostNewForm');
 
+                        var options = {
+                            parent_feature: ClassifiedsManager.feature.id
+                        };
 
-                                //alert('new workspace received' + newWorkspace.get('title'));
+                        IntranetManager.layoutHeader.reset();
+                        IntranetManager.layoutSearch.reset();
 
-                                var view = new PostsCommonViews.FormView({
-                                    model: newPost
-                                });
+                        IntranetManager.trigger('dom:title', 'New Classified Ad Form');
+                        IntranetManager.trigger('classifieds:public:action:menu');
 
-                                Backbone.Validation.bind(view);
-
-                                view.on('form:cancel', function () {
-                                    alert('fomrm cancelled');
-                                    IntranetManager.trigger('news:admin:app:posts', id);
-                                });
-
-                                view.on("form:submit", function (data) {
-                                    // alert('formpost');
-                                    var postData = _.omit(data, 'start_date', 'expiry_date');
-
-                                    if (newPost.save(postData)) {
-                                        console.log('saving the post data' + postData);
-                                        // IntranetManager.trigger('news:admin:app:posts', id);
-
-                                    } else {
-                                        view.triggerMethod("form:data:invalid", newPost.validationError);
-                                    }
-                                });
-                                IntranetManager.layoutZone1.show(new NewViews.MenuView());
-                                IntranetManager.layoutHeader.show(new NewViews.HeaderView());
-                                IntranetManager.layoutContent.show(view);
-
-                                IntranetManager.layoutSearch.reset();
+                        var newRecord = IntranetManager.request("classifieds:posts:new");
 
 
-                                $('.js-form-tab.menu .item').tab({
-                                    history: false
-                                });
-                                $('.ui.checkbox').checkbox();
+
+                        fetchingApps= IntranetManager.request('applications:search:feature', 'classifieds');
+
+
+                        fetchingApps.then(function(apps){
+                          //  console.log(apps);
+
+                            return apps;
+
+                        }).then(function(apps){
+
+                            newRecord.set('categories', apps);
+
+                            newRecord.set('title', 'New Classified Ad Form');
+
+                            var view = that.getPostNewForm(newRecord);
+
+                            console.group('@@ New record from Request');
+                            console.log(newRecord);
+                            console.groupEnd();
+
+                            // Backbone.Validation.bind(view);
+
+                            view.on('form:cancel', function () {
+                                IntranetManager.trigger('sites:default');
+                            });
+
+                            view.on("form:submit", function ( data ) {
+
+
+
+                                //remove the categories field before saving
+                                newRecord.unset('categories', 'silent');
+
+                                data = _.omit(data, 'attachments');
+
+                                console.group('@@ Data collected for submission');
+                                console.log(data);
+                                console.groupEnd();
+
+                                newRecord.save(data)
+                                    .then(function(model){
+
+                                        console.group('Saved Classified');
+                                        console.log(newRecord);
+                                        console.groupEnd();
+
+                                        var newImage = IntranetManager.request("attachment:entity:new");
+
+                                        var imgData = {
+                                            attachments:  $("#ad_attachments")[0].files[0]
+                                        };
+
+                                        if(!_.isEmpty(imgData.attachments)){
+
+                                            imgData.parent_object = model.uuid;
+
+                                            console.group('File Attachments');
+                                            console.log(imgData);
+                                            console.groupEnd();
+
+                                            return newImage.save(imgData)
+                                                .then(function(imageModel){
+
+                                                    console.group('Saved Attachments');
+                                                    console.log(imageModel);
+                                                    var attachments = imageModel.attachments;
+                                                    console.groupEnd();
+
+                                                    var files = [];
+                                                    files.push({
+                                                        title: attachments[0].title,
+                                                        uuid: attachments[0].uuid,
+                                                        path: attachments[0].path
+                                                    });
+
+                                                    model.attachments = {
+                                                        files: files
+                                                    };
+                                                    newRecord.set('attachments', model.attachments);
+
+                                                    return model;
+                                                });
+                                        }else{
+                                            return model;
+                                        }
+
+                                    }).then(function(model){
+
+                                        console.group('Saved Ad + Attachments');
+                                        console.log(newRecord);
+
+                                        newRecord.save();
+                                        var success = new NewViews.NotificationView({ type: 'success', text: 'Ad saved successfully' });
+                                        console.groupEnd();
+
+                                        var resetRecord= IntranetManager.request("classifieds:posts:new");
+                                        resetRecord.set('categories', apps);
+
+                                        var viewReset = that.getPostNewForm(resetRecord);
+
+                                        viewReset.triggerMethod('form:reset');
+
+                                        IntranetManager.layoutContent.reset();
+                                        IntranetManager.layoutContent.show(viewReset);
+                                    })
 
                             });
 
+                            IntranetManager.layoutContent.reset();
+                            IntranetManager.layoutContent.show(view);
 
-                        });
+                        })
 
-                    };
 
-                    IntranetManager.trigger("news:admin:init", cb);
-                    console.groupEnd();
+
+
+
+
+
+                    });
 
                 }
-            };
+
+            }
         });
 
-    return IntranetManager.NewsManager.Posts.New.Controller;
+    return IntranetManager.ClassifiedsManager.Public.Posts.New.Controller;
 });
+

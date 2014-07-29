@@ -21,7 +21,7 @@ define([
              Marionette,
              $, _){
 
-    Views.LayoutView = Marionette.Layout.extend({
+    Views.LayoutView = Marionette.LayoutView.extend({
         template: layoutTpl,
         onBeforeRender: function () {
             // set up final bits just before rendering the view's `el`

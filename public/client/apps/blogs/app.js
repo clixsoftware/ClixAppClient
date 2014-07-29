@@ -142,7 +142,7 @@ define(
 
 
         });
-
+        console.info('--- Blogs App loaded ---');
         return IntranetManager.BlogsManagerRouter;
     });
 

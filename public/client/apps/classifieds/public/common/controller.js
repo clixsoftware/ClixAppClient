@@ -35,6 +35,8 @@ define([
                                         ClassifiedsManager.started = true;
 
                                         IntranetManager.appLayout = Common.Controller.getAppLayoutView();
+
+                                        IntranetManager.siteMainContent.reset();
                                         IntranetManager.siteMainContent.show(IntranetManager.appLayout);
 
                                         if (next) {

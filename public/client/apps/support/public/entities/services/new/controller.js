@@ -1,8 +1,10 @@
 define([
     "app",
     "apps/support/public/entities/services/new/views",
+    "Q",
     "moment"
-], function ( IntranetManager, NewViews ) {
+
+], function ( IntranetManager, NewViews, Q ) {
 
     IntranetManager.module("SupportManager.Public.Services.New",
         function ( Show, SupportManager, Backbone, Marionette, $, _ ) {
@@ -24,7 +26,7 @@ define([
 
                     var that = this;
 
-                    require(['entities/applications', 'entities/support'], function () {
+                    require(['entities/applications', 'entities/support', 'entities/attachment'], function () {
 
                         var options = {
                             alias: service.get('parent_application_alias'),
@@ -40,20 +42,8 @@ define([
 
                         fetchingApp.then(function ( app ) {
 
-                            //console.log(app);
-
-                            //IntranetManager.appLayout = Show.Controller.getPostLayoutView();
-                            //IntranetManager.siteMainContent.show(IntranetManager.appLayout);
-                            //IntranetManager.trigger('home:news:posts', alias);
                             IntranetManager.trigger('dom:title', service.get('title'));
                             var newRecord = IntranetManager.request("support:ticket:new", service);
-
-/*                            newRecord.validation["custom_fields.contact_name"] = {
-                             required: true,
-                             pattern: 'email',
-                             msg: 'Your contact name is required'
-                             };*/
-
 
                             var view = that.getContactUpdateForm(newRecord);
 
@@ -61,11 +51,7 @@ define([
                             console.log(newRecord);
                             console.groupEnd();
 
-
                            // Backbone.Validation.bind(view);
-
-                            //console.log(newRecord.isValid());
-
 
                             view.on('form:cancel', function () {
                                 IntranetManager.trigger('featuremanager:home:show');
@@ -77,9 +63,7 @@ define([
                                 console.log(data);
                                 console.groupEnd();
 
-
-
-                                var savedData = {
+/*                                var savedData = {
                                     title: data.title,
                                     service: data.service,
                                     parent_application_alias: data.parent_application_alias,
@@ -92,12 +76,93 @@ define([
                                  console.group('@@ Data passed to model');
                                  console.log(savedData);
                                  console.groupEnd();
+ */
+                                newRecord.save(data)
+                                    .then(function(model){
 
-                                 newRecord.save(savedData, {
+                                        console.group('Saved Ticket');
+                                        console.log(newRecord);
+                                        console.groupEnd();
+
+                                        var newImage = IntranetManager.request("attachment:entity:new");
+
+                                        var imgData = {
+                                            attachments:  $("#support_attachments")[0].files[0]
+                                        };
+
+                                        if(!_.isEmpty(imgData.attachments)){
+
+                                      imgData.parent_object = model.uuid;
+
+                                        console.group('File Attachments');
+                                        console.log(imgData);
+                                        console.groupEnd();
+
+                                        return newImage.save(imgData)
+                                            .then(function(imageModel){
+
+                                                console.group('Saved Attachments');
+                                                console.log(imageModel);
+                                                var attachments = imageModel.attachments;
+                                                console.groupEnd();
+
+                                                var files = [];
+                                                files.push({
+                                                    title: attachments[0].title,
+                                                    uuid: attachments[0].uuid,
+                                                    path: attachments[0].path
+                                                });
+
+                                                model.attachments = {
+                                                    files: files
+                                                };
+                                                newRecord.set('attachments', model.attachments);
+
+                                                return model;
+                                            });
+                                        }else{
+                                            return model;
+                                        }
+
+                                    }).then(function(model){
+                                        console.group('Saved Ticket + Attachments');
+                                        console.log(newRecord);
+                                        newRecord.save();
+                                        var success = new NewViews.NotificationView({ type: 'success', text: 'Ticket saved successfully' });
+                                        console.groupEnd();
+
+                                        var resetRecord= IntranetManager.request("support:ticket:new", service);
+
+                                        var viewReset = that.getContactUpdateForm(resetRecord);
+                                        viewReset.triggerMethod('form:reset');
+                                        IntranetManager.layoutContent.reset();
+                                        IntranetManager.layoutContent.show(viewReset);
+                                    })
+
+/*                                newImage.save(imgData, {
+                                    success: function ( model, response, options ) {
+                                        console.group('@@ Image model');
+                                        console.log(model);
+                                        console.groupEnd();
+                                      //  alert('save successful');
+                                    },
+
+                                    error: function ( model, response, options ) {
+                                        //alert('there was an error');
+                                        //console.log(response);
+                                        //  console.log(response.responseJSON.item.message);
+                                        // signupFormView.triggerMethod('form:submit:failure', response.responseJSON);
+
+                                        console.log(response.responseJSON);
+
+                                    }
+                                });*/
+
+/*                                 newRecord.save(savedData, {
                                     success: function ( model, response, options ) {
                                         //var successView = Show.Controller.getSuccessMessageView();
                                         //IntranetManager.trigger("applayout:show:formregion", successView);
-                                        alert('save successful');
+
                                         var success = new NewViews.NotificationView({ type: 'success', text: 'Book saved successfully' });
 
                                         console.log(model);
@@ -114,7 +179,7 @@ define([
                                         console.log(response.responseJSON);
 
                                     }
-                                });
+                                });*/
 
 
 

@@ -473,7 +473,7 @@ define(
 
 
         });
-
+        console.info('--- How Do I App loaded ---');
         return IntranetManager.HowDoIManagerRouter;
     });
 

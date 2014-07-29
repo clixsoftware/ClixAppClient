@@ -31,7 +31,6 @@ define([
 
         IntranetManager.on("headermanager:start", function () {
             API.loadLayout();
-
             //API.loadNavigation();
         });
 

@@ -6,66 +6,71 @@
  * */
 
 define(["app",
-        "common/views",
-        "tpl!apps/news/entities/apps/list/templates/blank.tpl",
-        "tpl!apps/news/entities/apps/list/templates/blank_help.tpl",
-        "tpl!apps/news/entities/apps/list/templates/list.tpl",
-        "tpl!apps/news/entities/apps/list/templates/list_item.tpl",
-        "tpl!apps/news/entities/apps/list/templates/categories.tpl"
-    ],
-    function (IntranetManager, GlobalViews, blankTpl, blankHelpTpl, listTpl, listItemTpl, categoriesTpl) {
-        IntranetManager.module("NewsManager.Posts.List.Views",
-            function (Views, IntranetManager, Backbone, Marionette, $, _) {
-
-                Views.BlankHelpView = GlobalViews.BlankHelpView.extend({
-                    template: blankHelpTpl
-                });
-
-                Views.BlankView = GlobalViews.BlankView.extend({
-                    template: blankTpl,
-
-                    triggers: {
-                        'click .js-add-site': 'command:form:new'
-                    }
-                });
+    "common/views",
+    "tpl!apps/classifieds/public/entities/apps/list/templates/list.tpl",
+    "tpl!apps/classifieds/public/entities/apps/list/templates/list_item.tpl",
+    "tpl!apps/classifieds/public/entities/apps/list/templates/layout.tpl",
+    "tpl!apps/classifieds/public/entities/apps/list/templates/header.tpl"
+],
+    function ( IntranetManager, GlobalViews, listTpl, listItemTpl, layoutTpl, headerTpl) {
+        IntranetManager.module("ClassifiedsManager.Public.Apps.List.Views",
+            function ( Views, IntranetManager, Backbone, Marionette, $, _ ) {
 
 
-                Views.CategoriesView = Marionette.ItemView.extend({
-                    className: "widget",
-                    template: categoriesTpl,
+                Views.ListItemView = Marionette.ItemView.extend({
+                   template: listItemTpl,
+
+                    className: "col-lg-4 col-md-4 col-sm-4",
+
                     onRender: function () {
-                        console.log('Rendering the Categories view');
+                        console.log('Rendering the ListItemView view');
                     }
-                });
-
-                Views.ListItemView = GlobalViews.ListItemView.extend({
-                    template: listItemTpl
-                });
-
-                Views.ListView = GlobalViews.ListView.extend({
-                    template: listTpl,
-                    itemView: this.ListItemView
-
 
                 });
 
-                Views.ListHeaderView = GlobalViews.ListHeaderView.extend({
+                Views.ListCategoryView = Marionette.CompositeView.extend({
+                    onBeforeRender: function(){
+                        //console.log(JSON.stringify(this.model));
 
-                    className: "ui grid",
-
-                    triggers: {
-                        "click .js-command-new": "button:command:new"
                     },
 
-                    onRender: function () {
-                        this.$(".ui.view.header").text("News Applications");
-                        this.$(".list.command.button").remove();
-                        this.$(".js-command-new").remove();
-                    }
+                    initialize: function(){
+
+                        console.log(this.model);
+                        this.collection = this.model.get('vc');
+                        //alert(this.collection.length);
+
+                    },
+
+                    itemViewOptions: function(model){
+                        return {
+                            index: this.collection.indexOf(model) + 1
+                        }
+                    },
+
+                    className: 'col-lg-12 col-md-12 col-sm-12',
+
+                    template: listTpl,
+
+                    childView: Views.ListItemView,
+
+                    childViewContainer: 'div'
 
                 });
 
+                Views.ListView = Marionette.CollectionView.extend({
+                    childView: Views.ListCategoryView
+                });
+
+                Views.LayoutView = Marionette.LayoutView.extend({
+                   template: layoutTpl
+                });
+
+                Views.HeaderView = Marionette.ItemView.extend({
+                   template: headerTpl
+
+                });
             });
 
-        return IntranetManager.NewsManager.Posts.List.Views;
+        return IntranetManager.ClassifiedsManager.Public.Apps.List.Views;
     });

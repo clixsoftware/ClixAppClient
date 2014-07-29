@@ -8,7 +8,6 @@ define([
 
     var IntranetManager = new Marionette.Application();
 
-
     //add applications
     IntranetManager.appEnums = {
         calendar: 1,
@@ -115,6 +114,32 @@ define([
 
     });
 
+    IntranetManager.buildQuery = function(q){
+
+        var queryString ="";
+        var counter=0;
+        _.each(_.pairs(q), function(item){
+            // console.log(item);
+
+            if(counter ==0){
+                queryString = '?';
+            }
+
+            var value = _.isObject(item[0,1]) ? JSON.stringify(item[0,1]): item[0,1];
+            //console.log(value);
+            if(counter >= 1){
+                queryString =   queryString +  '&' + item[0, 0] + '=' + value
+            }else{
+                queryString = queryString + item[0, 0] + '=' + value
+            }
+            counter++;
+        });
+        console.group('** Build Query ***')
+        console.info(queryString);
+        console.groupEnd();
+
+        return queryString;
+    }
 
     IntranetManager.showAlert = function () {
         alert('showing alert');
@@ -123,10 +148,15 @@ define([
     IntranetManager.opts = {
         root: "/",                     // The root path to run the application through.
         URL: "/",                      // Base application URL
-        // API : "http://192.168.0.200:3100/api/v1/"                   // Production Intranet API
-        //API : "http://localhost:3100/api/v1/"                   // Local Development API
-        API: "http://192.168.2.122:3100/api/v1/"                   // Clix Development Server API
-
+         API:  function(){
+             return IntranetManager.appSettings.get('api_server_url');
+         },
+        homeAction: function(){
+            return IntranetManager.appSettings.get('home_action');
+        },
+        defaultSite: function(){
+            return IntranetManager.appSettings.get('default_site');
+        }
 
     };
 
@@ -141,9 +171,11 @@ define([
 
     IntranetManager.startSubApp = function (appName, args) {
 
-        console.group('auth-user-cookie ')
-        console.log(JSON.stringify($.cookie('hospitalnet-user')));
-        console.log($.cookie('hospitalnet-auth'));
+        console.group('Start Sub Application ');
+
+        console.group('Auth Cookie - user |  ')
+            console.log($.cookie('hospitalnet-user'))
+            console.log($.cookie('hospitalnet-auth'));
         console.groupEnd();
 
         if ($.cookie('hospitalnet-auth') != undefined) {
@@ -158,11 +190,13 @@ define([
         var currentApp = appName ? IntranetManager.module(appName) : null;
         if (IntranetManager.currentApp === currentApp) {
             console.log('App ' + appName + ' is already running!!');
+            console.groupEnd();
             return;
         }
 
         if (IntranetManager.currentApp) {
             console.log('App ' + appName + ' will be stopped');
+            console.groupEnd();
             IntranetManager.currentApp.stop();
         }
 
@@ -170,10 +204,12 @@ define([
         if (currentApp) {
             //console.log('App ' + appName + ' starting with args ' + args);
             console.log('** IS USER AUTHENTICATED ** ' + IntranetManager.Auth.isAuthenticated);
+            console.groupEnd();
             currentApp.start(args);
         }
-    };
 
+
+    };
 
     IntranetManager.on('body:css:update', function (css) {
         $('body').addClass(css);
@@ -183,7 +219,14 @@ define([
         $(document).attr('title', 'UHWI Intranet - ' + title);
     });
 
-    IntranetManager.on("initialize:after", function () {
+    IntranetManager.on('before:start', function(options){
+        console.info('before:start TODO: Load additional setup for application');
+    });
+
+    IntranetManager.on("start", function () {
+
+        console.warn('IntranetManager on:start');
+
 
         if (Backbone.history) {
 
@@ -195,31 +238,32 @@ define([
                 //"apps/appmanager/app", //application Manager
                 // "apps/contacts/contacts_app", //Contacts Manager
                 "apps/news/app",    //News Manager
+                "apps/vacancy/app",
                 "apps/howdoi/app",    //Yellow Pages Manager
                 "apps/directory/app",    //Directory Manager
-                "apps/workspaces/app", //Workspace Manager
+                //"apps/workspaces/app", //Workspace Manager
                 "apps/pages/app", //HomePage Manager
                 "apps/classifieds/app", //HomePage Manager
                 "apps/auth/app",
-                "apps/tasks/app",
+                //"apps/tasks/app",
                 "apps/sites/app",
                 "apps/projects/app",
                 "apps/blogs/app",
                 "apps/calendar/app",
                 "apps/support/app",
                 "apps/search/app",
-                "apps/services/app",
-                "apps/hmis/app",
-                "apps/patients/app"
+                "apps/services/app"
+                //"apps/hmis/app",
+                //"apps/patients/app"
             ], function () {
-                console.log('Starting backbone history');
-                console.log('Setup authentication vars');
-                console.log('Setup document on click');
 
+                console.group('Setting up IntranetManager Application');
 
                 Backbone.history.start({
                     pushState: true
                 });
+
+                console.log('Start Backbone history.')
 
                 IntranetManager.Auth = {
                     isAuthenticated: false,
@@ -229,7 +273,10 @@ define([
 
                 //IntranetManager.session = IntranetManager.request('session:new:entity');
 
+                //Captures all click event on  links except those with data-bypass attribute
                 $(document).on('click', 'a:not([data-bypass])', function (evt) {
+
+                    //console.log('global click event');
 
                     var href = $(this).attr('href');
                     var protocol = this.protocol + '//';
@@ -242,10 +289,12 @@ define([
                     }
                 });
 
+                console.log('Setup global hyperlink checking.')
+                console.groupEnd();
+
                 if (IntranetManager.getCurrentRoute() === "") {
-                    console.log('Current route blank, trigger homepage:show');
-                    IntranetManager.trigger("sites:default:show");
-                    console.log('Is authenticated ' + IntranetManager.Auth.isAuthenticated);
+                      IntranetManager.trigger(IntranetManager.opts.defaultSite());
+                    //console.log('Is authenticated ' + IntranetManager.Auth.isAuthenticated);
                 }
 
             });

@@ -40,14 +40,14 @@ define([
                     }
                 });
 
-                Views.HowDoIMostActiveView = Marionette.CompositeView.extend({
+                Views.PopularContentView = Marionette.CompositeView.extend({
                     template: howDoIMostActiveTpl,
 
-                    itemView: Views.HowDoIItemView,
+                    childView: Views.HowDoIItemView,
 
                     emptyView: GlobalViews.NoRecordsView,
 
-                    itemViewContainer: 'ul.first-link',
+                    childViewContainer: 'ul.first-link',
 
                     className: 'category-block',
 
@@ -63,15 +63,14 @@ define([
                     }
                 });
 
-
-                Views.HowDoIRecentView = Marionette.CompositeView.extend({
+                Views.RecentlyUpdatedView = Marionette.CompositeView.extend({
                     template: recentUpdatedTpl,
 
-                    itemView: Views.HowDoIItemView,
+                    childView: Views.HowDoIItemView,
 
                     emptyView: GlobalViews.NoRecordsView,
 
-                    itemViewContainer: 'ul.first-link',
+                    childViewContainer: 'ul.first-link',
 
                     className: 'category-block',
 
@@ -83,10 +82,9 @@ define([
 
                     onRender: function () {
                         // alert('rendering how do i most active');
-                        console.log('<< Views.HowDoIMostActiveView - Loaded***DONE ***  >>');
+                        console.log('<< Views.RecentlyUpdatedView - Loaded***DONE ***  >>');
                     }
                 });
-
 
                 Views.BreadcrumbView = Marionette.ItemView.extend({
                     template: breadcrumbTpl,
@@ -96,14 +94,13 @@ define([
                     }
                 });
 
-
-                Views.RecentlyUpdatedView = Marionette.ItemView.extend({
-                    template: recentUpdatedTpl,
-
-                    onRender: function () {
-                        console.log('<< Views.RecentlyUpdatedView - Loaded ***DONE ***  >>');
-                    }
-                });
+//                Views.RecentlyUpdatedView = Marionette.ItemView.extend({
+//                    template: recentUpdatedTpl,
+//
+//                    onRender: function () {
+//                        console.log('<< Views.RecentlyUpdatedView - Loaded ***DONE ***  >>');
+//                    }
+//                });
 
                 Views.CalendarPostsView = Marionette.ItemView.extend({
                     template: calendarPostsTpl,
@@ -113,7 +110,6 @@ define([
                     }
                 });
 
-
                 Views.AdPostView = Marionette.ItemView.extend({
                     template: adPostTpl,
 
@@ -122,7 +118,6 @@ define([
                     }
                 });
 
-
                 Views.Top5NewsView = Marionette.ItemView.extend({
                     template: featuredPostsTpl,
 
@@ -130,7 +125,6 @@ define([
                         console.log('<< Views.Top5NewsView - Loaded to layoutZone1 ***DONE ***  >>');
                     }
                 });
-
 
                 Views.NoItemFoundView = Marionette.ItemView.extend({
                     template: noItemTpl,
@@ -154,13 +148,24 @@ define([
 
                         if (attachments != null) {
                             if (attachments["images"]) {
+                                var images = attachments['images'];
+
+                                if(images['lead']){
+                                    this.template = homePostImageItemTpl;
+                                    this.model.set('media_image', images.lead);
+                                }
+                            }
+
+                        }
+
+/*                        if (attachments != null) {
+                            if (attachments["images"]) {
                                 this.template = homePostImageItemTpl;
                                 this.model.set('media_image', attachments.images[0]);
 
                             }
-                            //alert(this.template);
+                        }*/
 
-                        }
                     },
 
                     onRender: function () {
@@ -173,7 +178,7 @@ define([
                 Views.FeaturedPostsView = Marionette.CollectionView.extend({
                     //template: featuredPostsTpl,
 
-                    itemView: Views.PostItemView,
+                    childView: Views.PostItemView,
 
                     emptyView: Views.NoItemFoundView,
 
@@ -182,7 +187,7 @@ define([
                     itemViewContainer: 'div ',
 
                     onRender: function () {
-                        console.log('<< Views.FeaturedPostsView - Loaded  ***DONE ***  >>');
+                        console.info('Views.FeaturedPostsView - Rendered');
                     }
                 });
 
@@ -206,16 +211,22 @@ define([
                          this.template = homePostItemSmallMediaTpl;
                          }*/
                         if (this.model.get('index') >= 6) {
+
                             this.template = homePostItemHeadlineTpl;
+
                         } else {
+
                             var attachments = this.model.get('attachments');
 
                             if (attachments != null) {
                                 if (attachments["images"]) {
-                                    this.template = homePostItemSmallMediaTpl;
-                                    this.model.set('media_image', attachments.images[0]);
+                                    var images = attachments['images'];
+
+                                    if(images['lead']){
+                                        this.template = homePostItemSmallMediaTpl;
+                                        this.model.set('media_image', images.lead);
+                                    }
                                 }
-                                //alert(this.template);
 
                             }
                         }
@@ -232,7 +243,7 @@ define([
 
                     template: homePostsTpl,
 
-                    itemView: Views.HomeNewsPostItem,
+                    childView: Views.HomeNewsPostItem,
 
                     emptyView: Views.NoItemFoundView,
 
@@ -240,9 +251,9 @@ define([
 
                     className: 'most_popular_block',
 
-                    itemViewContainer: 'div#ht-feature-news',
+                    childViewContainer: 'div#ht-feature-news',
 
-                    itemViewOptions: function (model) {
+                    childViewOptions: function (model) {
                         return {
                             index: this.collection.indexOf(model) + 1
                         }
@@ -255,36 +266,24 @@ define([
 
                 Views.HomeEventsPostItem = Marionette.ItemView.extend({
 
-
                     initialize: function (options) {
-                        //  console.log('index of model ' + options.index);
                         this.model.set('index', options.index);
                     },
                     template: homeEventItemTpl,
 
                     className: 'item box-generic',
 
-                    /*                    onBeforeRender: function(){
-                     *//*  if(this.model.get('index') > 2 && this.model.get('index') < 6){
-                     this.template = homePostItemSmallMediaTpl;
-                     }*//*
-                     if(this.model.get('index') >= 6){
-                     this.template = homePostItemHeadlineTpl;
-                     }
-
-                     },*/
                     onRender: function () {
-
-                        //console.log(this.$el.addClass('ttestst' + this.model.get('index')));
                         console.log('<< Views.HomeEventsPostItem - Loaded ***DONE ***  >>');
                     }
+
                 });
 
-                Views.HomeEventsPostsView = Marionette.CompositeView.extend({
+                Views.getEventsView = Marionette.CompositeView.extend({
 
                     template: homeEventTpl,
 
-                    itemView: Views.HomeEventsPostItem,
+                    childView: Views.HomeEventsPostItem,
 
                     emptyView: Views.NoItemFoundView,
 
@@ -292,7 +291,7 @@ define([
 
                     className: 'most_popular_block',
 
-                    itemViewContainer: 'div#ht-events',
+                    childViewContainer: 'div#ht-events',
 
                     itemViewOptions: function (model) {
                         return {

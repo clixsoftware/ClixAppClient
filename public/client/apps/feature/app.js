@@ -181,6 +181,7 @@ define(
 
         });
 
+        console.info('--- Feature App loaded ---');
         return IntranetManager.FeatureManagerRouter;
     });
 

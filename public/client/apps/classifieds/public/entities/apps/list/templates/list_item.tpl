@@ -1,13 +1,10 @@
-<td>
-    <a href="<%=edit_url%>" class="js-item-edit">Edit</i></a>
-    <a href="<%=manager_url%>" class="js-item-show">Show</a>
-    <a class="js-item-delete">Open</a>
-</td>
-<td><a href="<%=obj.admin_url%>"><%= obj.title %></a></td>
-<td><%= obj.alias %></td>
-<td><%= obj.url %></td>
-<td><%= obj.status %></td>
-
-
-
-
+<div class="indexcard">
+    <a href="<%=obj.urls.navigate.href%>">
+     <div class="media">
+         <img class="img alignleft" src="/assets/images/no-profile-image.jpg" width="66"   height="66" alt="<%=obj.title%>">
+        <div class="media-body"><strong><%=obj.title%></strong>
+            <span class="small"></span>
+            <br><span class="small"><%=obj.description%> </span><br>
+        </div>
+    </div>
+</a></div>

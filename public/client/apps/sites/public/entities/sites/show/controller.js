@@ -43,18 +43,15 @@ define([
 
                             IntranetManager.trigger('sites:home:news:posts', alias);
                             IntranetManager.trigger('sites:news:posts:featured', alias);
-                            IntranetManager.trigger('sites:home:events:posts', alias);
+                            IntranetManager.trigger('sites:events:posts:upcoming', alias);
 
                             var options =    {
                                 parent_application_alias: alias,
                                 parent_application_feature: 'home'
                             };
 
-                          // IntranetManager.trigger('yp:public:posts:recent', options);
-
-                            IntranetManager.trigger('sites:howdoi:mostactive',alias);
-                            IntranetManager.trigger('sites:howdoi:mostrecent',alias);
-
+                            IntranetManager.trigger('sites:content:popular');
+                            IntranetManager.trigger('sites:content:recent');
 
                             IntranetManager.trigger('dom:title', app.get('title'));
                         })

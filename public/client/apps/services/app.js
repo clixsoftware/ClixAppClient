@@ -119,7 +119,7 @@ define(
 
 
         });
-
+        console.info('--- Services App loaded ---');
         return IntranetManager.ServicesManagerRouter;
     });
 

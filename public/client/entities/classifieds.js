@@ -7,39 +7,20 @@ define([
         function (Entities, IntranetManager, Backbone, Marionette, $, _) {
 
 
-            var apiEndPoint = 'classifieds';
+            var apiEndPoint = IntranetManager.opts.API() + 'classifieds';
 
-            Entities.Classified = Backbone.Model.extend({
+            Entities.ClassifiedPost = Backbone.Model.extend({
 
-                url: IntranetManager.opts.API + apiEndPoint,
-
-                tester: this.test(),
-
-                test: function () {
-                    return 'wayne';
-                }
-
-                /*          validation: {
-                 title: {
-                 required: true,
-                 minLength: 8
-
-                 },
-                 description: {
-                 required: true
-                 }
-
-                 }*/
-
+                url: apiEndPoint + '/posts'
             });
 
             //Entities.configureStorage(Entities.Contact);
 
             Entities.ClassifiedCollection = Backbone.Collection.extend({
 
-                url: IntranetManager.opts.API + apiEndPoint,
+                url:  apiEndPoint + '/posts',
 
-                model: Entities.Classified
+                model: Entities.ClassifiedPost
 
             });
 
@@ -51,22 +32,6 @@ define([
                      this.page = 1;
                      typeof(this.perPage) != 'undefined' || (this.perPage = 10);*/
                 },
-                /*
-
-                 fetch: function ( options ) {
-                 typeof(options) != 'undefined' || (options = {});
-                 this.trigger("fetching");
-                 var self = this;
-                 var success = options.success;
-                 options.success = function ( resp ) {
-                 self.trigger("fetched");
-                 if (success) {
-                 success(self, resp);
-                 }
-                 };
-                 return Backbone.Collection.prototype.fetch.call(this, options);
-                 },
-                 */
 
                 parse: function (resp) {
                     this.page = resp.page;
@@ -75,7 +40,6 @@ define([
 
                     console.log('Total models = ' + this.total);
                     return resp.models;
-
 
                 },
 
@@ -102,18 +66,16 @@ define([
 
             });
 
-            //Entities.configureStorage(Entities.ContactCollection);
-
 
             var API = {
 
-                getEndPoint: function () {
-                    return IntranetManager.opts.API + apiEndPoint;
+                getEndPoint: function(){
+                    return apiEndPoint;
                 },
 
                 getEntities: function (endpoint) {
 
-                    if (endpoint) {
+                    if(endpoint){
                         return this.getDAOCollection(endpoint);
                     }
 
@@ -121,115 +83,146 @@ define([
                 },
 
                 getEntity: function (id, endpoint) {
-
-
-                    var item = new Entities.Profile();
-                    if (id) {
+                    var item = new Entities.ClassifiedPost();
+                    if(id){
                         item.id = id;
                     }
-                    item.url = endpoint;
+                    item.url = apiEndPoint + endpoint + id;
+                    console.log('call single news item');
                     return this.getDAOdeferred(item);
                 },
 
-                search: function (query) {
-                    //  var url = '?' + query;
-                    // var url = '/search' + query;
-                    return this.getSearchCollection(query);
-
-                },
-
-                getSearchCollection: function (endpoint) {
-
-                    console.group('<< getSearchCollection: Classified Posts -> ')
-
-                    console.log(endpoint);
-
-                    var url = this.getEndPoint() + endpoint;
-                    console.log('collection url - ' + url);
-                    console.groupEnd();
-
-                    var collection = new Entities.ClassifiedSearchResults();
-
-                    collection.url = url;
-                    return this.getDAOdeferred(collection);
-                },
-
-                getEndpointEntities: function (query, endpoint) {
-
-                    var url = apiEndPoint + '/' + endpoint + '?' + query;
-
+                query: function(criteria){
+                    var url = apiEndPoint + criteria;
                     return this.getDAOCollection(url);
                 },
 
-                getDAOCollection: function (endpoint) {
 
-                    console.group('<< getDAOCollection: Classified Posts -> ')
-                    console.log(endpoint);
+                getDAOCollection: function(endpoint){
 
-                    var url = this.getEndPoint() + endpoint;
-                    console.log('collection url - ' + url);
+                    console.group('getDAOCollection: Classifieds Posts ');
+
+                    var collection = new Entities.ClassifiedCollection();
+
+                    collection.url =  endpoint;
+
+                    console.log(collection.url);
                     console.groupEnd();
-
-                    var collection = new Entities.ProfileCollection();
-                    collection.url = url;
-
                     return this.getDAOdeferred(collection);
                 },
 
-                getDAOdeferred: function (queryObject) {
+
+                search: function(criteria){
+                    var url = apiEndPoint + '/posts/search' +  criteria;
+                    return this.getSearchResults(url);
+                },
+
+
+                getSearchResults: function(endpoint){
+
+                    console.group('getSearchResults: Classifieds ');
+
+                    var collection = new Entities.ClassifiedSearchResults();
+
+                    collection.url =  endpoint;
+
+                    console.log(collection.url);
+                    console.groupEnd();
+                    return this.getDAOdeferred(collection);
+                },
+
+                getDAOdeferred: function(queryObject){
+
+                    console.log(queryObject);
+
 
                     return Q(queryObject.fetch())
-                        .then(function (data) {
-                            console.group('Classifieds - getDAOdeferred');
-                            console.log(data);
-                            console.groupEnd();
-
+                        .then(function(data){
                             return queryObject;
+                        })
+                        .fail(function(xhr){
 
-                        }, function (xhr) {
-
-                            console.log('err occurred during fetch');
+                            console.log(xhr);
                             return undefined;
-                        }
-                    );
-
+                        });
                 }
+
+
 
             };
 
             IntranetManager.reqres.setHandler("classifieds:posts:new", function () {
-                var post = new Entities.Classified();
-                //post.url = IntranetManager.opts.API + 'c/applications/' + applicationId + '/posts';
-                //console.log(post.url);
+
+
+                var post = new Entities.ClassifiedPost();
+                post.set('title', 'New Classified Ad Form');
                 return post;
+
             });
 
-            IntranetManager.reqres.setHandler("classifieds:posts:all", function () {
+            IntranetManager.reqres.setHandler("classifieds:posts", function () {
                 return API.getEntities(null);
             });
 
-            IntranetManager.reqres.setHandler("classifieds:posts:search", function (options) {
-                console.group('Handler classifieds:posts:search');
-                var query = '?limit=10&page=' + options.page + '&parent_application=' + options.parent_application;
-                console.log(query);
-                console.groupEnd();
+            IntranetManager.reqres.setHandler("classifieds:posts:recent", function (options) {
 
-                return API.search(query);
+                console.log(options);
+                var apiQuery = {
+                    sort: "createdAt desc",
+                    limit:  (options.limit) ? options.limit : 5,
+                    skip: (options.page) ? options.page : 0
+                };
+
+                if(options.criterion){
+                    apiQuery.where.title =  {
+                        "contains": options.criterion
+                    };
+                }
+
+                if(options.parent_application){
+                    apiQuery.where.parent_application =  options.parent_application;
+                }
+
+                console.groupEnd();
+                return API.search(IntranetManager.buildQuery(apiQuery));
+
+            });
+
+            IntranetManager.reqres.setHandler("classifieds:posts:search", function (options) {
+
+               // var query;
+               // var skip;
+                console.group('Handler classifieds:posts:search');
+
+                console.log(options);
+                var apiQuery = {
+                        where: {
+                           // "parent_application": options.parent_application
+                        },
+                        sort: "createdAt desc",
+                        limit: 10,
+                        skip: (options.page) ? options.page : 0
+                    };
+
+                 if(options.criterion){
+                     apiQuery.where.title =  {
+                                "contains": options.criterion
+                     };
+                 }
+
+                if(options.parent_application){
+                    apiQuery.where.parent_application =  options.parent_application;
+                }
+
+
+                console.groupEnd();
+                return API.search(IntranetManager.buildQuery(apiQuery));
+
             });
 
             IntranetManager.reqres.setHandler("classifieds:posts:entity", function (id) {
-                var endpoint = API.getEndPoint() + '/' + id;
+                var endpoint =  '/posts/';
                 return API.getEntity(id, endpoint);
-            });
-
-            /*
-             IntranetManager.reqres.setHandler("classifieds:earch", function ( options ) {
-             var endPoint = '/search?page=' + options.page + '&parent_application=' + options.parent_application + '&query=' + options.criterion;
-             return API.search(endPoint);
-             });*/
-
-            IntranetManager.reqres.setHandler("classifieds:posts:recent", function (options) {
-                //return API.search('?parent_application=' + applicationId);
             });
 
         });

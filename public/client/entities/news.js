@@ -8,239 +8,206 @@
 define([
     "app",
     "Q"
-    ], function ( IntranetManager, Q ) {
+], function ( IntranetManager, Q ) {
 
-        IntranetManager.module("Entities",
+    IntranetManager.module("Entities",
         function ( Entities, IntranetManager, Backbone, Marionette, $, _ ) {
 
 
-        var apiEndPoint = 'newspost';
+            var apiEndPoint =  IntranetManager.opts.API()  + 'news';
 
-        var apiNewsEndPoint = 'news';
+            Entities.NewsPost = Backbone.Model.extend({
 
-        Entities.News = Backbone.Model.extend({
-            url : IntranetManager.opts.API + 'news'
-        })  ;
+                url: apiEndPoint,
 
-        Entities.NewsPost = Backbone.Model.extend({
+                validation: {
+                    title: {
+                        required: true,
+                        minLength: 8
 
-            url: IntranetManager.opts.API + apiEndPoint,
-
-            validation: {
-                title: {
-                    required: true,
-                    minLength: 8
-
-                },
-                description: {
-                    required: true
-                }
-
-            }
-
-        });
-
-        //Entities.configureStorage(Entities.Contact);
-
-        Entities.NewsPostCollection = Backbone.Collection.extend({
-
-            url: IntranetManager.opts.API + apiEndPoint,
-
-            model: Entities.NewsPost,
-
-            comparator: "title"
-
-        });
-
-        //Entities.configureStorage(Entities.ContactCollection);
-
-
-        var API = {
-
-            getEndPoint: function(){
-                return IntranetManager.opts.API + apiEndPoint;
-            },
-
-
-            getNewsEndPoint: function(){
-                return  apiNewsEndPoint;
-            },
-
-            getNews: function () {
-
-                var item = new Entities.News();
-                return this.getDAOdeferred(item);
-            },
-
-            getEntities: function () {
-
-                return this.getDAOCollection(apiEndPoint);
-            },
-/*
-            getEntity: function (id) {
-
-                var item = new Entities.NewsPost();
-                item.url = IntranetManager.opts.API + apiEndPoint + '/' + id;
-                return this.getDAOdeferred(item);
-            },*/
-
-            getEntity: function (id, endpoint) {
-
-
-                var item = new Entities.NewsPost();
-                if(id){
-                    item.id = id;
-                }
-                item.url = endpoint;
-                return this.getDAOdeferred(item);
-            },
-
-
-            search: function(query){
-
-                var url = apiEndPoint + '?' + query;
-                return this.getDAOCollection(url);
-
-            },
-
-            getTrending: function(options){
-
-                var url = apiEndPoint + '/gettrending?' + 'reach=' + options.reach + '&limit=' + options.limit ;
-                return this.getDAOCollection(url);
-            },
-
-            getPostsHomeFeatured: function(){
-
-                var url =   apiEndPoint; //+ '/featured';
-                return this.getDAOCollection(url);
-            },
-
-            getEndpointEntities: function(query, endpoint){
-
-                var url = apiEndPoint + '/' + endpoint + '?'  + query;
-
-                return this.getDAOCollection(url);
-            },
-
-
-
-            getDAOCollection: function(endpoint){
-
-                console.log('<< getDAOCollection: News Posts -> ' +  endpoint + '  >>');
-
-                var collection = new Entities.NewsPostCollection();
-
-                collection.url = IntranetManager.opts.API + endpoint;
-
-                return this.getDAOdeferred(collection);
-            },
-
-            getDAOdeferred: function(queryObject){
-
-                return Q(queryObject.fetch())
-                    .then(function(data){
-
-                        console.log(data);
-                        return queryObject;
-
-                    },  function(xhr){
-
-                        console.log('err occurred during fetch');
-                        return undefined;
+                    },
+                    description: {
+                        required: true
                     }
-                );
+
+                }
+
+            });
+
+            //Entities.configureStorage(Entities.Contact);
+
+            Entities.NewsPostCollection = Backbone.Collection.extend({
+
+                initialize: function (options) {
+                    console.log(options);
+                    this.on("error", this.error, this)
+                },
+
+                url: apiEndPoint,
+
+                model: Entities.NewsPost,
+
+/*                parse: function ( resp, options ) {
+
+                    alert('News custom parsing');
+                    this.page = resp.page;
+                    this.limit = resp.limit;
+                    this.total = resp.total;
+                    return resp.models;
+                },*/
+
+                error: function (model, response, options) {
+                console.log(model);
+                console.log(response);
+                console.log(options);
+                    }
+
+            });
+
+            Entities.NewsPostSearch = Entities.NewsPostCollection.extend({
+
+                url: apiEndPoint + '/posts/search',
+
+                model: Entities.NewsPost,
+
+                parse: function ( resp, options ) {
+
+                // alert('News custom parsing');
+                 this.page = resp.page;
+                 this.limit = resp.limit;
+                 this.total = resp.total;
+                 return resp.models;
+                 },
+
+                error: function (model, response, options) {
+                    console.log(model);
+                    console.log(response);
+                    console.log(options);
+                }
+
+            });
+
+            //Entities.configureStorage(Entities.ContactCollection);
 
 
-            }
+            var API = {
+
+                getEndPoint: function(){
+                    return apiEndPoint;
+                },
+
+                getEntities: function (endpoint) {
+
+                    if(endpoint){
+                        return this.getDAOCollection(endpoint);
+                    }
+
+                    return this.getDAOCollection(apiEndPoint);
+                },
+
+                getEntity: function (id, endpoint) {
+                    var item = new Entities.NewsPost();
+                    if(id){
+                        item.id = id;
+                    }
+                    item.url = apiEndPoint + endpoint + id;
+                    console.log('call single news item');
+                    return this.getDAOdeferred(item);
+                },
+
+                query: function(criteria){
+                    var url = apiEndPoint + criteria;
+                    return this.getDAOCollection(url);
+                },
 
 
+                getDAOCollection: function(endpoint){
+
+                    console.group('getDAOCollection: News Posts ');
+
+                    var collection = new Entities.NewsPostCollection();
+
+                    collection.url =  endpoint;
+
+                    console.log(collection.url);
+                    console.groupEnd();
+                    return this.getDAOdeferred(collection);
+                },
 
 
-        };
+                search: function(criteria){
+                    var url = apiEndPoint + '/posts/search' +  criteria;
+                    return this.getSearchResults(url);
+                },
 
-        IntranetManager.reqres.setHandler("news:feature", function () {
-            return API.getNews();
+
+                getSearchResults: function(endpoint){
+
+                    console.group('getSearchResults: News Posts ');
+
+                    var collection = new Entities.NewsPostSearch();
+
+                    collection.url =  endpoint;
+
+                    console.log(collection.url);
+                    console.groupEnd();
+                    return this.getDAOdeferred(collection);
+                },
+
+                getDAOdeferred: function(queryObject){
+
+                    console.log(queryObject);
+
+
+                    return Q(queryObject.fetch())
+                        .then(function(data){
+                            return queryObject;
+                        })
+                        .fail(function(xhr){
+
+                            console.log(xhr);
+                            return undefined;
+                        });
+                }
+
+            };
+
+            IntranetManager.reqres.setHandler("news:posts:entities", function () {
+                return API.getEntities(null);
+            });
+
+            IntranetManager.reqres.setHandler("news:posts:search", function (query) {
+                return API.search(query);
+            });
+
+            IntranetManager.reqres.setHandler("news:posts:entity", function (id) {
+                return API.getEntity( id, '/posts/');
+            });
+
+          IntranetManager.reqres.setHandler("news:posts:feature:alias", function (options ) {
+                var query = '{"featured": false , "parent_application_alias":"' + options.alias +'"}';
+                var criteria = '/posts?where=' + query;
+                return API.query(criteria);
+            });
+
+            IntranetManager.reqres.setHandler("news:apps:posts:recent", function (options ) {
+                console.log(options);
+
+                var query = '{"featured": false, "feature_alias" : "news"}';
+                var criteria = '?where=' + query+  '&limit=5';
+                return API.search(criteria);
+            });
+
+            IntranetManager.reqres.setHandler("news:apps:posts:featured", function (options) {
+               //var criteria = '/posts?where={"tags":{"contains":"featured"}}'  ;
+                //var query = '{"featured": false  }';
+                //var criteria = '/posts?where={"featured": 1}'  ;
+                var query = '{"featured": true, "feature_alias" : "news"}';
+                var criteria = '/posts?where=' + query +  '&limit=2&sort=updatedAt desc';
+               return API.query(criteria);
+            });
+
         });
-
-        IntranetManager.reqres.setHandler("news:posts:entities", function () {
-            return API.getEntities();
-        });
-
-       IntranetManager.reqres.setHandler("news:posts:search", function (query) {
-            return API.search(query);
-        });
-
-        IntranetManager.reqres.setHandler("news:posts:entity", function (id) {
-            console.log('<<Trigger :  news:posts:entity >>');
-            var endpoint = API.getEndPoint()+ '/tracker/' + id;
-           // alert(endpoint);
-            return API.getEntity(id, endpoint);
-            //return API.getEntity(id);
-        });
-
-
-        IntranetManager.reqres.setHandler("news:app:posts", function (appId) {
-            var endpoint = API.getNewsEndPoint()+ '/' + appId + '/posts';
-            // alert(endpoint);
-            return API.getDAOCollection(endpoint);
-            //return API.getEntity(id);
-        });
-
-        IntranetManager.reqres.setHandler("news:posts:search:app:featured", function (options) {
-            return API.search('parent_application_feature=' +  options.feature + '&parent_application_alias=' + options.app + '&is_featured=1' );
-        });
-
-        IntranetManager.reqres.setHandler("news:posts:search:app", function (id) {
-            return API.search('parent_application=' +  id);
-        });
-
-        IntranetManager.reqres.setHandler("news:posts:search:alias", function (options) {
-            return API.search('parent_application_feature=' +  options.feature + '&parent_application_alias=' + options.app );
-        });
-
-        IntranetManager.reqres.setHandler("news:posts:search:uuid", function (id) {
-            return API.search('uuid=' +  id);
-        });
-
-        IntranetManager.reqres.setHandler("news:posts:entity:new", function () {
-            return new Entities.NewsPost();
-        });
-
-
-        IntranetManager.reqres.setHandler("news:posts:trending", function (options) {
-            //option properties
-            //option.reach = 'local | global'
-            //option.limit = '5' //total records to return
-            //option.appId = 4
-            return API.getTrending(options);
-        });
-
-
-        IntranetManager.reqres.setHandler("news:posts:related", function (query) {
-            return API.getEndpointEntities(query, 'getrelated');
-        });
-
-        IntranetManager.reqres.setHandler("news:posts:recommended", function (query) {
-            return API.getEndpointEntities(query, 'getrecommended');
-        });
-
-        IntranetManager.reqres.setHandler("news:posts:search:category", function (options) {
-            console.log('search ' + JSON.stringify(options));
-            var query;
-            query = 'parent_application_alias=sites';
-            if(options.criterion){
-                query = query + '&criterion=' + options.criterion;
-            }
-
-            return API.getEndpointEntities(query, 'search');
-        });
-
-        IntranetManager.reqres.setHandler("news:posts:latest", function (query) {
-            return API.getEndpointEntities(query, 'getlatest');
-        });
-
-
-    });
 
     return;
 });

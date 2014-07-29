@@ -34,7 +34,7 @@ define([
 
                 tagName: 'div',
 
-                className: 'notification',
+                className: 'notification alert',
 
                 defaultMessages: {
                     'success': 'Success!',
@@ -83,10 +83,11 @@ define([
 
                 render: function(type, text, target){
 
-                    alert('inside of notification view');
+                    //alert('inside of notification view');
 
                     var self = this;
                     this.$el.addClass(this.cssClasses[type]);
+                    this.$el.addClass('alert-' + this.cssClasses[type]);
                     this.$el.text(text);
                     this.$el.prependTo(this.targetElement);
 
@@ -128,6 +129,15 @@ define([
                     e.preventDefault();
                     //alert('submit clicked');
                     var data = Backbone.Syphon.serialize(this);
+                   // var photo = new Photo({
+                        //file: $("#imageUpload")[0].files[0],
+                     //   caption: $("#imageCaption").val()
+                   // });
+//                    alert($("#support_image_upload").html());
+                    //console.log($("#support_image_upload").html());
+
+                    //data.file = $("#support_image_upload")[0].files[0];
+                    //alert(data.file);
                     //console.log('backbone syphon - ' + data);
                     this.trigger("form:submit", data);
 
@@ -170,7 +180,7 @@ define([
 
             });
 
-            Views.AppLayoutView = Marionette.Layout.extend({
+            Views.AppLayoutView = Marionette.LayoutView.extend({
 
                 template: appLayoutTpl,
 

@@ -11,7 +11,7 @@ define([
 
                 getRecentlyUpdatedView: function (posts) {
                     //alert('getting the view');
-                    return new WidgetsShow.HowDoIRecentView({
+                    return new WidgetsShow.RecentlyUpdatedView({
                         collection: posts
                     });
 
@@ -23,9 +23,9 @@ define([
 
                 },
 
-                getHowDoIMostActiveView: function (posts) {
+                getPopularContentView: function (posts) {
                     //alert('getting the view');
-                    return new WidgetsShow.HowDoIMostActiveView({
+                    return new WidgetsShow.PopularContentView({
                         collection: posts
                     });
 
@@ -51,12 +51,12 @@ define([
 
                 displayHomeNewsPosts: function (alias) {
 
-                    console.log('<< INIT: displayHomeNewsPosts >>');
+                    console.group('displayHomeNewsPosts -->>');
 
                     var that = this;
 
                     require([
-                        "entities/news_post"
+                        "entities/news"
                     ], function () {
 
                         var options = {
@@ -66,11 +66,10 @@ define([
 
                         var fetchingPosts = IntranetManager.request('news:posts:feature:alias', options);
 
-                        console.log('<< displayHomeNewsPosts: Fetching Postings  >>');
-
                         fetchingPosts.then(function (posts) {
                             IntranetManager.layoutZone2.reset();
                             IntranetManager.layoutZone2.show(that.getHomeNewsPosts(posts));
+                            console.groupEnd();
 
                         })
                             .fail(function (error) {
@@ -80,15 +79,23 @@ define([
                     });
                 },
 
-                getHomeEventsView: function (events) {
-                    return new WidgetsShow.HomeEventsPostsView({
+                getEventsView: function (events) {
+                    return new WidgetsShow.getEventsView({
                         collection: events
                     })
                 },
 
-                displayHomeEventsPosts: function (alias) {
 
-                    console.log('<< INIT: displayHomeEventsPosts >>');
+
+                getFeaturedPostsView: function (posts) {
+                    return new WidgetsShow.FeaturedPostsView({
+                        collection: posts
+                    });
+                },
+
+                displayUpcomingEvents: function (alias) {
+
+                    console.log('<< INIT: displayUpcomingEvents >>');
 
                     var that = this;
 
@@ -101,55 +108,51 @@ define([
                             feature_alias: 'sites'
                         };
 
-                        var fetchingPosts = IntranetManager.request('calendar:events:feature:alias', options);
-
-                        console.log('<< displayHomeEventsPosts: Fetching Postings  >>');
+                        var fetchingPosts = IntranetManager.request('calendar:apps:posts:upcoming', options);
 
                         fetchingPosts.then(function (posts) {
                             IntranetManager.layoutZone6.reset();
-                            IntranetManager.layoutZone6.show(that.getHomeEventsView(posts));
+                            IntranetManager.layoutZone6.show(that.getEventsView(posts));
 
                         })
                             .fail(function (error) {
                                 alert(error);
                             });
 
-                    });
-                },
-
-                getFeaturedPostsView: function (posts) {
-                    return new WidgetsShow.FeaturedPostsView({
-                        collection: posts
                     });
                 },
 
                 displayFeaturedPosts: function (alias) {
-                    console.log('<< INIT: displayFeaturedPosts >>');
+
+                    console.group('displayFeaturedPosts ->>');
 
                     var that = this;
                     require([
-                        "entities/news_post"
+                        "entities/news"
                     ], function () {
 
                         var options = {
-                            alias: alias,
-                            feature_alias: 'sites'
+                            alias: alias
                         };
 
-                        var fetchingPosts = IntranetManager.request('news:posts:featured', options);
-
-                        console.log('<< displayFeaturedPosts: Fetching Postings  >>');
+                        var fetchingPosts = IntranetManager.request('news:apps:posts:featured', options);
 
                         fetchingPosts.then(function (posts) {
+
+                           // console.log(posts);
+
                             IntranetManager.layoutZone1.reset();
                             IntranetManager.layoutZone1.show(that.getFeaturedPostsView(posts));
-
+                            console.groupEnd();
                         })
                             .fail(function (error) {
-                                alert(error);
+                                IntranetManager.trigger('core:error:action', error)
+                                //alert(error);
                             });
 
                     });
+
+
                 },
 
                 displayRecentlyUpdated: function (alias) {
@@ -159,29 +162,30 @@ define([
                     IntranetManager.layoutZone4.show(this.getRecentlyUpdatedView());
                 },
 
-                displayHowDoIMostActive: function (alias) {
+                displayPopularContentWidget: function (options) {
 
-                    console.group('<< SitesManager: Widgets: HowDoI: displayHowDoIMostActive >>');
+                    console.group('displayPopularContentWidget >>');
 
-                    var options = {
-                        parent_application_alias: alias,
-                        parent_application_feature: 'sites'
-                    };
+/*
+                     options.parent_application_alias =  alias;
+                     options.parent_application_feature =  'sites';
+*/
 
+                    console.log(options);
 
                     var that = this;
 
                     require([
-                        "entities/howdoi"
+                        "entities/content"
                     ], function () {
 
-                        var fetchingPost = IntranetManager.request('howdoi:posts:mostactive');
+                        var fetchingPost = IntranetManager.request('content:posts:popular');
 
                         fetchingPost.then(function (posts) {
 
                             // alert('posts found');
                             // console.log(posts);
-                            var view = that.getHowDoIMostActiveView(posts);
+                            var view = that.getPopularContentView(posts);
                             // console.log(view);
 
                             IntranetManager.layoutZone3.reset();
@@ -195,23 +199,22 @@ define([
 
                 },
 
-                displayHowDoIRecent: function (alias) {
+                displayRecentContent: function (alias) {
 
-                    console.group('<< SitesManager: Widgets: HowDoI: displayHowDoIRecent >>');
+                    console.group('SitesManager: Widgets: displayRecentContent >>');
 
-                    var options = {
+/*                    var options = {
                         parent_application_alias: alias,
                         parent_application_feature: 'sites'
-                    };
-
+                    };*/
 
                     var that = this;
 
                     require([
-                        "entities/howdoi"
+                        "entities/content"
                     ], function () {
 
-                        var fetchingPost = IntranetManager.request('howdoi:posts:recent');
+                        var fetchingPost = IntranetManager.request('content:posts:recent');
 
                         fetchingPost.then(function (posts) {
 

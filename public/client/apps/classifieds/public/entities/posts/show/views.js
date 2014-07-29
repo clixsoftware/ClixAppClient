@@ -1,21 +1,21 @@
 define([
-        "app",
-        "tpl!apps/news/public/entities/posts/show/templates/view.tpl",
-        "tpl!apps/news/public/entities/posts/show/templates/sidebar.tpl",
-        "tpl!apps/news/public/entities/posts/show/templates/header.tpl",
-        "tpl!apps/news/public/entities/posts/show/templates/stats.tpl",
-        "tpl!apps/news/public/entities/posts/show/templates/public_view.tpl",
-        "tpl!apps/news/public/entities/posts/show/templates/public_view_header.tpl",
-        "tpl!apps/news/public/entities/posts/show/templates/top_news.tpl",
-        "tpl!apps/news/public/entities/posts/show/templates/image_view.tpl",
-        "tpl!apps/news/public/entities/posts/show/templates/post_layout.tpl"
-    ],
-    function (IntranetManager, viewTpl, sidebarTpl, headerTpl, statsTpl, publicViewTpl, publicViewHeaderTpl, topNewsTpl, imageViewTpl, postLayoutTpl) {
+    "app",
+    "tpl!apps/classifieds/public/entities/posts/show/templates/view.tpl",
+    "tpl!apps/classifieds/public/entities/posts/show/templates/sidebar.tpl",
+    "tpl!apps/classifieds/public/entities/posts/show/templates/header.tpl",
+    "tpl!apps/classifieds/public/entities/posts/show/templates/stats.tpl",
+    "tpl!apps/classifieds/public/entities/posts/show/templates/public_view.tpl",
+    "tpl!apps/classifieds/public/entities/posts/show/templates/public_view_header.tpl",
+    "tpl!apps/classifieds/public/entities/posts/show/templates/top_classifieds.tpl",
+    "tpl!apps/classifieds/public/entities/posts/show/templates/image_view.tpl",
+    "tpl!apps/classifieds/public/entities/posts/show/templates/post_layout.tpl"
+],
+    function ( IntranetManager, viewTpl, sidebarTpl, headerTpl, statsTpl, publicViewTpl, publicViewHeaderTpl, topclassifiedsTpl, imageViewTpl, postLayoutTpl ) {
 
-        IntranetManager.module("NewsManager.Posts.Show.Views",
-            function (Views, IntranetManager, Backbone, Marionette, $, _) {
+        IntranetManager.module("ClassifiedsManager.Posts.Show.Views",
+            function ( Views, IntranetManager, Backbone, Marionette, $, _ ) {
 
-                Views.PostLayoutView = Marionette.Layout.extend({
+                Views.PostLayoutView = Marionette.LayoutView.extend({
 
                     template: postLayoutTpl,
 
@@ -28,13 +28,13 @@ define([
                         postTitle: "#post-title",
                         postMeta: "#post-meta",
                         postMedia: "#post-media",
-                        postContent: "#post-content",
+                        layoutContent: "#layout-content",
                         postRelated: "#post-related",
                         postRecommended: "#post-recommended",
                         postGallery: "#post-gallery"
                     },
 
-                    onRender: function () {
+                    onRender: function(){
                         console.log('<< Views.PostLayoutView - Loaded ***DONE ***  >>');
                     }
 
@@ -71,28 +71,51 @@ define([
 
                     onBeforeRender: function () {
                         // set up final bits just before rendering the view's `el`
-                        $('body').addClass('single single-news');
+                        $('body').addClass('single single-classifieds');
 
                         console.log('<< Views.PublicView: Loaded ***COMPLETED*** >>');
                     },
 
                     ui: {
-                        media: '.js-media',
+                        media : '.js-media',
                         media_image: '.js-media-image'
                     },
 
-                    onRender: function () {
+                    onRender: function(){
+                        var attachments = this.model.get('attachments');
 
+                        console.group('attachments');
+                        console.log(attachments);
+                        console.groupEnd();
 
-                        if (_.isEmpty(this.model.get('media'))) {
+                        if(_.isEmpty(this.model.get('attachments'))){
+
+                            console.log('Hide the media div');
+                            this.ui.media.hide();
+
+                        }else{
+
+                            var images = attachments.images;
+
+                            console.group('images');
+                            console.log(images);
+                            console.groupEnd();
+
+                            console.log(images.lead);
+
+                            $(this.ui.media_image).attr('src', images.lead.source_url);
+
+                        }
+
+/*                        if(_.isEmpty(this.model.get('media'))){
 
                             this.ui.media.hide();
-                        } else {
+                        }else{
                             //alert('Media is available');
                             var media_image = this.model.get('media');
                             $(this.ui.media_image).attr('src', media_image.source_url);
                             //      this.ui.media_image.src = media_image.source_url;
-                        }
+                        }*/
                         console.log('<< Views.NoItemFoundView - Loaded ***DONE ***  >>');
                     }
                 });
@@ -102,11 +125,12 @@ define([
                 });
 
 
-                Views.TopNewsView = Marionette.ItemView.extend({
-                    template: topNewsTpl
+
+                Views.TopclassifiedsView = Marionette.ItemView.extend({
+                    template: topclassifiedsTpl
                 });
 
             });
 
-        return IntranetManager.NewsManager.Posts.Show.Views;
+        return IntranetManager.ClassifiedsManager.Posts.Show.Views;
     });

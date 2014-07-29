@@ -21,10 +21,10 @@ define([
                     });
                 },
 
-                getSearchFormView: function ( model ) {
+                getSearchFormView: function ( item ) {
 
                     return new Views.SearchFormView({
-                        model: null
+                        model: item
                     });
                 },
 
@@ -40,7 +40,6 @@ define([
 
                     require(['entities/applications', 'entities/howdoi', 'entities/taxonomy'], function () {
 
-
                         var options = {
                             alias: alias,
                             parent_feature: HowDoIManager.feature.id
@@ -50,15 +49,11 @@ define([
 
                         var fetchingApp = IntranetManager.request('applications:feature:alias', options);
 
-
                         fetchingApp.then(function ( app ) {
-
-                            //console.log(app);
 
                             IntranetManager.appLayout = Show.Controller.getLayoutView();
 
                             IntranetManager.siteMainContent.show(IntranetManager.appLayout);
-
 
                             //IntranetManager.trigger('howdoi:app:category:list', app.get('uuid'));
 
@@ -66,29 +61,24 @@ define([
 
                             IntranetManager.trigger('dom:title', app.get('title'));
 
-                            var fetchingCategories = IntranetManager.request('taxonomy:object:terms', app.get('uuid'));
+                            //var fetchingCategories = IntranetManager.request('taxonomy:object:terms', app.get('uuid'));
 
-                            return [app, fetchingCategories];
+                            return [app];
 
                         }).spread(function ( app ) {
 
-                            //console.log(fetchedCategories);
+                            var options = {};
+                            var categories = app.get('categories');
 
-                            // fetchedCategories.then(function(categories){
+                            var term = IntranetManager.request('taxonomy:entity:new');
 
+                            options.collection = categories.trim().replace(/"/g, '').trim().split(',');
+                            term.set('items', IntranetManager.request('taxonomy:collection:set:categories', options))
 
-                            var test = Backbone.Model.extend();
+                             var searchFormView = that.getSearchFormView(term);
 
-                            /*var e = new test({
-                                items: fetchedCategories
-                            });*/
-
-                           // console.log(e);
-                            var searchFormView = that.getSearchFormView();
                             IntranetManager.layoutSearch.reset();
                             IntranetManager.layoutSearch.show(searchFormView);
-
-                            //});
 
                             searchFormView.on("howdoi:search", function ( filterCriterion ) {
 
@@ -108,9 +98,29 @@ define([
 
                             });
 
+                            var taxoptions = {
+                                parentFeature: app.get('parent_application_feature'),
+                                appFeature: 'how-do-i',
+                                appAlias: app.get('parent_application_alias'),
+                                parentId: app.get('parent_application'),
+                                objectId: app.get('uuid'),
+                                categories: app.get('categories'),
+                                tags: app.get('tags'),
+                                url: app.get('path')
+                            };
 
-                            //  IntranetManager.layoutContent.reset();
-                            // IntranetManager.layoutContent.show(that.getListView(fetchedPosts));
+
+
+                            console.group("app");
+                            console.log(app);
+                            console.groupEnd();
+
+                            console.group("taxoptions");
+                            console.log(taxoptions);
+                            console.groupEnd();
+                            // IntranetManager.trigger('news:public:category:list', parentApp.get('uuid'));
+                            IntranetManager.trigger('core:object:categories', taxoptions );
+
 
                         }).fail(function ( err ) {
                             //alert(' an error occurred ' + err);
@@ -146,7 +156,6 @@ define([
 
 
                 },
-
 
                 getSearchLayoutView: function () {
                     return new Views.SearchLayoutView();

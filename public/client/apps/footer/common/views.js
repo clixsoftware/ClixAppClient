@@ -21,18 +21,18 @@ define([
             function ( Views, IntranetManager, Backbone, Marionette, $, _ ) {
 
 
-                Views.LayoutView = Marionette.Layout.extend({
+                Views.LayoutView = Marionette.LayoutView.extend({
                     tagName: 'nav',
                     /**/
                     className: 'navbar navbar-inverse',
 
-                    onBeforeRender: function () {
+/*                    onBeforeRender: function () {
                         // set up final bits just before rendering the view's `el`
                         pace.start({
                             document: false
                         });
                         console.log("pace is running");
-                    },
+                    },*/
 
                     template: layoutTpl
 

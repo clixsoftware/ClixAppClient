@@ -276,7 +276,7 @@ define(
 
 
         });
-
+        console.info('--- Directory App loaded ---');
         return IntranetManager.DirectoryManagerRouter;
     });
 

@@ -1,7 +1,7 @@
 <div class="col-lg-7 col-md-8 col-sm-8 white ">
     <div id="topnavbar" class="row"></div>
-    <div id="layout-header">Classifieds</div>
-    <div id="layout-search">Search</div>
+    <div id="layout-header"></div>
+    <div id="layout-search"></div>
     <div id="layout-content"></div>
     <div id="layout-zone-5"></div>
 </div>

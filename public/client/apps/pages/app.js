@@ -112,7 +112,7 @@ define(
 
 
         });
-
+        console.info('--- Pages App loaded ---');
         return IntranetManager.PageManagerRouter;
     });
 

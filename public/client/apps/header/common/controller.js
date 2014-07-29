@@ -28,7 +28,9 @@ define([
                 getBrandMenuView: function () {
                     var that = this;
 
-                    var view = new CommonViews.BrandMenuView();
+                    var view = new CommonViews.BrandMenuView({
+                        model: IntranetManager.appSettings
+                    });
 
                     view.on('sidebar:toggle', function () {
 
@@ -47,7 +49,8 @@ define([
                 },
 
                 getSiteSearchView: function () {
-                    console.log('<< getSiteSearchView: load site SearchView  >>');
+                    console.info('getSiteSearchView: load site SearchView');
+
                     var view = new CommonViews.SiteSearchView();
 
 
@@ -76,9 +79,11 @@ define([
                         IntranetManager.siteMobileNav.show(that.getMobileNavView());
                         IntranetManager.siteBrand.show(that.getBrandMenuView());
                         IntranetManager.siteSearch.show(that.getSiteSearchView());
+
                         //setup the navigation
                         that.setupNavigation();
                         that.setupUtilityNavigation();
+
                         // alert('loading the header');
                     });
 

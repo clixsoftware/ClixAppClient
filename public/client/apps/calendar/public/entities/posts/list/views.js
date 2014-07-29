@@ -120,9 +120,9 @@ define(["app",
 
                     template: listTpl,
 
-                    itemView: Views.ListItemView,
+                   childView: Views.ListItemView,
 
-                    itemViewContainer: 'div#post-listing',
+                    childViewContainer: 'div#post-listing',
 
                     itemViewOptions: function(model){
                         return {

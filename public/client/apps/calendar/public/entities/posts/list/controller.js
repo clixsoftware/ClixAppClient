@@ -57,7 +57,7 @@ define([
                             IntranetManager.layoutHeader.reset();
                             IntranetManager.layoutHeader.show(that.getHeaderView(app));
 
-                            var fetchingPosts = IntranetManager.request('calendar:app:events', settings);
+                            var fetchingPosts = IntranetManager.request('calendar:posts', settings);
 
                             var fetchedPosts = fetchingPosts.then(function(posts){
                                 return posts;

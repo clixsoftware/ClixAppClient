@@ -54,9 +54,7 @@ define(["app",
                         if(this.model.get('index') === 1){
                             this.template = newsListItemLargeTpl;
                         }
-
                     },
-
 
                     ui: {
                         media : '.js-media',
@@ -65,19 +63,33 @@ define(["app",
 
                     onRender: function(){
 
-                        //alert(_.isEmpty(this.model.get('media')));
+                        var attachments = this.model.get('attachments');
 
-                    if(_.isEmpty(this.model.get('media'))){
+                        console.group('attachments');
+                        console.log(attachments);
+                        console.groupEnd();
 
-                            this.ui.media.hide();
-                        }else{
-                        //alert('Media is available');
-                        var media_image = this.model.get('media');
-                        $(this.ui.media_image).attr('src', media_image.source_url);
-                        //      this.ui.media_image.src = media_image.source_url;
-                    }
-                        console.log('<< Views.NewsListItemView - Loaded ***DONE ***  >>');
-                        $(this.$el).addClass('item item-' + this.model.get('index'));
+                        if(_.isEmpty(this.model.get('attachments'))){
+
+                                   console.log('Hide the media div');
+                                   this.ui.media.hide();
+
+                            }else{
+
+                                var images = attachments.images;
+
+                                console.group('images');
+                                console.log(images);
+                                console.groupEnd();
+
+                                console.log(images.lead);
+
+                                $(this.ui.media_image).attr('src', images.lead.source_url);
+
+                        }
+
+                            console.log('<< Views.NewsListItemView - Loaded ***DONE ***  >>');
+                            $(this.$el).addClass('item item-' + this.model.get('index'));
                     },
 
 

@@ -278,7 +278,6 @@ define([
 
                 },
 
-
                 showAppRelatedCategoriesWidget: function(objectId){
                     var that = this;
 
@@ -300,7 +299,6 @@ define([
                         })
                     });
                 },
-
 
                 showPostRelatedCategoriesWidget: function(objectId){
                     var that = this;
@@ -324,13 +322,13 @@ define([
                     });
                 },
 
-
                 getPostRelatedTagsView: function(categories){
                     return new WidgetsShow.PostRelatedTagsView({
                         collection: categories
                     })
 
                 },
+
                 showPostRelatedTagsWidget: function(objectId){
                     var that = this;
 

@@ -2,7 +2,7 @@
 <div class="row">
     <div class="col-lg-12"><a
             href="<%=urls.show.href%>"><img
-            class="img img-responsive js-media" src=""
+            class="img img-responsive js-media-image" src=""
             width="726"
             height="353" alt="<%=obj.title%>"></a>
 

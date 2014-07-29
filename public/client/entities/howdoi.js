@@ -14,11 +14,11 @@ define([
         function ( Entities, IntranetManager, Backbone, Marionette, $, _ ) {
 
 
-        var apiEndPoint = 'howdois';
+        var apiEndPoint = IntranetManager.opts.API()  + 'howdois';
 
         Entities.YPPost = Backbone.Model.extend({
 
-            url: IntranetManager.opts.API + apiEndPoint/*,
+            url: apiEndPoint/*,
 
             validation: {
                 title: {
@@ -38,7 +38,7 @@ define([
 
         Entities.YPPostCollection = Backbone.Collection.extend({
 
-            url: IntranetManager.opts.API + apiEndPoint,
+            url: apiEndPoint,
 
             model: Entities.YPPost/*,
 
@@ -52,7 +52,7 @@ define([
         var API = {
 
             getEndPoint: function(){
-                return IntranetManager.opts.API + apiEndPoint;
+                return apiEndPoint;
             },
 
             getEntities: function (endpoint) {
@@ -174,7 +174,7 @@ define([
         IntranetManager.reqres.setHandler("yp:posts:entity:new:endpoint", function (applicationId) {
             var post = new Entities.YPPost();
 
-            post.url = IntranetManager.opts.API+ 'yp/applications/' + applicationId +  '/posts';
+            post.url =  API.getEndPoint() + 'yp/applications/' + applicationId +  '/posts';
             console.log(post.url);
 
             return post;

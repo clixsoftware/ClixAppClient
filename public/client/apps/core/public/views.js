@@ -35,6 +35,8 @@ define([
                     onRender: function(){
 
                        this.$el.addClass('t' + this.model.get('id'));
+                       this.$el.css("","");
+
                         $( "<p>Test</p>" ).insertAfter(this.$el);
                         console.log('<< Views.CategoriesItemView - Loaded***DONE ***  >>');
                     }
@@ -43,11 +45,11 @@ define([
                 Views.CategoriesView = Marionette.CompositeView.extend({
                     template: categoryListTpl,
 
-                    itemView: Views.CategoriesItemView,
+                    childView: Views.CategoriesItemView,
 
                     emptyView: GlobalViews.NoRecordsView,
 
-                    itemViewContainer: 'div.ui.list',
+                    childViewContainer: 'div.ui.list',
 
                     className: 'widget-box',
 
@@ -85,11 +87,11 @@ define([
                 Views.TagsView = Marionette.CompositeView.extend({
                     template: tagListTpl,
 
-                    itemView: Views.TagItemView,
+                    childView: Views.TagItemView,
 
                     emptyView: GlobalViews.NoRecordsView,
 
-                    itemViewContainer: 'p.ui.list',
+                    childViewContainer: 'p.ui.list',
 
                     className: 'widget-box',
 
@@ -139,11 +141,11 @@ define([
                 Views.AttachmentView = Marionette.CompositeView.extend({
                     template: attachmentListTpl,
 
-                    itemView: Views.AttachmentItemView,
+                    childView: Views.AttachmentItemView,
 
                     emptyView: GlobalViews.NoRecordsView,
 
-                    itemViewContainer: 'div.ui.list',
+                    childViewContainer: 'div.ui.list',
 
                     className: 'widget-box',
 
@@ -195,11 +197,11 @@ define([
 
                     template: fileListTpl,
 
-                    itemView: Views.FileItemView,
+                    childView: Views.FileItemView,
 
                     emptyView: GlobalViews.NoRecordsView,
 
-                    itemViewContainer: 'div.ui.list',
+                    childViewContainer: 'div.ui.list',
 
                     className: 'widget-box',
 

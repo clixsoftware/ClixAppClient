@@ -98,7 +98,7 @@ define(
 
 
         });
-
+        console.info('--- Search App loaded ---');
         return IntranetManager.SearchManagerRouter;
     });
 

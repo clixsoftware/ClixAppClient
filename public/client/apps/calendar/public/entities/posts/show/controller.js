@@ -23,35 +23,37 @@ define([
 
                     require(['entities/applications', 'entities/calendar'], function () {
 
+                        console.group('showPostDetailsPage - Events');
+
+
                         var options = {
                             alias: opts.alias,
                             parent_feature: CalendarManager.feature.id
                         };
 
-                        console.log('@@ Fetching Current Application using = ' + options);
+                        console.log(opts);
+                        console.log(options);
+
+                        console.groupEnd();
 
                         var fetchingApp = IntranetManager.request('applications:feature:alias', options);
 
 
                         fetchingApp.then(function (app) {
 
-                            //console.log(app);
 
-                            //IntranetManager.appLayout = Show.Controller.getPostLayoutView();
-                            //IntranetManager.siteMainContent.show(IntranetManager.appLayout);
-                            //IntranetManager.trigger('home:news:posts', alias);
-                            //IntranetManager.trigger('dom:title', app.get('title'));
-                           // console.log(' Options - ' +  JSON.stringify(opts));
+                           console.group('Event Application');
+                            console.info(app);
+                           console.groupEnd();
+
                             return app;
+
 
                         }).then(function (app) {
 
-                                var fetchingPost = IntranetManager.request('calendar:event', opts.id);
+                             var fetchingPost = IntranetManager.request('calendar:posts:entity', opts.post_id);
 
-                                return  fetchingPost.then(function (post) {
-
-                                   // alert('post fetched');
-                                   // console.log(post);
+                            return  fetchingPost.then(function (post) {
 
                                     IntranetManager.layoutContent.reset();
                                     IntranetManager.layoutContent.show(that.getDetailsView(post));
@@ -78,7 +80,6 @@ define([
                                 zone: 'layoutZone2'
 
                             };
-
 
                             //IntranetManager.trigger('news:public:posts:categories', post.get('uuid'));
                             IntranetManager.trigger('core:object:categories', options_categories);

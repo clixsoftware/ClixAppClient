@@ -1,47 +1,83 @@
-/*
- * Application: News Manager
- * Views: News Manager NewViews
- * Module: NewsManager.Posts.New.Views
- *
- * */
-
 define([
     "app",
     "common/views",
+    "tpl!apps/classifieds/public/entities/posts/new/templates/post_new_form.tpl"
+],
+    function ( IntranetManager, GlobalViews, postNewFormTpl) {
 
-    "tpl!apps/news/entities/posts/new/templates/menu.tpl",
-    "tpl!apps/news/entities/posts/new/templates/header.tpl",
-    "jquery-address",
-    "semantic",
-    "jquery-plugins"
-], function (IntranetManager, AppCommonViews, menuTpl, headerTpl) {
+        IntranetManager.module("ClassifiedsManager.Public.Posts.New.Views",
+            function ( Views, IntranetManager, Backbone, Marionette, $, _ ) {
 
-    IntranetManager.module("NewsManager.Posts.New.Views",
-        function (Views, NewsManager, Backbone, Marionette, $, _) {
+                Views.NotificationView = GlobalViews.NotificationView.extend({
+                });
+
+                 Views.PostNewFormView = GlobalViews.BaseFormView.extend({
+                    template: postNewFormTpl,
+
+                    keyId: 'ad',
+
+                    triggers: {
+                        //  'click .js-toggle': 'form:toggle'
+
+                    },
+
+                    events: {
+                        'click .js-submit': 'submitClicked',
+                        'click #ad_content': 'startCountingStory',
+                        'click #ad_title': 'startCountingTitle'
+                    },
+
+                     startCountingStory: function(){
+                         // alert('rendered');
+                         $("#ad_content").charCounter(200 ,{container: "#counter"});
+                     },
 
 
-            Views.MenuView = Marionette.ItemView.extend({
+                     startCountingTitle: function(){
+                         // alert('rendered');
+                         $("#ad_title").charCounter(58,{container: "#counterTitle"});
+                       // $('#available_date').datepicker({});
+                     },
 
-                initialize: function () {
-                    //alert('init workspace form');
-                },
+                    tagName: "div",
 
-                template: menuTpl
+                    submitClicked: function (e) {
+
+                        e.preventDefault();
+                        //alert('submit clicked');
+                        var data = Backbone.Syphon.serialize(this);
+                        //console.log('backbone syphon - ' + data);
+                        this.trigger("form:submit", data);
+
+                    },
+
+                    ui: {
+//                        criterion: "input.js-filter-criterion"
+                    },
+
+                     onRender: function(){
+                        // alert('form has been rendered');
+                         //console.log($('#available_date'));
+
+                     },
+
+                    onFormDataInvalid: function (errors) {
+                        //console.log(errors);
+                      //  alert('the form has data errors');
+                        return false;
+                    },
+
+                    onFormDataOk: function(){
+                      //alert('the form was saved correctley');
+                    },
+
+                    onFormReset:function(){
+                        //alert('resetting the form');
+                    }
+
+                });
 
             });
 
-
-            Views.HeaderView = Marionette.ItemView.extend({
-
-                initialize: function () {
-                    //alert('init workspace form');
-                },
-
-                template: headerTpl
-
-            });
-
-        });
-
-    return IntranetManager.NewsManager.Posts.New.Views;
-});
+        return IntranetManager.ClassifiedsManager.Public.Posts.New.Views;
+    });

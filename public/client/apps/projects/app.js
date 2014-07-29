@@ -120,7 +120,7 @@ define(
 
 
         });
-
+        console.info('--- Projects App loaded ---');
         return IntranetManager.ProjectsManagerRouter;
     });
 

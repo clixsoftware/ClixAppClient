@@ -15,11 +15,11 @@ define([
         IntranetManager.module("Entities",
         function ( Entities, IntranetManager, Backbone, Marionette, $, _ ) {
 
-       var apiEndPoint = 'features';
+       var apiEndPoint = IntranetManager.opts.API()  + 'features';
 
        Entities.Feature = Backbone.Model.extend({
 
-            url: IntranetManager.opts.API + apiEndPoint,
+            url: apiEndPoint,
 
             validation: {
                 title: {
@@ -48,7 +48,7 @@ define([
         //Entities.configureStorage(Entities.Contact);
 
         Entities.FeatureCollection = Backbone.Collection.extend({
-            url: IntranetManager.opts.API + apiEndPoint,
+            url: apiEndPoint,
 
             model: Entities.Feature,
 
@@ -61,7 +61,7 @@ define([
         var API = {
 
             getEndPoint: function(){
-              return IntranetManager.opts.API + apiEndPoint;
+              return apiEndPoint;
             },
 
             getEntities: function () {
@@ -92,7 +92,7 @@ define([
 
                 var collection = new Entities.FeatureCollection();
 
-                collection.url = IntranetManager.opts.API + endpoint;
+                collection.url = IntranetManager.opts.API() + endpoint;
 
                 return this.getDAOdeferred(collection);
             },

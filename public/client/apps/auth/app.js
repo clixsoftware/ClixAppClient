@@ -113,7 +113,7 @@ define(
 
 
         });
-
+        console.info('--- Auth App loaded ---');
         return IntranetManager.AuthManagerRouter;
     });
 

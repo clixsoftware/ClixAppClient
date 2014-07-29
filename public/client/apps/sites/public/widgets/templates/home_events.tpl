@@ -9,7 +9,7 @@
         text-align: top;
         font-size: 100%;
         font-weight: normal;
-        padding: 0.5em;
+        padding: 4px 6px 4px 2px;
         min-height: 35px;
         width: 35px;
         background: #0B3A66;
@@ -36,7 +36,7 @@
     </div>
     <div class="category-block">
         <p><strong>
-            <a title="More in events" class="small" href="/sites/default/calendar">More
+            <a title="More in events" class="small" href="/sites/corporate/calendar">More
         in events</a></strong> <i class="glyphicon glyphicon-chevron-right small"></i></p>
     </div>
 </div>

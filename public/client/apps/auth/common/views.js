@@ -12,7 +12,7 @@ define([
         IntranetManager.module("AuthManager.Common.Views",
             function ( Views, IntranetManager, Backbone, Marionette, $, _ ) {
 
-                Views.LayoutView = Marionette.Layout.extend({
+                Views.LayoutView = Marionette.LayoutView.extend({
 
                     template: layoutTpl,
 

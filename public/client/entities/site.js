@@ -11,9 +11,11 @@ define([
         IntranetManager.module("Entities",
         function ( Entities, IntranetManager, Backbone, Marionette, $, _ ) {
 
+       var apiEndPoint =  IntranetManager.opts.API()  + 'site';
+
        Entities.Site = Backbone.Model.extend({
 
-            url: IntranetManager.opts.API + 'site',
+            url: apiEndPoint,
 
             validation: {
                 title: {
@@ -32,7 +34,7 @@ define([
         //Entities.configureStorage(Entities.Contact);
 
         Entities.SiteCollection = Backbone.Collection.extend({
-            url: IntranetManager.opts.API + 'site',
+            url: apiEndPoint,
 
             model: Entities.Site,
 
@@ -44,9 +46,13 @@ define([
 
         var API = {
 
+            getEndPoint: function () {
+                return apiEndPoint;
+            },
+
             getEntities: function () {
                 var items = new Entities.SiteCollection();
-                items.url = IntranetManager.opts.API + 'site/findall';
+                items.url = API.getEndPoint() + 'findall';
                 var defer = $.Deferred();
                 items.fetch({
                     success: function ( data ) {
@@ -66,7 +72,7 @@ define([
 
                 var item = new Entities.Site();
 
-                item.url = IntranetManager.opts.API + 'site/' + id;
+                item.url = API.getEndPoint() + '/' + id;
 
                 var defer = $.Deferred();
 
@@ -85,7 +91,7 @@ define([
 
                 var items = new Entities.FeatureCollection();
 
-                items.url =IntranetManager.opts.API + 'site/findall?' + query;
+                items.url =API.getEndPoint()  + '/findall?' + query;
 
                 var defer = $.Deferred();
                 items.fetch({

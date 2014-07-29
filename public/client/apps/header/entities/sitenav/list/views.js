@@ -51,9 +51,9 @@ define([
 
                     template: listTpl,
 
-                    itemView: Views.ListItemView,
+                    childView: Views.ListItemView,
 
-                    itemViewContainer: 'div',
+                    childViewContainer: 'div',
 
                     events: {
                         'click a.brand': 'brandClicked'
@@ -69,9 +69,9 @@ define([
 
                     template: listTpl,
 
-                    itemView: Views.ListItemView,
+                    childView: Views.ListItemView,
 
-                    itemViewContainer: 'ul#menu-primary-navigation',
+                    childViewContainer: 'ul#menu-primary-navigation',
 
                     events: {
                         'click a.brand': 'brandClicked'

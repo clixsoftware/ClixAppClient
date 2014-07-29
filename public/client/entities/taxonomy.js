@@ -13,13 +13,13 @@ define([
     IntranetManager.module("Entities",
         function ( Entities, IntranetManager, Backbone, Marionette, $, _ ) {
 
-            var apiEndPoint = 'taxmapping';
+            var apiEndPoint = IntranetManager.opts.API() + 'taxonomy';
 
             var taxonomyEndPoint = 'taxonomy';
 
             Entities.Taxonomy = Backbone.Model.extend({
 
-                url: IntranetManager.opts.API + apiEndPoint/*,
+                url: apiEndPoint/*,
 
                 validation: {
                     title: {
@@ -33,7 +33,7 @@ define([
             //Entities.configureStorage(Entities.Contact);
 
             Entities.TaxonomyCollection = Backbone.Collection.extend({
-                url: IntranetManager.opts.API + apiEndPoint,
+                url: apiEndPoint,
                 model: Entities.Taxonomy,
                 comparator: "title"
             });
@@ -44,11 +44,7 @@ define([
             var API = {
 
                 getEndPoint: function(){
-                    return IntranetManager.opts.API + apiEndPoint;
-                },
-
-                getTaxonomyEndPoint: function(){
-                    return IntranetManager.opts.API + taxonomyEndPoint;
+                    return apiEndPoint;
                 },
 
                 getEntities: function () {
@@ -133,12 +129,12 @@ define([
             });
 
             IntranetManager.reqres.setHandler("taxonomy:object:tags", function (objectid) {
-                var endPoint = API.getTaxonomyEndPoint() + '/object/' + objectid + '?tags=true';
+                var endPoint = API.getEndPoint() + '/object/' + objectid + '?tags=true';
                 return API.getEndpointEntities(endPoint);
             });
 
             IntranetManager.reqres.setHandler("taxonomy:app:tags", function (objectid) {
-                var endPoint = API.getTaxonomyEndPoint() + '/app/' + objectid + '?tags=true';
+                var endPoint = API.getEndPoint() + '/app/' + objectid + '?tags=true';
                 return API.getEndpointEntities(endPoint);
             });
 
@@ -147,7 +143,7 @@ define([
             });
 
             IntranetManager.reqres.setHandler("taxonomy:entity:by:code", function (code) {
-                var endPoint = API.getTaxonomyEndPoint() + '?code=' + code;
+                var endPoint = API.getEndPoint() + '?code=' + code;
                 return API.getEndpointEntities(endPoint);
             });
 
@@ -175,6 +171,13 @@ define([
             IntranetManager.reqres.setHandler('taxonomy:collection:new', function(){
                 return new Entities.TaxonomyCollection();
             });
+
+            IntranetManager.reqres.setHandler('taxonomy:term:children', function(termId){
+                var url = API.getEndPoint() + "/" + termId + "/terms";
+                console.log(url);
+               return new Entities.TaxonomyCollection();
+            });
+
             IntranetManager.reqres.setHandler('taxonomy:collection:set:categories', function(options){
 
                // alert('in categories');
@@ -184,27 +187,29 @@ define([
 
                 var col = new Entities.TaxonomyCollection();
 
-                _.each(options.collection, function(tag){
+                        _.each(options.collection, function(tag){
 
-                    var token = tag.split(';#');
-                    console.log(token);
-                    var id = token[0].trim();
-                    var info = token[1].split('|');
-                    var title = info[0];
-                    var uuid = info[1];
-                    var url = id + '-' + title.replace(/ /g, '-');
+                            var token = tag.split(';#');
+                            console.log(token);
+                            var id = token[0].trim();
+                            var info = token[1].split('|');
+                            var title = info[0];
+                            var uuid = info[1];
+                            var url = id + '-' + title.replace(/ /g, '-');
 
-                    var b = new Entities.Taxonomy({
-                        id: id,
-                        title: title,
-                        uuid: uuid,
-                        show_url: '/'  + options.parentFeature + '/' + options.appAlias + '/' +  options.appFeature + '/' + options.view +'/' + url + '/index.html'
-                    });
+                            var b = new Entities.Taxonomy({
+                                id: id,
+                                title: title,
+                                uuid: uuid,
+                               // show_url: '/'  + options.parentFeature + '/' + options.appAlias + '/' +  options.appFeature + '/' + options.view +'/' + url + '/index.html'
+                                show_url: options.url + '/categories/'  + url + '/index.html'
+                            });
 
-                    //console.log(b);
-                    col.add(b);
+                            //console.log('b = ' + b.get('show_url'));
+                            //console.log(b);
+                            col.add(b);
 
-                });
+                        });
 
                 console.log(col);
                 return col;
@@ -213,39 +218,29 @@ define([
             });
             IntranetManager.reqres.setHandler('taxonomy:collection:set:tags', function(options){
 
-               // alert('in tags');
-                console.group('Widget [Categories ]');
+                console.group('Widget [Tags ]');
                 console.log(options);
                 console.groupEnd();
 
                 var col = new Entities.TaxonomyCollection();
 
+                var id = 0;
                 _.each(options.collection, function(tag){
+                        id = id + 1;
 
-                   var token = tag.split(';#');
-                    console.log(token);
-                   var id = token[0].trim();
-                   var info = token[1].split('|');
-                   var title = info[0];
-                   var uuid = info[1];
-                   var url = id + '-' + title.replace(/ /g, '-');
+                           var url = $.trim(tag).replace(/ /g, '-');
 
-                   var b = new Entities.Taxonomy({
-                        id: id,
-                        title: title,
-                        uuid: uuid,
-                       show_url: '/'  + options.parentFeature + '/' + options.appAlias + '/' +  options.appFeature + '/' + options.view +'/' + url + '/index.html'
-                   });
-
-                   //console.log(b);
-                   col.add(b);
-
+                        var b = new Entities.Taxonomy({
+                            id: id,
+                            title: tag,
+                            show_url: '/'  + options.url + '/tags/'  + url
+                        });
+                        col.add(b);
                 });
 
                console.log(col);
                return col;
 
-                //return new Entities.TaxonomyCollection(models);
             });
         });
 

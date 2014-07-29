@@ -10,7 +10,7 @@ define([
         IntranetManager.module("HowDoIManager.Public.Posts.Show.Views",
             function ( Views, IntranetManager, Backbone, Marionette, $, _ ) {
 
-                Views.PostLayoutView = Marionette.Layout.extend({
+                Views.PostLayoutView = Marionette.LayoutView.extend({
 
                     template: postLayoutTpl,
 

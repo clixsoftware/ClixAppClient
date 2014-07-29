@@ -22,7 +22,7 @@ define([
             function ( Views, IntranetManager, Backbone, Marionette, $, _ ) {
 
 
-                Views.LayoutView = Marionette.Layout.extend({
+                Views.LayoutView = Marionette.LayoutView.extend({
                     tagName: 'nav',
                     /**/
                     className: 'navbar navbar-inverse',
@@ -32,7 +32,7 @@ define([
                         pace.start({
                             document: false
                         });
-                        console.log("pace is running");
+                        console.info("Pace in Header Application running");
                     },
 
                     template: layoutTpl

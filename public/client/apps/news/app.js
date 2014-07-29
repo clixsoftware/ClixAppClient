@@ -443,7 +443,7 @@ define(
 
 
         });
-
+        console.info('--- News App loaded ---');
         return IntranetManager.NewsManagerRouter;
     });
 

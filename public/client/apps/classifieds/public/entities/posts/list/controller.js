@@ -45,7 +45,7 @@ define([
                     },
 
 
-                    showPostsList: function (options) {
+                    showPostsList: function (opts) {
 
                         console.group('<< showPostsList : INIT >>');
 
@@ -55,7 +55,7 @@ define([
                         require(['entities/applications', 'entities/classifieds'], function () {
 
                             var settings = {
-                                alias: options.alias,
+                                alias: opts.alias,
                                 parent_feature: ClassifiedsManager.feature.id
                             };
 
@@ -64,26 +64,31 @@ define([
                             var fetchingApp = IntranetManager.request('applications:feature:alias', settings);
 
                             fetchingApp.then(function (app) {
-                                console.log('Classifieds Application ' + JSON.stringify(app));
+                             //   console.log('Classifieds Application ' + JSON.stringify(app));
+
+                                var page=1;
+
+                                if(opts.page){
+                                    page = opts.page;
+                                }
 
                                 var options = {
                                     app: app.id,
-                                    page: 1,
+                                    page: page,
                                     parent_application: app.get('id')
                                 };
 
                                 var fetchingRecords = IntranetManager.request('classifieds:posts:search', options);
-
-                                //load categories
-                                //IntranetManager.trigger('classifieds:load:categories');
 
                                 return [app, fetchingRecords, layout, options];
 
                             })
                                 .spread(function (app, fetchedPosts, layout, triggerOptions) {
 
-                                    var searchFormView = that.getSearchFormView();
+                                    console.log(app);
 
+
+                                    var searchFormView = that.getSearchFormView();
 
                                     var buildPaginate = function (collection, trigger, settings) {
                                         var PaginateModel = Backbone.Model.extend();
@@ -113,24 +118,24 @@ define([
                                                 console.log('Resetting the collection information');
 
                                                 //layout.peopleNav.reset();
-                                                layout.peopleNav.show(that.getListView(success));
+                                                layout.searchResults.show(that.getListView(success));
                                             });
 
 
                                         });
 
-                                        layout.peopleNav.show(that.getListView(collection));
+                                        layout.searchResults.show(that.getListView(collection));
                                         layout.paginator.show(paginatedView);
 
                                     };
 
-                                    layout.addRegion("peopleNav", "#peoplenav");
+                                    layout.addRegion("searchResults", "#searchResults");
                                     layout.addRegion("paginator", "#paginator");
                                     //setup the search
 
-                                    searchFormView.on("people:search", function (filterCriterion) {
+                                    searchFormView.on("posts:search", function (filterCriterion) {
 
-                                        console.log("people:search event , criterion = " + filterCriterion);
+                                        console.log("posts:search event , criterion = " + filterCriterion);
                                         // alert('searching');
                                         var search_options = {
                                             criterion: filterCriterion,
@@ -147,6 +152,15 @@ define([
 
                                     layout.on('show', function () {
 
+                                        IntranetManager.trigger('classifieds:public:action:menu');
+                                        var categories = app.get('taxonomy');
+
+
+                                        IntranetManager.trigger('core:object:categories', {
+                                            collection: categories,
+                                            url: '/classifieds/posts-by-category/{{slug}}'
+                                        });
+
                                         IntranetManager.layoutHeader.reset();
                                         IntranetManager.layoutHeader.show(that.getHeaderView(app));
 
@@ -158,7 +172,9 @@ define([
                                     });
 
                                     IntranetManager.appLayout = layout;
-                                    IntranetManager.layoutContent.show(IntranetManager.appLayout);
+
+                                    IntranetManager.siteMainContent.reset();
+                                    IntranetManager.siteMainContent.show(IntranetManager.appLayout);
 
                                 })
                                 .fail(function (error) {

@@ -9,7 +9,6 @@ define([
 
             List.Controller = {
 
-
                 getListView: function (results) {
 
                     return new ListViews.ListView({

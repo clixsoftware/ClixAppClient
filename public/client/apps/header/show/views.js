@@ -16,7 +16,7 @@ define([
                    $, _){
 
 
-   View.LayoutView = Marionette.Layout.extend({
+   View.LayoutView = Marionette.LayoutView.extend({
        tagName: 'header',
 
        className: 'page masthead',
