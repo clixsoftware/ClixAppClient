@@ -39,7 +39,7 @@ define([
             Entities.NewsPostCollection = Backbone.Collection.extend({
 
                 initialize: function (options) {
-                    console.log(options);
+                   // console.log(options);
                     this.on("error", this.error, this)
                 },
 

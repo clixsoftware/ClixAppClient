@@ -10,7 +10,7 @@ define([
             Show.Controller = {
 
                 getRecentlyUpdatedView: function (posts) {
-                    //alert('getting the view');
+
                     return new WidgetsShow.RecentlyUpdatedView({
                         collection: posts
                     });
@@ -155,13 +155,6 @@ define([
 
                 },
 
-                displayRecentlyUpdated: function (alias) {
-
-
-                    IntranetManager.layoutZone4.reset();
-                    IntranetManager.layoutZone4.show(this.getRecentlyUpdatedView());
-                },
-
                 displayPopularContentWidget: function (options) {
 
                     console.group('displayPopularContentWidget >>');
@@ -179,7 +172,7 @@ define([
                         "entities/content"
                     ], function () {
 
-                        var fetchingPost = IntranetManager.request('content:posts:popular');
+                        var fetchingPost = IntranetManager.request('content:posts:popular', {limit: 7});
 
                         fetchingPost.then(function (posts) {
 
@@ -203,25 +196,16 @@ define([
 
                     console.group('SitesManager: Widgets: displayRecentContent >>');
 
-/*                    var options = {
-                        parent_application_alias: alias,
-                        parent_application_feature: 'sites'
-                    };*/
-
                     var that = this;
 
                     require([
                         "entities/content"
                     ], function () {
 
-                        var fetchingPost = IntranetManager.request('content:posts:recent');
+                        var fetchingPost = IntranetManager.request('content:posts:recent', {limit: 7});
 
                         fetchingPost.then(function (posts) {
-
-                            // alert('posts found');
-                            // console.log(posts);
                             var view = that.getRecentlyUpdatedView(posts);
-                            // console.log(view);
 
                             IntranetManager.layoutZone4.reset();
                             IntranetManager.layoutZone4.show(view);

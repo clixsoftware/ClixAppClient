@@ -131,7 +131,9 @@ define([
 
                                // alert('post fetched and returned');
                                 IntranetManager.trigger('classifieds:public:action:menu');
-                                IntranetManager.trigger('classifieds:widget:recent:posts', {limit: 5});
+                                IntranetManager.trigger('classifieds:widget:recent:posts',
+                                    {limit: 5
+                                    });
 
                             var categories = app.get('taxonomy');
                                 IntranetManager.trigger('core:object:categories', {

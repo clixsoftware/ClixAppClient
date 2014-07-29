@@ -148,7 +148,7 @@ define([
              IntranetManager.reqres.setHandler("content:posts:popular", function (options) {
                 //var criteria = '?where={"featured": 1}'  ;
                 var criteria = '?limit=7&sort=views desc';
-                return API.query(criteria);
+                return API.search(criteria);
             });
 
 /*            IntranetManager.reqres.setHandler("content:posts:recent", function (options) {
@@ -173,7 +173,7 @@ define([
                 console.log(options);
                 var apiQuery = {
                     sort: "createdAt desc",
-                    limit:  (options.limit) ? options.limit : 5,
+                    limit:  (options["limit"] != undefined) ? options.limit : 5,
                     skip: (options.page) ? options.page : 0
                 };
 
@@ -188,7 +188,7 @@ define([
                 }
 
                 console.groupEnd();
-                return API.query(IntranetManager.buildQuery(apiQuery));
+                return API.search(IntranetManager.buildQuery(apiQuery));
 
             });
 

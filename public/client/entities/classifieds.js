@@ -168,6 +168,9 @@ define([
 
                 console.log(options);
                 var apiQuery = {
+                    where: {
+                        feature_alias: "classifieds"
+                    },
                     sort: "createdAt desc",
                     limit:  (options.limit) ? options.limit : 5,
                     skip: (options.page) ? options.page : 0

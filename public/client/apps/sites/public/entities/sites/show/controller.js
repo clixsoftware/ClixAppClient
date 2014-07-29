@@ -8,18 +8,8 @@ define([
 
             Show.Controller = {
 
-                getHeaderView: function () {
-                    return new ShowViews.HeaderView();
-                },
-
                 displayHomePage: function ( alias ) {
 
-
-                    //IntranetManager.siteNavigationBar.show(this.getHeaderView());
-                    // IntranetManager.trigger('home:posts:featured');
-                    //IntranetManager.trigger('home:news:posts');
-
-                   //alert('Display home page for site ' + alias );
                     var that = this;
 
                     require(['entities/applications'], function () {
@@ -35,7 +25,6 @@ define([
                         console.log('@@ Fetching Current Application using = ' + JSON.stringify(options));
 
                         fetchingApp.then(function(app){
-                            console.log(app);
 
                             if(!app){
                                 throw new Error('Intranet Application ' + alias + ' unavailable or not installed.');

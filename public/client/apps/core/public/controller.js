@@ -23,7 +23,8 @@ define([
                     console.log(options);
                     console.groupEnd();
 
-                    if(options.collection.categories){
+                    if(options.collection.categories && options.collection.categories.length > 0){
+
 
                         var TermModel = Backbone.Model.extend({});
 

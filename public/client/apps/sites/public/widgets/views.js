@@ -81,7 +81,7 @@ define([
                     },
 
                     onRender: function () {
-                        // alert('rendering how do i most active');
+                            // alert('rendering how do i most active');
                         console.log('<< Views.RecentlyUpdatedView - Loaded***DONE ***  >>');
                     }
                 });

@@ -66,7 +66,7 @@ define([
                             fetchingApp.then(function (app) {
                              //   console.log('Classifieds Application ' + JSON.stringify(app));
 
-                                var page=1;
+                                var page=0;
 
                                 if(opts.page){
                                     page = opts.page;

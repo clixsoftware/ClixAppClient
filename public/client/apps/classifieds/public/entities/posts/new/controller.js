@@ -32,9 +32,6 @@ define([
                             parent_feature: ClassifiedsManager.feature.id
                         };
 
-                        IntranetManager.layoutHeader.reset();
-                        IntranetManager.layoutSearch.reset();
-
                         IntranetManager.trigger('dom:title', 'New Classified Ad Form');
                         IntranetManager.trigger('classifieds:public:action:menu');
 
@@ -149,6 +146,14 @@ define([
                                     })
 
                             });
+
+                             view.on('show', function(){
+                                 IntranetManager.layoutHeader.reset();
+                                 IntranetManager.layoutSearch.reset();
+                                 IntranetManager.layoutZone3.reset();
+                             });
+
+
 
                             IntranetManager.layoutContent.reset();
                             IntranetManager.layoutContent.show(view);
