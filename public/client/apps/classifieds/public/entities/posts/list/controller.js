@@ -158,7 +158,7 @@ define([
 
                                         IntranetManager.trigger('core:object:categories', {
                                             collection: categories,
-                                            url: '/classifieds/posts-by-category/{{slug}}'
+                                            url: '/classifieds/posts-by-category/{{slug}}?uuid={{uuid}}'
                                         });
 
                                         IntranetManager.layoutHeader.reset();

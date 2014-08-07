@@ -23,8 +23,12 @@ define([
                     console.log(options);
                     console.groupEnd();
 
+
+                    console.log(options.collection.categories);
+
                     if(options.collection.categories && options.collection.categories.length > 0){
 
+                        console.log(options);
 
                         var TermModel = Backbone.Model.extend({});
 
@@ -34,18 +38,29 @@ define([
 
 
                         _.each(options.collection.categories, function(term){
-
+                            var title = S(term.title).replaceAll(' ', '&nbsp;');
+                            term.publicTitle = title + ' ';
+                            term.urlTrigger = options.urlTrigger;
                             term.slug = S(term.title).slugify().s;
                             term.show_url = S(options.url).template(term).s;
-                            console.log(term);
+                           // console.log(term);
                         })
 
                         var termsCollection = new TermModelCollection(options.collection.categories);
 
                         options.view = 'categories';
+                        var categoryView = that.getCategoriesView(termsCollection);
+
+                        categoryView.on('childview:category:navigate', function (args){
+                           IntranetManager.trigger(args.model.get('urlTrigger'), {
+                                slug: args.model.get('slug'),
+                                uuid: args.model.get('uuid'),
+                                url: args.model.get('show_url')
+                            });
+                        });
 
                         IntranetManager.layoutZone2.reset();
-                        IntranetManager.layoutZone2.show(that.getCategoriesView(termsCollection));
+                        IntranetManager.layoutZone2.show(categoryView);
 
 
                     }
@@ -90,6 +105,8 @@ define([
 
                             tags.add(item);
                         });
+
+                        console.log(tags);
 
                          IntranetManager.layoutZone3.reset();
                         IntranetManager.layoutZone3.show(that.getTagsView(tags));

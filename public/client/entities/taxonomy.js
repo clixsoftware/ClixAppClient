@@ -168,8 +168,8 @@ define([
                 return new Entities.Taxonomy();
             });
 
-            IntranetManager.reqres.setHandler('taxonomy:collection:new', function(){
-                return new Entities.TaxonomyCollection();
+            IntranetManager.reqres.setHandler('taxonomy:collection:set:new', function(coll){
+                return new Entities.TaxonomyCollection(coll);
             });
 
             IntranetManager.reqres.setHandler('taxonomy:term:children', function(termId){

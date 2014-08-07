@@ -17,7 +17,7 @@ define([
         IntranetManager.module("HowDoIManager.Public.Home.Show.Views",
             function ( Views, IntranetManager, Backbone, Marionette, $, _ ) {
 
-                Views.LayoutView = Marionette.Layout.extend({
+                Views.LayoutView = Marionette.LayoutView.extend({
 
                     template: layoutTpl,
 
@@ -43,7 +43,7 @@ define([
                 });
 
 
-                Views.SearchLayoutView = Marionette.Layout.extend({
+                Views.SearchLayoutView = Marionette.LayoutView.extend({
 
                     template: searchLayoutTpl,
 
@@ -120,7 +120,7 @@ define([
 
                     //template: listTpl,
 
-                    itemView: Views.ListItemView,
+                    childView: Views.ListItemView,
 
                     //itemViewContainer: 'div#entries_listing',
 
@@ -153,10 +153,10 @@ define([
 
                     template: searchListTpl,
 
-                    itemView: Views.SearchListItemView,
+                    childView: Views.SearchListItemView,
 
 
-                    itemViewContainer: 'div.listing',
+                    childViewContainer: 'div.listing',
 
                     onRender: function () {
                         console.log('Rendering the SearchListView view');

@@ -68,14 +68,18 @@ define([
                         }).spread(function ( app ) {
 
                             var options = {};
-                            var categories = app.get('categories');
+                            var taxonomy = app.get('taxonomy');
 
-                            var term = IntranetManager.request('taxonomy:entity:new');
+                            var TaxModel = Backbone.Model.extend({});
 
-                            options.collection = categories.trim().replace(/"/g, '').trim().split(',');
-                            term.set('items', IntranetManager.request('taxonomy:collection:set:categories', options))
+                            var taxCategories = new TaxModel();
+                            var categories = IntranetManager.request('taxonomy:collection:set:new', taxonomy.categories);
 
-                             var searchFormView = that.getSearchFormView(term);
+                           // options.collection = categories.trim().replace(/"/g, '').trim().split(',');
+                            //term.set('items', IntranetManager.request('taxonomy:collection:set:categories', options))
+                            taxCategories.set('items', categories);
+
+                             var searchFormView = that.getSearchFormView(taxCategories);
 
                             IntranetManager.layoutSearch.reset();
                             IntranetManager.layoutSearch.show(searchFormView);
@@ -98,29 +102,15 @@ define([
 
                             });
 
-                            var taxoptions = {
-                                parentFeature: app.get('parent_application_feature'),
-                                appFeature: 'how-do-i',
-                                appAlias: app.get('parent_application_alias'),
-                                parentId: app.get('parent_application'),
-                                objectId: app.get('uuid'),
-                                categories: app.get('categories'),
-                                tags: app.get('tags'),
-                                url: app.get('path')
-                            };
+                            IntranetManager.trigger('core:object:categories', {
+                                collection: taxonomy,
+                                url: '/how-do-i/posts-by-category/{{slug}}?uuid={{uuid}}'
+                            });
 
-
-
-                            console.group("app");
-                            console.log(app);
-                            console.groupEnd();
-
-                            console.group("taxoptions");
-                            console.log(taxoptions);
-                            console.groupEnd();
-                            // IntranetManager.trigger('news:public:category:list', parentApp.get('uuid'));
-                            IntranetManager.trigger('core:object:categories', taxoptions );
-
+                            IntranetManager.trigger('core:object:tags', {
+                                collection: taxonomy,
+                                url: '/how-do-i/posts-by-tag/{{slug}}'
+                            });
 
                         }).fail(function ( err ) {
                             //alert(' an error occurred ' + err);

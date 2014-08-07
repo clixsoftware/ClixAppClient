@@ -177,6 +177,11 @@ define(
               //  API.loadPostTagsWidget(postId);
             });
 
+            IntranetManager.on('vacancy:category:display', function (options) {
+                IntranetManager.navigate(options.url, 'silent');
+            });
+
+
 
             IntranetManager.addInitializer(function () {
                 new VacancyManagerRouter.Router({

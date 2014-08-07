@@ -1,2 +1,2 @@
-<a href="<%=show_url%>"><%=title%></a>
+<a  href="<%=show_url%>" data-uuid="<%=uuid%>" class="category-item"><%=publicTitle%></a>
 

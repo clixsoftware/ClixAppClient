@@ -26,6 +26,10 @@ define([
                         this.model.set('index', options.index);
                     },
 
+                    triggers: {
+                        'click a.category-item':'category:navigate'
+                    },
+
                     template: categoryListItemTpl,
 
                     tagName: 'span',
@@ -49,7 +53,7 @@ define([
 
                     emptyView: GlobalViews.NoRecordsView,
 
-                    childViewContainer: 'div.ui.list',
+                    childViewContainer: 'p.taglisting.page',
 
                     className: 'widget-box',
 

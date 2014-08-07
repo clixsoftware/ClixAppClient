@@ -111,8 +111,8 @@ require([
     });
 
     var options = {
-        //api_server_url: 'http://192.168.2.122:3100/api/v1/'  //development machine at Clix
-        api_server_url: 'http://localhost:3100/api/v1/' //UHWI development
+        api_server_url: 'http://192.168.2.122:3100/api/v1/'  //development machine at Clix
+       // api_server_url: 'http://localhost:3100/api/v1/' //UHWI development
         //api_server_url: 'http://192.168.2.122:3100/api/v1/' //UHWI production
     };
 

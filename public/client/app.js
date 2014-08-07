@@ -283,6 +283,7 @@ define([
 
                     if (href !== undefined) {
                         if (href.slice(protocol.length) !== protocol) {
+                          //  alert('global clikc');
                             evt.preventDefault();
                             IntranetManager.navigate(href.replace('store', ''), true);
                         }

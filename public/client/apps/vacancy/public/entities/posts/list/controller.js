@@ -150,12 +150,14 @@ define([
 
                                         IntranetManager.trigger('core:object:categories', {
                                             collection: taxonomy,
-                                            url: '/classifieds/posts-by-category/{{slug}}'
+                                            urlTrigger: 'vacancy:category:display',
+                                            url: '/vacancies/posts-by-category/{{slug}}'
                                         });
 
                                         IntranetManager.trigger('core:object:tags', {
                                             collection: taxonomy,
-                                            url: '/classifieds/posts-by-tags/{{slug}}'
+                                            urlTrigger: 'vacancy:category:display',
+                                            url: '/vacancies/posts-by-tags/{{slug}}'
                                         });
 
                                         //empty layoutHeader and show Header
