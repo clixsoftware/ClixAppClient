@@ -12,8 +12,19 @@
 </a>
 
     <div class="media-body">
-        <div><p><span class="listglyph"><i class="glyphicon glyphicon-calendar"></i> <%=moment(updatedAt).format("DD MMM YYYY")%></span> <span
-                class="listglyph"><span class="glyphicon glyphicon-stop gb8"></span>&nbsp;Evidence and analysis</span>&nbsp;&nbsp;
+        <div><p><span class="listglyph"><i class="glyphicon glyphicon-calendar"></i> <%=moment(updatedAt).format("DD MMM YYYY")%></span>
+        <span class="listglyph">
+            <%  var count= 0;
+                    obj.taxonomy.categories.forEach(function(term) {
+                        count++
+            %>
+
+            <span class="glyphicon glyphicon-stop gb<%=count%>"></span>&nbsp; <%= term.title%>
+            <% }); %>
+
+        </span>&nbsp;&nbsp;
+
+            &nbsp;&nbsp;
         </p></div>
         <p><%=description%></p>
     </div>

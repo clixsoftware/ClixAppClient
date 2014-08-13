@@ -108,7 +108,7 @@ define([
                             feature_alias: 'sites'
                         };
 
-                        var fetchingPosts = IntranetManager.request('calendar:apps:posts:upcoming', options);
+                        var fetchingPosts = IntranetManager.request('calendar:app:posts:upcoming', options);
 
                         fetchingPosts.then(function (posts) {
                             IntranetManager.layoutZone6.reset();

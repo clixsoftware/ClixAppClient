@@ -47,24 +47,33 @@ define([
 
                     showPostsList: function (opts) {
 
-                        console.group('<< showPostsList : INIT >>');
+                        console.group('<< classifieds : List: showPostsList  >>');
+
+                        console.group('classifieds  Options');
+                        console.log(opts);
+                        console.groupEnd();
 
                         var that = this;
                         var layout = this.getLayoutView();
 
-                        require(['entities/applications', 'entities/classifieds'], function () {
+                        require(['entities/applications', 'entities/classifieds', 'entities/taxonomy', 'entities/core'], function () {
 
                             var settings = {
                                 alias: opts.alias,
                                 parent_feature: ClassifiedsManager.feature.id
                             };
 
-                            console.log('@@ Fetching Current Application using = ' + JSON.stringify(settings));
+                            console.group('@@ Fetching classifieds  Application ' );
+                            console.log(settings);
+                            console.groupEnd();
 
                             var fetchingApp = IntranetManager.request('applications:feature:alias', settings);
 
                             fetchingApp.then(function (app) {
-                             //   console.log('Classifieds Application ' + JSON.stringify(app));
+
+                                console.group('classifieds  App');
+                                console.log(app);
+                                console.groupEnd();
 
                                 var page=0;
 
@@ -75,19 +84,22 @@ define([
                                 var options = {
                                     app: app.id,
                                     page: page,
-                                    parent_application: app.get('id')
+                                    parent_application: app.get('id'),
+                                    categories: opts.uuid,
+                                    tag: opts.tag
                                 };
 
-                                var fetchingRecords = IntranetManager.request('classifieds:posts:search', options);
+                                var fetchingRecords = IntranetManager.request('classifieds:app:posts:search', options);
 
                                 return [app, fetchingRecords, layout, options];
 
                             })
                                 .spread(function (app, fetchedPosts, layout, triggerOptions) {
 
-                                    console.log(app);
+                                    var pageTitle = app.get('title');
+                                    var appUrls = app.get('urls');
 
-
+                                    console.log(Backbone.history.location);
                                     var searchFormView = that.getSearchFormView();
 
                                     var buildPaginate = function (collection, trigger, settings) {
@@ -96,14 +108,14 @@ define([
                                         var paginator = new PaginateModel({
                                             items: collection.total,
                                             itemsOnPage: collection.limit,
-                                            path: app.get('path')
+                                            path: opts.path
                                         });
 
                                         var paginatedView = that.getPaginatorView(paginator);
 
-                                        paginatedView.on('change:page', function (pageNumber) {
+                                        paginatedView.on('paginatedView', function (pageNumber) {
 
-                                            console.group('Page Change Initialize');
+                                            console.group('paginatedView: paginatedView: event');
 
                                             settings.page = pageNumber;
 
@@ -115,9 +127,7 @@ define([
                                             var records = IntranetManager.request(trigger, settings);
 
                                             records.then(function (success) {
-                                                console.log('Resetting the collection information');
-
-                                                //layout.peopleNav.reset();
+                                                layout.searchResults.reset();
                                                 layout.searchResults.show(that.getListView(success));
                                             });
 
@@ -135,39 +145,91 @@ define([
 
                                     searchFormView.on("posts:search", function (filterCriterion) {
 
-                                        console.log("posts:search event , criterion = " + filterCriterion);
+                                        console.group('searchFormView: posts:search: event');
+
                                         // alert('searching');
                                         var search_options = {
                                             criterion: filterCriterion,
-                                            parent_application: app.id
+                                            parent_application: app.id,
+                                            categories: opts.uuid
                                         };
 
-                                        var search = IntranetManager.request("classifieds:posts:search", search_options);
+                                        console.log(search_options);
+                                        console.groupEnd();
+
+                                        var search = IntranetManager.request("classifieds:app:posts:search", search_options);
 
                                         search.then(function (results) {
-                                            buildPaginate(results, 'classifieds:posts:search', search_options);
+                                            buildPaginate(results, 'classifieds:app:posts:search', search_options);
                                         });
 
                                     });
 
+                                    var updateTitles = function(title, lastCrumb){
+
+                                       // alert('updating titles');
+
+                                        IntranetManager.trigger('dom:title',title );
+
+                                        IntranetManager.trigger('core:object:breadcrumbs', {
+                                            crumbs: [
+                                                {title: app.get('title'), url:appUrls.friendly.href},
+                                                {title: title, url:''}
+                                            ]
+                                        });
+
+                                     };
+
                                     layout.on('show', function () {
 
+                                        //show the classifieds menu
                                         IntranetManager.trigger('classifieds:public:action:menu');
-                                        var categories = app.get('taxonomy');
-
 
                                         IntranetManager.trigger('core:object:categories', {
-                                            collection: categories,
-                                            url: '/classifieds/posts-by-category/{{slug}}?uuid={{uuid}}'
+                                            collection:  app.get('taxonomy'),
+                                            url: '/classifieds/' + opts.alias +  '/posts-by-category/{{slug}}?uuid={{uuid}}',
+                                            urlTrigger: "classifieds:category:posts"
+                                        });
+
+                                        IntranetManager.trigger('core:object:tags', {
+                                            collection:  app.get('taxonomy'),
+                                            url: '/classifieds/'  + opts.alias +  '/posts-by-tag/{{slug}}'
                                         });
 
                                         IntranetManager.layoutHeader.reset();
-                                        IntranetManager.layoutHeader.show(that.getHeaderView(app));
+
+                                        if(triggerOptions.categories) {
+
+                                            console.group('Searching by Taxonomy/Category');
+                                            console.log(triggerOptions.categories)
+                                            console.groupEnd();
+
+
+                                            var fetchingTaxonomy = IntranetManager.request('taxonomy:entity:uuid', triggerOptions.categories);
+
+                                            fetchingTaxonomy.then(function (category) {
+
+                                                  IntranetManager.layoutHeader.show(that.getHeaderView(category));
+                                                updateTitles("classifieds by category :: " + category.get('title'), null);
+
+                                            });
+
+                                        }else if (triggerOptions.tag){
+
+                                            var tagModel = IntranetManager.request('core:new:entity', {title: 'All classifieds tagged : ' + triggerOptions.tag});
+                                            updateTitles("All classifieds tagged : : " + triggerOptions.tag, null);
+                                            IntranetManager.layoutHeader.show(that.getHeaderView(tagModel));
+
+                                        }else{
+                                            IntranetManager.trigger('dom:title', app.get('title') );
+                                            IntranetManager.layoutHeader.show(that.getHeaderView(app));
+
+                                        }
 
                                         IntranetManager.layoutSearch.reset();
                                         IntranetManager.layoutSearch.show(searchFormView);
 
-                                        buildPaginate(fetchedPosts, 'classifieds:posts:search', triggerOptions);
+                                        buildPaginate(fetchedPosts, 'classifieds:app:posts:search', triggerOptions);
 
                                     });
 
@@ -179,22 +241,12 @@ define([
                                 })
                                 .fail(function (error) {
 
-                                    console.log(error);
+                                    IntranetManager.trigger('core:error:action', error);
                                 });
 
                         });
 
 
-                    },
-
-                    getCategoriesView: function () {
-                        return new ListViews.CategoryView();
-                    },
-
-                    displayPatientCategories: function () {
-
-                        IntranetManager.layoutZone2.reset();
-                        IntranetManager.layoutZone2.show(new this.getCategoriesView());
                     }
                 }
 

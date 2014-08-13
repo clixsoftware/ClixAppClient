@@ -2,88 +2,109 @@ define([
     "app",
     "apps/blogs/public/entities/posts/show/views",
     "moment"
-], function (IntranetManager, PostsShowViews) {
+], function (IntranetManager, PostShowViews) {
 
-    IntranetManager.module("BlogsManager.Public.Blogs.Show",
+    IntranetManager.module("BlogsManager.Public.Posts.Show",
         function (Show, BlogsManager, Backbone, Marionette, $, _) {
 
             Show.Controller = {
 
-                getDetailsView: function (post) {
-                    return new PostsShowViews.DetailsView({
-                        model: post
-                    });
+                getPostLayoutView: function () {
+                    return new PostShowViews.PostLayoutView();
 
                 },
 
-                showPostDetailsPage: function (opts) {
-                    // alert('showing a public news post' + opts.slug);
+                getPublicView: function (post) {
+                    return new PostShowViews.PublicView({
+                        model: post
+                    });
+                },
+
+                showPostDetails: function (opts) {
+
+                    console.group('<< blogs: List: showPostDetailss  >>');
+
+                    console.group('blogs Options');
+                    console.log(opts);
+                    console.groupEnd();
+
                     var that = this;
 
                     require(['entities/applications', 'entities/blogs'], function () {
-
 
                         var options = {
                             alias: opts.alias,
                             parent_feature: BlogsManager.feature.id
                         };
 
-                        console.log('@@ Fetching Current Application using = ' + options);
+                        console.group('@@ Fetching blogs Application ' );
+                        console.log(options);
+                        console.groupEnd();
 
                         var fetchingApp = IntranetManager.request('applications:feature:alias', options);
 
-
                         fetchingApp.then(function (app) {
+                            console.group('blogs App');
                             console.log(app);
+                            console.groupEnd();
 
-                            //IntranetManager.appLayout = Show.Controller.getPostLayoutView();
+                            var fetchingPost = IntranetManager.request("blogs:app:posts:entity", {
+                                id: opts.post_id,
+                                parent_application: app.id
+                            });
 
-                            // IntranetManager.siteMainContent.show(IntranetManager.appLayout);
+                            return fetchingPost.then(function (post) {
 
-                            //  IntranetManager.trigger('home:news:posts', alias);
-                            //IntranetManager.trigger('dom:title', app.get('title'));
-                            return app;
+                                var layout = that.getPostLayoutView();
 
-                        }).then(function (app) {
+                                IntranetManager.layoutContent.reset();
+                                IntranetManager.layoutContent.show(that.getPublicView(post));
 
-                                var fetchingPost = IntranetManager.request("blogs:post", opts.id);
+                                IntranetManager.trigger('dom:title', post.get('title'));
 
-                                IntranetManager.trigger('blogs:recent:posts', {
-                                    applicationId: app.get('id')
-                                })  ;
+                                return [post, app];
 
-                                return    fetchingPost.then(function (post) {
-                                    console.log(post);
+                            }).spread(function (post, app) {
 
-                                    IntranetManager.layoutContent.reset();
-                                    IntranetManager.layoutContent.show(that.getDetailsView(post));
+                                var appUrls = app.get('urls');
 
-                                    IntranetManager.trigger('dom:title', post.get('title'));
-
-                                    return post;
-
+                                IntranetManager.trigger('core:object:categories', {
+                                    collection: post.get('taxonomy'),
+                                    url:  '/sites' + app.get('path') + '/posts-by-category/{{slug}}?uuid={{uuid}}',
+                                    urlTrigger: "blogs:category:posts"
                                 });
 
-                            }).then(function (post) {
+                                IntranetManager.trigger('core:object:tags', {
+                                    collection: post.get('taxonomy'),
+                                    url: '/sites' + app.get('path') + '/posts-by-tag/{{slug}}'
+                                });
 
-                                var createdBy = post.get('created_by');
-                                IntranetManager.trigger('blogs:post:profile', createdBy.id);
+                                IntranetManager.trigger('blogs:posts:recent', {parent_application: app.id});
 
+                                IntranetManager.trigger('blogs:popular:posts', {parent_application: app.id});
+
+                                IntranetManager.trigger('core:object:breadcrumbs', {
+                                    crumbs: [
+                                        {title: app.get('title'), url:appUrls.friendly.href},
+                                        {title: post.get('short_title'), url:''}
+                                    ]
+                                });
 
                             }).fail(function (err) {
-                                //alert(' an error occurred ' + err);
-                                console.log('an error occurred ' + err);
+                                IntranetManager.trigger('core:error:action', err);
+
                             });
+
+                        });
 
                     });
 
-                },
 
-
-
+                }
             }
+
         });
 
-    return IntranetManager.BlogsManager.Public.Blogs.Show.Controller;
+    return IntranetManager.BlogsManager.Public.Posts.Show.Controller;
 });
 

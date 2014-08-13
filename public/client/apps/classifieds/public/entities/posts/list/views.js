@@ -1,31 +1,39 @@
+/*
+ * Application: Workspace
+ * Views: Workspace List Views
+ * Module: WorkspaceManager.List.Views
+ *
+ * */
+
 define(["app",
-        "common/views",
-        "tpl!apps/classifieds/public/entities/posts/list/templates/list.tpl",
-        "tpl!apps/classifieds/public/entities/posts/list/templates/list_item.tpl",
-        "tpl!apps/classifieds/public/entities/posts/list/templates/layout.tpl",
-        "tpl!apps/classifieds/public/entities/posts/list/templates/search_form.tpl",
-        "tpl!apps/classifieds/public/entities/posts/list/templates/atoz_navigation.tpl",
-        "tpl!apps/classifieds/public/entities/posts/list/templates/sort_filter.tpl",
-        "tpl!apps/classifieds/public/entities/posts/list/templates/paginator.tpl",
-        "tpl!apps/classifieds/public/entities/posts/list/templates/header.tpl",
-        "tpl!apps/classifieds/public/entities/posts/list/templates/categories.tpl"
-    ],
-    function (IntranetManager, GlobalViews, listTpl, listItemTpl, layoutTpl, searchFormTpl, atozTpl, sortFilterTpl, paginatorTpl, headerTpl, categoriesTpl) {
+    "common/views",
+    "tpl!apps/classifieds/public/entities/posts/list/templates/layout.tpl",
+    "tpl!apps/classifieds/public/entities/posts/list/templates/home.tpl",
+    "tpl!apps/classifieds/public/entities/posts/list/templates/list_item.tpl",
+    "tpl!apps/classifieds/public/entities/posts/list/templates/list_item_large.tpl",
+    "tpl!apps/classifieds/public/entities/posts/list/templates/no_records.tpl",
+    "tpl!apps/classifieds/public/entities/posts/list/templates/paginator.tpl",
+    "tpl!apps/classifieds/public/entities/posts/list/templates/search_form.tpl",
+        "tpl!apps/classifieds/public/entities/posts/list/templates/header.tpl"
+],
+    function ( IntranetManager, GlobalViews,  layoutTpl,homeTpl, listItemTpl, listItemLargeTpl,
+        noRecordsTpl, paginatorTpl, searchFormTpl, headerTpl) {
         IntranetManager.module("ClassifiedsManager.Public.Posts.List.Views",
-            function (Views, IntranetManager, Backbone, Marionette, $, _) {
+            function ( Views, IntranetManager, Backbone, Marionette, $, _ ) {
 
                 Views.SearchFormView = Marionette.ItemView.extend({
                     template: searchFormTpl,
 
                     triggers: {
                         //"click button.js-new": "contact:new"
-
                     },
 
                     events: {
                         //"submit #filter-form": "filterContacts"
                         "click #search-submit": "filterContacts"
                     },
+
+                    className:  'well well-sm',
 
                     ui: {
                         criterion: "input.js-filter-criterion"
@@ -47,94 +55,114 @@ define(["app",
 
                 });
 
-                Views.SortFilterView = Marionette.ItemView.extend({
-                    template: sortFilterTpl,
-                    onRender: function () {
-                        console.log('Rendering the SortFilterView');
-                    }
-
-                });
-
-                Views.AtoZView = Marionette.ItemView.extend({
-                    template: atozTpl,
-
-                    className: 'col-lg-12 col-md-12 col-sm-12',
-
-                    onRender: function () {
-                        console.log('Rendering the AtoZView');
-                    }
-
-                });
-
                 Views.ListItemView = Marionette.ItemView.extend({
-                    template: listItemTpl,
 
-                    className: "",
-
-                    onRender: function () {
-                        console.log('Rendering the ListItemView view');
-                    }
-
-                });
-
-                Views.ListView = Marionette.CompositeView.extend({
-                    onBeforeRender: function () {
-                        //console.log(JSON.stringify(this.model));
-
+                    initialize: function(options){
+                        console.log('index of model ' + options.index);
+                        this.model.set('index', options.index);
                     },
 
-                    initialize: function () {
-                        // this.collection.groupBy('category');
-                        //this.collection = this.model.vc;
-                        // this.collection = this.model.get('vc');
-                        //console.log(JSON.stringify(this.collection.vc));
-
-                    },
-
-                    childViewOptions: function (model) {
-                        return {
-                            index: this.collection.indexOf(model) + 1
+                    onBeforeRender: function(){
+                        if(this.model.get('index') === 1){
+                            this.template = listItemLargeTpl;
                         }
                     },
 
                     ui: {
-                        pagi: '#pag'
+                        media : '.js-media',
+                        media_image: '.js-media-image'
                     },
 
-                    className: 'col-lg-12 col-md-12 col-sm-12',
+                    onRender: function(){
 
-                    template: listTpl,
+                        var attachments = this.model.get('attachments');
 
-                    childView: Views.ListItemView,
-
-                    childViewContainer: 'div'
-
-                    /*                    onRender: function() {
-                     // $(this.$el).html(this.collection.pageInfo());
-
-                     var that = this;
-
-                     $(this.ui.pagi).pagination({
-                     items: this.model.get('items'),
-                     itemsOnPage: this.model.get('itemsOnPage'),
-                     cssStyle: '',
-                     hrefTextPrefix: '/directory/people/page/',
-                     onPageClick: function(pageNumber, event) {
-                     // Callback triggered when a page is clicked
-                     // Page number is given as an optional parameter
-                     that.trigger('change:page', pageNumber);
-                     }
-                     });
+                        console.group('Render -> classifieds : Lists: Views : NewsListItemView');
+                        console.info('attachments');
+                        console.log(attachments);
 
 
-                     //  console.log(this.model);
-                     }*/
+                        if(_.isEmpty(this.model.get('attachments'))){
+
+                                   console.warn('No attachments found - hide the media div');
+                                   this.ui.media.hide();
+
+                            }else{
+
+                                var images = attachments.images;
+
+                                console.group('images');
+                                console.log(images);
+                                console.groupEnd();
+
+                                console.log(images.lead);
+
+                                $(this.ui.media_image).attr('src', images.lead.source_url);
+
+                        }
+
+                        $(this.$el).addClass('item item-' + this.model.get('index'));
+                        console.groupEnd();
+
+
+                    },
+
+                 template: listItemTpl
 
                 });
 
-                /*                Views.ListView = Marionette.CollectionView.extend({
-                 itemView: Views.ListCategoryView
-                 });*/
+                Views.HomeView = Marionette.CollectionView.extend({
+
+                    template: homeTpl,
+
+                    itemView: this.PublicNewsListCategoryView,
+
+                    onBeforeRender: function () {
+                        // set up final bits just before rendering the view's `el`
+                        $('body').addClass('public classifieds home').removeClass('app');
+
+                        console.log('<< Views.HomeView: Loaded ***COMPLETED*** >>');
+                    }
+
+                });
+
+                Views.BlankView = GlobalViews.BlankView.extend({
+
+                    onRender: function(){
+                        this.$("h1.ui.header").text("No postings");
+                        this.$(".ui.warning .header").text("New App");
+                        this.$("span.message").text('Click the button below to create your first Posting.');
+                        this.$(".js-add-record").text('Create Posting');
+                        this.$('.js-icon').addClass('wrench');
+
+                   }
+                });
+
+                Views.ListView = Marionette.CompositeView.extend({
+
+                    className: "widget",
+
+                    template: homeTpl,
+
+                    childView: Views.ListItemView,
+
+                    childViewContainer: 'div#post-listing',
+
+                    childViewOptions: function(model){
+                        return {
+                            index: this.collection.indexOf(model) +1
+                        }
+                    },
+
+                    triggers: {
+                        'click .js-new-category': 'command:new:category'
+                    },
+
+                    onRender: function () {
+                        $('body').addClass('page-template-page-classifieds-php');
+                        console.info('Rendered : classifieds: List: ListViews');
+                    }
+                });
 
                 Views.PaginatedView = Marionette.ItemView.extend({
 
@@ -152,24 +180,24 @@ define(["app",
 
                     onRender: function () {
                         // $(this.$el).html(this.collection.pageInfo());
-
+                        console.group('classifieds: List: Views: Paginator');
                         var that = this;
+                        console.log(this.model);
 
                         $(this.$el).pagination({
                             items: this.model.get('items'),
                             itemsOnPage: this.model.get('itemsOnPage'),
                             cssStyle: '',
-                            hrefTextPrefix: this.model.get('path') + '/page/',
+                            hrefTextPrefix: this.model.get('path') + '&page=',
                             onPageClick: function (pageNumber, event) {
                                 // Callback triggered when a page is clicked
                                 // Page number is given as an optional parameter
-                               // alert('page click ' + pageNumber);
+                                // alert('page click ' + pageNumber);
                                 that.trigger('change:page', pageNumber);
                             }
                         });
 
-
-                        //  console.log(this.model);
+                       console.groupEnd();
                     },
 
                     previous: function () {
@@ -183,16 +211,15 @@ define(["app",
                 });
 
                 Views.LayoutView = Marionette.LayoutView.extend({
-                    template: layoutTpl
+                    template: layoutTpl,
+
+                    className: 'layout-wrapper'
                 });
 
                 Views.HeaderView = Marionette.ItemView.extend({
-                    template: headerTpl
+                    template: headerTpl,
 
-                });
-
-                Views.CategoryView = Marionette.ItemView.extend({
-                    template: categoriesTpl
+                    className: 'row'
                 });
 
             });

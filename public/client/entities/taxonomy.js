@@ -18,16 +18,7 @@ define([
             var taxonomyEndPoint = 'taxonomy';
 
             Entities.Taxonomy = Backbone.Model.extend({
-
-                url: apiEndPoint/*,
-
-                validation: {
-                    title: {
-                        required: true
-                    }
-
-                }*/
-
+                url: apiEndPoint
             });
 
             //Entities.configureStorage(Entities.Contact);
@@ -52,27 +43,33 @@ define([
                     return this.getDAOCollection(apiEndPoint);
                 },
 
-                getEntity: function (id, endpoint) {
-
+                getEntity: function (endpoint) {
 
                     var item = new Entities.Taxonomy();
-                    if(id){
+/*                    if(id){
                         item.id = id;
-                    }
-                    item.url = endpoint;
+                    }*/
+                    item.url = API.getEndPoint() + endpoint;
                     return this.getDAOdeferred(item);
                 },
 
+                search: function(query){
 
-                searchEntities: function(query){
-
-                    var url = '?' + query;
+                    var url = '/search?' + query;
                     return this.getDAOCollection(url);
 
                 },
 
-                getEndpointEntities: function(endpoint)
-                {
+                find: function(endpoint){
+                    console.group('How Do I API : Find');
+                    console.log(endpoint);
+                    console.groupEnd();
+
+
+                    return this.getDAOCollection(endpoint);
+                },
+
+                getEndpointEntities: function(endpoint) {
                     var collection = new Entities.TaxonomyCollection();
 
                     collection.url = endpoint;
@@ -83,17 +80,16 @@ define([
 
                 getDAOCollection: function(endpoint){
 
-                    console.log('<< getDAOCollection: YP Posts -> ' +  endpoint + '  >>');
+                    console.group('How Do I API : getDAOCollection');
 
 
                     var url = this.getEndPoint() + endpoint;
-                    console.log('colletion url - ' + url);
-
                     var collection = new Entities.TaxonomyCollection();
-
                     collection.url = url;
 
+                    console.info('<< getDAOCollection: How Do I  Posts -> ' +  url + '  >>');
 
+                    console.groupEnd();
                     return this.getDAOdeferred(collection);
                 },
 
@@ -115,32 +111,26 @@ define([
 
                 }
 
-
             };
 
             IntranetManager.reqres.setHandler("taxonomy:entities", function () {
                 return API.getEntities();
             });
 
-            IntranetManager.reqres.setHandler("taxonomy:object:terms", function (objectid) {
-                var endPoint = API.getTaxonomyEndPoint() + '/object/' + objectid;
-                return API.getEndpointEntities(endPoint);
-                //return API.searchEntities("object_id=" + objectid);
-            });
-
-            IntranetManager.reqres.setHandler("taxonomy:object:tags", function (objectid) {
-                var endPoint = API.getEndPoint() + '/object/' + objectid + '?tags=true';
-                return API.getEndpointEntities(endPoint);
-            });
-
-            IntranetManager.reqres.setHandler("taxonomy:app:tags", function (objectid) {
-                var endPoint = API.getEndPoint() + '/app/' + objectid + '?tags=true';
-                return API.getEndpointEntities(endPoint);
-            });
-
             IntranetManager.reqres.setHandler("taxonomy:entity", function (id) {
                 return API.getEntity(id);
             });
+
+            IntranetManager.reqres.setHandler("taxonomy:entity:uuid", function (uuid) {
+                console.group('Handler taxonomy:entity:uuid');
+                var endpoint =  "?uuid=" + uuid;
+                console.info(uuid);
+                console.groupEnd();
+                return API.getEntity(endpoint);
+            });
+
+
+
 
             IntranetManager.reqres.setHandler("taxonomy:entity:by:code", function (code) {
                 var endPoint = API.getEndPoint() + '?code=' + code;
@@ -156,15 +146,7 @@ define([
 
             });
 
-            IntranetManager.reqres.setHandler("taxonomy:search:app", function (options) {
-/*                console.log('<<Trigger :  taxonomy:search:app >>');
-                var endpoint = API.getCategoryEndPoint() + '?parent_application_feature=' + options.feature + '&parent_application_alias=' + options.alias  ;
-
-                return API.getEndpointEntities(endpoint);*/
-
-            });
-
-            IntranetManager.reqres.setHandler("taxonomy:entity:new", function () {
+              IntranetManager.reqres.setHandler("taxonomy:entity:new", function () {
                 return new Entities.Taxonomy();
             });
 
@@ -216,6 +198,7 @@ define([
 
                 //return new Entities.TaxonomyCollection(models);
             });
+
             IntranetManager.reqres.setHandler('taxonomy:collection:set:tags', function(options){
 
                 console.group('Widget [Tags ]');

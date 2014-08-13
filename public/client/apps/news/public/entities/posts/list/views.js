@@ -7,39 +7,51 @@
 
 define(["app",
     "common/views",
-    "tpl!apps/news/public/entities/posts/list/templates/blank_help.tpl",
-    "tpl!apps/news/public/entities/posts/list/templates/list.tpl",
-    "tpl!apps/news/public/entities/posts/list/templates/list_item.tpl",
-    "tpl!apps/news/public/entities/posts/list/templates/categories.tpl",
-    "tpl!apps/news/public/entities/posts/list/templates/public_home.tpl",
-    "tpl!apps/news/public/entities/posts/list/templates/public_list_item.tpl",
-    "tpl!apps/news/public/entities/posts/list/templates/public_list_category.tpl",
-    "tpl!apps/news/public/entities/posts/list/templates/category_item.tpl",
+    "tpl!apps/news/public/entities/posts/list/templates/layout.tpl",
     "tpl!apps/news/public/entities/posts/list/templates/news_home.tpl",
     "tpl!apps/news/public/entities/posts/list/templates/news_list_item.tpl",
-    "tpl!apps/news/public/entities/posts/list/templates/news_list_item_large.tpl"
+    "tpl!apps/news/public/entities/posts/list/templates/news_list_item_large.tpl",
+    "tpl!apps/news/public/entities/posts/list/templates/no_records.tpl",
+    "tpl!apps/news/public/entities/posts/list/templates/paginator.tpl",
+    "tpl!apps/news/public/entities/posts/list/templates/search_form.tpl",
+        "tpl!apps/news/public/entities/posts/list/templates/header.tpl"
 ],
-    function ( IntranetManager, GlobalViews,  blankHelpTpl,  listTpl, listItemTpl, categoriesTpl, publicHomeTpl, publicListItem, publicListCategoryTpl, categoryListItemTpl, newsHomeTpl, newsListItem, newsListItemLargeTpl ) {
-        IntranetManager.module("NewsManager.Posts.List.Views",
+    function ( IntranetManager, GlobalViews,  layoutTpl,newsHomeTpl, newsListItemTpl, newsListItemLargeTpl,
+        noRecordsTpl, paginatorTpl, searchFormTpl, headerTpl) {
+        IntranetManager.module("NewsManager.Public.Posts.List.Views",
             function ( Views, IntranetManager, Backbone, Marionette, $, _ ) {
 
+                Views.SearchFormView = Marionette.ItemView.extend({
+                    template: searchFormTpl,
 
-                Views.PublicNewsListItemView = Marionette.ItemView.extend({
-
-                    initialize: function(options){
-                         console.log('index of model ' + options.index);
-                        this.model.set('index', options.index);
+                    triggers: {
+                        //"click button.js-new": "contact:new"
                     },
 
-                    onBeforeRender: function(){
-
+                    events: {
+                        //"submit #filter-form": "filterContacts"
+                        "click #search-submit": "filterContacts"
                     },
 
-                    onRender: function(){
-                      $(this.$el).addClass('item item-' + this.model.get('index'));
+                    className:  'well well-sm',
+
+                    ui: {
+                        criterion: "input.js-filter-criterion"
                     },
 
-                   template: publicListItem
+                    filterContacts: function (e) {
+                        e.preventDefault();
+                        //  alert('submit for filter was clicked');
+                        var criterion = this.$(".js-filter-criterion").val();
+                        this.trigger("posts:search", criterion);
+                    },
+
+                    onSetFilterCriterion: function (criterion) {
+                        this.ui.criterion.val(criterion);
+                    },
+                    onRender: function () {
+                        console.log('Rendering the SearchFormView');
+                    }
 
                 });
 
@@ -65,13 +77,14 @@ define(["app",
 
                         var attachments = this.model.get('attachments');
 
-                        console.group('attachments');
+                        console.group('Render -> News : Lists: Views : NewsListItemView');
+                        console.info('attachments');
                         console.log(attachments);
-                        console.groupEnd();
+
 
                         if(_.isEmpty(this.model.get('attachments'))){
 
-                                   console.log('Hide the media div');
+                                   console.warn('No attachments found - hide the media div');
                                    this.ui.media.hide();
 
                             }else{
@@ -88,52 +101,19 @@ define(["app",
 
                         }
 
-                            console.log('<< Views.NewsListItemView - Loaded ***DONE ***  >>');
-                            $(this.$el).addClass('item item-' + this.model.get('index'));
-                    },
-
-
-/*
-                    onRender: function(){
                         $(this.$el).addClass('item item-' + this.model.get('index'));
-                    },
-*/
+                        console.groupEnd();
 
-                    template: newsListItem
 
-                });
-
-                Views.PublicNewsListCategoryView = Marionette.CompositeView.extend({
-                    onBeforeRender: function(){
-                        //console.log(JSON.stringify(this.model));
                     },
 
-                    initialize: function(){
-                        // this.collection.groupBy('category');
-                        //this.collection = this.model.vc;
-                        this.collection = this.model.get('vc');
-                        //console.log(JSON.stringify(this.collection.vc));
-                    },
-
-                    itemViewOptions: function(model){
-                        return {
-                            index: this.collection.indexOf(model) + 1
-                        }
-                    },
-
-                    className: "widget",
-
-                    template: publicListCategoryTpl,
-
-                    itemView: Views.PublicNewsListItemView,
-
-                    itemViewContainer: 'div.ui.divided.list'
+                 template: newsListItemTpl
 
                 });
 
                 Views.PublicNewsHomeView = Marionette.CollectionView.extend({
 
-                    template: publicHomeTpl,
+                    template: newsHomeTpl,
 
                     itemView: this.PublicNewsListCategoryView,
 
@@ -146,16 +126,6 @@ define(["app",
 
                 });
 
-                Views.BlankHelpView = GlobalViews.BlankHelpView.extend({
-                    template: blankHelpTpl,
-
-                    onRender: function(){
-
-                    }
-
-
-                });
-
                 Views.BlankView = GlobalViews.BlankView.extend({
 
                     onRender: function(){
@@ -165,56 +135,20 @@ define(["app",
                         this.$(".js-add-record").text('Create Posting');
                         this.$('.js-icon').addClass('wrench');
 
-
-                    }
+                   }
                 });
 
-                Views.CategoryItemView = Marionette.ItemView.extend({
-                   template: categoryListItemTpl
-
-                });
-
-                Views.CategoriesView = Marionette.CompositeView.extend({
-
-                    className: "widget",
-
-                    template: categoriesTpl,
-
-                    itemView: Views.CategoryItemView,
-
-                    itemViewContainer: 'div.ui.menu',
-
-                    triggers: {
-                        'click .js-new-category': 'command:new:category'
-                    },
-
-                    onRender: function () {
-                        console.log('Rendering the Categories view');
-                    }
-                });
-
-                Views.ListItemView =  GlobalViews.ListItemView.extend({
-                    template: listItemTpl
-                }) ;
-
-                Views.ListView = GlobalViews.ListView.extend({
-                    template: listTpl,
-                     itemView: this.ListItemView
-
-
-                });
-
-                Views.NewsHomeView = Marionette.CompositeView.extend({
+                Views.ListView = Marionette.CompositeView.extend({
 
                     className: "widget",
 
                     template: newsHomeTpl,
 
-                    itemView: Views.NewsListItemView,
+                    childView: Views.NewsListItemView,
 
-                    itemViewContainer: 'div#post-listing',
+                    childViewContainer: 'div#post-listing',
 
-                    itemViewOptions: function(model){
+                    childViewOptions: function(model){
                         return {
                             index: this.collection.indexOf(model) +1
                         }
@@ -226,11 +160,69 @@ define(["app",
 
                     onRender: function () {
                         $('body').addClass('page-template-page-news-php');
-                        console.log('Rendering the NewsHomeView view');
+                        console.info('Rendered : News: List: ListViews');
                     }
+                });
+
+                Views.PaginatedView = Marionette.ItemView.extend({
+
+                    template: paginatorTpl,
+
+                    initialize: function () {
+                        console.log(this.$el);
+
+                    },
+
+                    events: {
+                        'click a.prev': 'previous',
+                        'click a.next': 'next'
+                    },
+
+                    onRender: function () {
+                        // $(this.$el).html(this.collection.pageInfo());
+                        console.group('News: List: Views: Paginator');
+                        var that = this;
+                        console.log(this.model);
+
+                        $(this.$el).pagination({
+                            items: this.model.get('items'),
+                            itemsOnPage: this.model.get('itemsOnPage'),
+                            cssStyle: '',
+                            hrefTextPrefix: this.model.get('path') + '&page=',
+                            onPageClick: function (pageNumber, event) {
+                                // Callback triggered when a page is clicked
+                                // Page number is given as an optional parameter
+                                // alert('page click ' + pageNumber);
+                                that.trigger('change:page', pageNumber);
+                            }
+                        });
+
+                       console.groupEnd();
+                    },
+
+                    previous: function () {
+
+                    },
+
+                    next: function () {
+
+                    }
+
+                });
+
+                Views.LayoutView = Marionette.LayoutView.extend({
+                    template: layoutTpl,
+
+                    className: 'layout-wrapper'
+                });
+
+                Views.HeaderView = Marionette.ItemView.extend({
+                    template: headerTpl,
+
+                    className: 'row'
                 });
 
             });
 
-        return IntranetManager.NewsManager.Posts.List.Views;
+        return IntranetManager.NewsManager.Public.Posts.List.Views;
     });

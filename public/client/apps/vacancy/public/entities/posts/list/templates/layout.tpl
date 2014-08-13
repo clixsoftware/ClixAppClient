@@ -1,4 +1,4 @@
-<div class="col-lg-7 col-md-8 col-sm-8 white ">
+<div class="col-lg-7 col-md-8 col-sm-12 white">
     <div id="topnavbar" class="row"></div>
     <div id="layout-header"></div>
     <div id="layout-search"></div>
@@ -9,7 +9,7 @@
 </div>
 <!--end of first column-->
 
-<div class="col-lg-4  col-md-4 col-sm-4 col-lg-offset-1">
+<div class="col-lg-4 col-lg-offset-1 col-md-4 col-sm-12">
     <div id="layout-zone-1"></div>
     <div id="layout-zone-2"></div>
     <div id="layout-zone-3"></div>

@@ -55,13 +55,8 @@ define([
 
                             IntranetManager.siteMainContent.show(IntranetManager.appLayout);
 
-                            //IntranetManager.trigger('howdoi:app:category:list', app.get('uuid'));
-
-                           // IntranetManager.trigger('howdoi:app:tags:list', app.get('uuid'));
-
                             IntranetManager.trigger('dom:title', app.get('title'));
 
-                            //var fetchingCategories = IntranetManager.request('taxonomy:object:terms', app.get('uuid'));
 
                             return [app];
 
@@ -75,8 +70,6 @@ define([
                             var taxCategories = new TaxModel();
                             var categories = IntranetManager.request('taxonomy:collection:set:new', taxonomy.categories);
 
-                           // options.collection = categories.trim().replace(/"/g, '').trim().split(',');
-                            //term.set('items', IntranetManager.request('taxonomy:collection:set:categories', options))
                             taxCategories.set('items', categories);
 
                              var searchFormView = that.getSearchFormView(taxCategories);
@@ -104,12 +97,14 @@ define([
 
                             IntranetManager.trigger('core:object:categories', {
                                 collection: taxonomy,
-                                url: '/how-do-i/posts-by-category/{{slug}}?uuid={{uuid}}'
+                                url: '/howdois/' + alias +  '/posts-by-category/{{slug}}?uuid={{uuid}}',
+                                view: "2col",
+                                urlTrigger: "howdoi:category:posts"
                             });
 
                             IntranetManager.trigger('core:object:tags', {
                                 collection: taxonomy,
-                                url: '/how-do-i/posts-by-tag/{{slug}}'
+                                url: '/howdois/' + alias +  '/posts-by-tag/{{slug}}'
                             });
 
                         }).fail(function ( err ) {
@@ -184,16 +179,20 @@ define([
 
                         fetchingApp.then(function ( app ) {
 
-                            console.log(app);
+                            //console.log(app);
 
                             IntranetManager.appLayout = Show.Controller.getSearchLayoutView();
 
                             IntranetManager.siteMainContent.show(IntranetManager.appLayout);
 
-
                             IntranetManager.trigger('dom:title', app.get('title'));
 
-                            var fetchingPosts = IntranetManager.request('howdoi:posts:search', opts.criterion);
+                            var search_options = {
+                                criterion: opts.criterion,
+                                parent_application: app.id
+                            };
+
+                            var fetchingPosts = IntranetManager.request('howdoi:app:posts:search', search_options);
 
                             return [app, fetchingPosts];
 
@@ -201,10 +200,10 @@ define([
 
                             console.log(fetchingPosts);
 
-                            var searchHdr = Backbone.Model.extend();
+                            var searchHdr = Backbone.Model.extend({});
 
                             var hdr = new searchHdr({
-                                count: fetchingPosts.length,
+                                count: fetchingPosts.total,
                                 criterion: opts.criterion
                             });
 

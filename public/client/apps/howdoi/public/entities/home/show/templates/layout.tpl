@@ -1,10 +1,3 @@
-<style type="text/css">
-#layout-zone-2 {
-    display: block;
-    clear: both;
-    height: 350px;
-}
-</style>
 
 <div class="col-lg-5 col-md-5 col-sm-5 white">
     <div class="row">

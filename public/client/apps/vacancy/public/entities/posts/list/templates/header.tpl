@@ -1,3 +1,2 @@
-<div class="row">
-    <div class="col-md-8"><h1> <%=title%></h1></div>
-</div>
+ <h1 class="h1_<%=id%>"><%=title%></h1>
+ <p><%=obj.description%></p>

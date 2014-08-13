@@ -1,4 +1,5 @@
 <div class="well">
+
     <h1>How do I?</h1>
 
     <p>Tasks and guides to help you do your job.</p>
@@ -26,21 +27,15 @@
     </form>
 
 </div>
-<!--
-<div class="well well-sm">
-    <form class="form-horizontal"
-          name="news-category" id="sbc-search">
-        <div class="input-group input-md">
-            <input type="text" value="" class="form-control js-filter-criterion" name="s" id="sbc-s"
-                                                 placeholder="Search news...">
-            <span class="input-group-btn">
-                <button type="submit" class="btn btn-primary input-md" id="news-search-submit">
-                    <i class="glyphicon glyphicon-search"></i>
-                </button>
-            </span>
-            <input   type="hidden" value="facilities" name="cat">
-            <input type="hidden" value="news" name="post_type">
-        </div>
-    </form>
+<!-- apple store button -->
+<div class="blockquote-box blockquote-primary clearfix">
+    <div class="square pull-left">
+        <span class="glyphicon glyphicon-tasks glyphicon-lg"></span>
+    </div>
+    <h4>
+        Have an How Do I?</h4>
+    <p>
+        Want to contribute see more  &nbsp;   <a href="">Posting a new How Do I</a>. &nbsp;
+    </p>
 </div>
--->
+

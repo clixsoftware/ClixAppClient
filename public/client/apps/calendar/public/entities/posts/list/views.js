@@ -7,16 +7,18 @@
 
 define(["app",
     "common/views",
-    "tpl!apps/calendar/public/entities/posts/list/templates/list.tpl",
+    "tpl!apps/calendar/public/entities/posts/list/templates/layout.tpl",
+    "tpl!apps/calendar/public/entities/posts/list/templates/home.tpl",
     "tpl!apps/calendar/public/entities/posts/list/templates/list_item.tpl",
     "tpl!apps/calendar/public/entities/posts/list/templates/list_item_large.tpl",
+    "tpl!apps/calendar/public/entities/posts/list/templates/no_records.tpl",
+    "tpl!apps/calendar/public/entities/posts/list/templates/paginator.tpl",
     "tpl!apps/calendar/public/entities/posts/list/templates/search_form.tpl",
-    "tpl!apps/calendar/public/entities/posts/list/templates/header.tpl"
+        "tpl!apps/calendar/public/entities/posts/list/templates/header.tpl"
 ],
-    function ( IntranetManager, GlobalViews,  listTpl, listItemTpl, listItemLargeTpl, searchFormTpl,
-        headerTpl) {
+    function ( IntranetManager, GlobalViews,  layoutTpl,homeTpl, listItemTpl, listItemLargeTpl,
+        noRecordsTpl, paginatorTpl, searchFormTpl, headerTpl) {
         IntranetManager.module("CalendarManager.Public.Posts.List.Views",
-
             function ( Views, IntranetManager, Backbone, Marionette, $, _ ) {
 
                 Views.SearchFormView = Marionette.ItemView.extend({
@@ -24,25 +26,24 @@ define(["app",
 
                     triggers: {
                         //"click button.js-new": "contact:new"
-
                     },
-
-                    className: 'well well-sm',
 
                     events: {
                         //"submit #filter-form": "filterContacts"
-                        "click #project-search-submit": "searchPosts"
+                        "click #search-submit": "filterContacts"
                     },
+
+                    className:  'well well-sm',
 
                     ui: {
                         criterion: "input.js-filter-criterion"
                     },
 
-                    searchPosts: function (e) {
+                    filterContacts: function (e) {
                         e.preventDefault();
-                      //  alert('submit for filter was clicked');
+                        //  alert('submit for filter was clicked');
                         var criterion = this.$(".js-filter-criterion").val();
-                        this.trigger("events:search", criterion);
+                        this.trigger("posts:search", criterion);
                     },
 
                     onSetFilterCriterion: function (criterion) {
@@ -51,24 +52,8 @@ define(["app",
                     onRender: function () {
                         console.log('Rendering the SearchFormView');
                     }
+
                 });
-
-                Views.HeaderView =  Marionette.ItemView.extend({
-                    template: headerTpl,
-
-                    onRender: function () {
-                       // alert('header view');
-                        console.log('Rendering the SearchFormView');
-                    }
-                }) ;
-
-                Views.NoRecordsView =  GlobalViews.NoItemFoundView.extend({
-
-                    onRender: function () {
-                        // alert('header view');
-                        console.log('Rendering the NoRecordsView');
-                    }
-                }) ;
 
                 Views.ListItemView = Marionette.ItemView.extend({
 
@@ -77,54 +62,93 @@ define(["app",
                         this.model.set('index', options.index);
                     },
 
-/*                    onBeforeRender: function(){
+                    onBeforeRender: function(){
                         if(this.model.get('index') === 1){
-                          //  alert('switching to large tempalte');
                             this.template = listItemLargeTpl;
                         }
-
-                    },*/
-
+                    },
 
                     ui: {
-                        media : '.js-media'
+                        media : '.js-media',
+                        media_image: '.js-media-image'
                     },
 
                     onRender: function(){
 
-                        //alert(this.model.get('media'));
+                        var attachments = this.model.get('attachments');
 
-/*                        if(_.isEmpty(this.model.get('media'))){
-                            this.ui.media.hide();
-                        }else{
-                            if(this.model.get('media')){
+                        console.group('Render -> calendar : Lists: Views : NewsListItemView');
+                        console.info('attachments');
+                        console.log(attachments);
 
-                                //alert('media available');
+
+                        if(_.isEmpty(this.model.get('attachments'))){
+
+                                   console.warn('No attachments found - hide the media div');
+                                   this.ui.media.hide();
+
                             }else{
-                                this.ui.media.hide();
-                            }
 
-                        }*/
-                        console.log('<< Views.ListItemView - Loaded ***DONE ***  >>');
+                                var images = attachments.images;
+
+                                console.group('images');
+                                console.log(images);
+                                console.groupEnd();
+
+                                console.log(images.lead);
+
+                                $(this.ui.media_image).attr('src', images.lead.source_url);
+
+                        }
+
                         $(this.$el).addClass('item item-' + this.model.get('index'));
+                        console.groupEnd();
+
+
                     },
 
+                 template: listItemTpl
 
-                    template: listItemTpl
+                });
 
+                Views.HomeView = Marionette.CollectionView.extend({
+
+                    template: homeTpl,
+
+                    itemView: this.PublicNewsListCategoryView,
+
+                    onBeforeRender: function () {
+                        // set up final bits just before rendering the view's `el`
+                        $('body').addClass('public calendar home').removeClass('app');
+
+                        console.log('<< Views.HomeView: Loaded ***COMPLETED*** >>');
+                    }
+
+                });
+
+                Views.BlankView = GlobalViews.BlankView.extend({
+
+                    onRender: function(){
+                        this.$("h1.ui.header").text("No postings");
+                        this.$(".ui.warning .header").text("New App");
+                        this.$("span.message").text('Click the button below to create your first Posting.');
+                        this.$(".js-add-record").text('Create Posting');
+                        this.$('.js-icon').addClass('wrench');
+
+                   }
                 });
 
                 Views.ListView = Marionette.CompositeView.extend({
 
                     className: "widget",
 
-                    template: listTpl,
+                    template: homeTpl,
 
-                   childView: Views.ListItemView,
+                    childView: Views.ListItemView,
 
                     childViewContainer: 'div#post-listing',
 
-                    itemViewOptions: function(model){
+                    childViewOptions: function(model){
                         return {
                             index: this.collection.indexOf(model) +1
                         }
@@ -135,13 +159,68 @@ define(["app",
                     },
 
                     onRender: function () {
-                        $('body').addClass('page-template-page-news-php');
-                        console.log('Rendering the ListView');
+                        $('body').addClass('page-template-page-calendar-php');
+                        console.info('Rendered : calendar: List: ListViews');
                     }
                 });
 
+                Views.PaginatedView = Marionette.ItemView.extend({
 
+                    template: paginatorTpl,
 
+                    initialize: function () {
+                        console.log(this.$el);
+
+                    },
+
+                    events: {
+                        'click a.prev': 'previous',
+                        'click a.next': 'next'
+                    },
+
+                    onRender: function () {
+                        // $(this.$el).html(this.collection.pageInfo());
+                        console.group('calendar: List: Views: Paginator');
+                        var that = this;
+                        console.log(this.model);
+
+                        $(this.$el).pagination({
+                            items: this.model.get('items'),
+                            itemsOnPage: this.model.get('itemsOnPage'),
+                            cssStyle: '',
+                            hrefTextPrefix: this.model.get('path') + '&page=',
+                            onPageClick: function (pageNumber, event) {
+                                // Callback triggered when a page is clicked
+                                // Page number is given as an optional parameter
+                                // alert('page click ' + pageNumber);
+                                that.trigger('change:page', pageNumber);
+                            }
+                        });
+
+                       console.groupEnd();
+                    },
+
+                    previous: function () {
+
+                    },
+
+                    next: function () {
+
+                    }
+
+                });
+
+                Views.LayoutView = Marionette.LayoutView.extend({
+                    template: layoutTpl,
+
+                    className: 'layout-wrapper'
+                });
+
+                Views.HeaderView = Marionette.ItemView.extend({
+                    template: headerTpl,
+
+                    className: 'row'
+                });
 
             });
 

@@ -1,69 +1,84 @@
+/*
+ * Application: Site Manager
+ * Controller: Common Controller
+ * Module: SiteManager.Common
+ * */
+
+
 define([
-        "app",
-        "apps/classifieds/public/common/views",
-        "common/views"
-    ],
+    "app",
+    "apps/classifieds/public/common/views",
+    "common/views"
+],
     function (IntranetManager, CommonViews, GlobalViews) {
         IntranetManager.module("ClassifiedsManager.Public.Common",
             function (Common, ClassifiedsManager, Backbone, Marionette, $, _) {
 
                 Common.Controller = {
 
-                    getAppLayoutView: function () {
-                        return new CommonViews.AppLayoutView();
+                    getContent2ColLayoutView: function () {
+
+                        console.info('<< getContent2ColLayoutView: Return Layout >>');
+
+                        return new CommonViews.NewsLayoutView();
+
                     },
 
-                    initAppEngine: function (next) {
+                    setupContentLayout: function (next) {
+
                         var that = this;
-                        console.group('ClassifiedsManager: initAppEngine');
 
-                        if (ClassifiedsManager.started === false || ClassifiedsManager.started === undefined) {
+                        require(["entities/feature"],
+                            function () {
 
-                            require(["entities/feature"],
-                                function () {
+                                console.group('ClassifiedsManager: Public : Common : setupContentLayout');
 
-                                    //fetch workspaces
-                                    var fetchFeature = IntranetManager.request('feature:entity:search:alias', 'classifieds');
-                                    fetchFeature.then(function (feature) {
+                                //fetch workspaces
+                                var fetchFeature = IntranetManager.request('feature:entity:search:alias', 'classifieds');
+                                fetchFeature.then(function (feature) {
 
-                                        if (!feature) {
-                                            throw new Error('Feature Classifieds  is not installed');
-                                        }
-                                        ClassifiedsManager.feature = {
-                                            id: feature.get('id')
-                                        };
-                                        ClassifiedsManager.started = true;
+                                    if (!feature) {
+                                        throw new Error('Feature classifieds is not installed');
+                                    }
 
-                                        IntranetManager.appLayout = Common.Controller.getAppLayoutView();
+                                    ClassifiedsManager.feature = {
+                                        id: feature.get('id')
+                                    };
 
-                                        IntranetManager.siteMainContent.reset();
-                                        IntranetManager.siteMainContent.show(IntranetManager.appLayout);
+                                    ClassifiedsManager.started = true;
 
-                                        if (next) {
-                                            next();
-                                        }
+                                    console.log('About to ContentLayout Layout');
 
-                                    }).fail(function (error) {
-                                        alert(error);
-                                        console.log('Go to 404 page');
-                                        /*//TODO: navigate to 404 pages*/
+                                    IntranetManager.appLayout = Common.Controller.getContent2ColLayoutView();
+                                    IntranetManager.siteMainContent.show(IntranetManager.appLayout);
+
+                                    console.groupEnd();
+
+                                    //Call the next function, Setup app layout must be run before..
+                                    if (next) {
+
+                                        console.info('Executing next() in setupContentLayout ');
+                                        next();
+                                    }
+
+
+
+                                })
+                                    .fail(function (error) {
+                                        IntranetManager.trigger('core:error:action', error);
                                     });
 
-
-                                }
-                            );
-                        } else {
-
-                            if (next) {
-                                console.log('Executing next()');
-                                next();
                             }
+                        );
 
-                        }
-                        console.groupEnd();
+
+
                     }
                 };
+
+
             });
+
 
         return IntranetManager.ClassifiedsManager.Public.Common.Controller;
     });

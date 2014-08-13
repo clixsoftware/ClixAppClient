@@ -37,8 +37,6 @@ define([
 
                         var newRecord = IntranetManager.request("classifieds:posts:new");
 
-
-
                         fetchingApps= IntranetManager.request('applications:search:feature', 'classifieds');
 
 
@@ -67,8 +65,6 @@ define([
 
                             view.on("form:submit", function ( data ) {
 
-
-
                                 //remove the categories field before saving
                                 newRecord.unset('categories', 'silent');
 
@@ -78,7 +74,9 @@ define([
                                 console.log(data);
                                 console.groupEnd();
 
-                                newRecord.save(data)
+                                var saveRecord = IntranetManager.request("classifieds:app:posts:new", {parent_application: data.parent_application});
+
+                                saveRecord.save(data)
                                     .then(function(model){
 
                                         console.group('Saved Classified');
@@ -117,7 +115,7 @@ define([
                                                     model.attachments = {
                                                         files: files
                                                     };
-                                                    newRecord.set('attachments', model.attachments);
+                                                    saveRecord.set('attachments', model.attachments);
 
                                                     return model;
                                                 });
@@ -128,9 +126,9 @@ define([
                                     }).then(function(model){
 
                                         console.group('Saved Ad + Attachments');
-                                        console.log(newRecord);
+                                        console.log(saveRecord);
 
-                                        newRecord.save();
+                                        saveRecord.save();
                                         var success = new NewViews.NotificationView({ type: 'success', text: 'Ad saved successfully' });
                                         console.groupEnd();
 

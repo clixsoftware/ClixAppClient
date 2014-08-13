@@ -20,25 +20,24 @@ define([
 
                 },
 
-                showRecentPosts: function(appId){
+                showRecentPosts: function(options){
                     var that = this;
 
-                    console.log('<< NewsManager: Widgets: showRecentPosts ' +  appId + ' >>');
+                    console.group('<< News: Widgets: showRecentPosts>>');
 
                     require([
                         "entities/news"
                     ], function(){
 
-                        var options =  {
-                            parent_application: appId,
-                            limit: 5
-                        };
+                        options.limit = 5;
+                        options.sort = 'createdAt desc';
 
-                        var fetchingPosts = IntranetManager.request('news:apps:posts:recent', options);
+                        console.info(options);
+                        console.groupEnd();
+
+                        var fetchingPosts = IntranetManager.request('news:app:posts:find', options);
 
                         fetchingPosts.then(function(posts){
-
-                            console.log(posts);
 
                             IntranetManager.layoutZone1.reset();
                             IntranetManager.layoutZone1.show(that.getRecentView(posts));
@@ -54,7 +53,38 @@ define([
                     console.groupEnd();
                 },
 
+                getPopularView: function(collection){
+                    return new WidgetsShow.ListView({
+                        collection: collection
+                    });
 
+                },
+                showPopularPosts: function(options){
+                    var that = this;
+
+                    require([
+                        "entities/news"
+                    ], function(){
+
+                        console.group('<< News Manager: Widgets: showPopularPosts  ')
+                        options.limit = 5;
+                        options.sort = 'views desc';
+
+                        console.info(options);
+                        console.groupEnd();
+
+                        var fetchingPosts = IntranetManager.request('news:app:posts:find', options);
+
+                        fetchingPosts.then(function(posts){
+
+                            IntranetManager.layoutZone3.reset();
+                            IntranetManager.layoutZone3.show(that.getPopularView(posts));
+
+                        });
+
+                    });
+
+                }
             }
         });
 

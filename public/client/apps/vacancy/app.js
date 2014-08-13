@@ -1,15 +1,16 @@
 /*
- * Application: News Manager
+ * Application: Project Manager
  * */
 
 define(
     [
-        "app"
+        "app",
+        "S"
     ],
-    function (IntranetManager) {
+    function (IntranetManager, S) {
         IntranetManager.module("VacancyManager", function (VacancyManager, IntranetManager, Backbone, Marionette, $, _) {
 
-            VacancyManager.title = "VacancyManager Manager";
+            VacancyManager.title = "Vacancy Manager";
 
 
             VacancyManager.code = "VacancyManager";
@@ -17,27 +18,40 @@ define(
             VacancyManager.startWithParent = false;
 
             VacancyManager.on('start', function () {
-                console.log('<<< Started VacancyManager Application >>>');
+                console.info('<<< Start VacancyManager Application >>>');
+                // API.init();
             });
 
             VacancyManager.onStop = function () {
-                console.log('<<< Stopped VacancyManager Application >>>');
+                console.warn('<<< Stop VacancyManager Application >>>');
+            };
+
+            var API = {
+
+                init: function () {
+                    require([
+                        "apps/vacancy/common/controller"
+                    ], function (CommonController) {
+                        CommonController.setupAppLayout();
+                    });
+
+                }
             };
 
 
         });
 
         //WorkspaceManager Routers
-        IntranetManager.module("Routers.VacancyManager", function (VacancyManagerRouter, IntranetManager, Backbone, Marionette, $, _) {
+        IntranetManager.module("Routers.VacancyManager", function (ProjectManagerRouter, IntranetManager, Backbone, Marionette, $, _) {
 
-            VacancyManagerRouter.Router = Marionette.AppRouter.extend({
+            ProjectManagerRouter.Router = Marionette.AppRouter.extend({
 
                 appRoutes: {
-                    ":feature/:alias/vacancies": 'loadHomePage',
-               //     ":feature/:alias/vacancies/posts-by-category/*slug": 'loadPostsByCategory',
-                //    ":feature/:alias/vacancies/posts-by-category/*slug": 'loadPostsByTag',
-                    ":feature/:alias/vacancies/*info": 'loadPostDetailsPage'
 
+                    ":feature/:alias/vacancies": 'loadHomePage',
+                    ":feature/:alias/vacancies/posts-by-category/*slug?*args" : 'loadHomePage',
+                    ":feature/:alias/vacancies/posts-by-tag/*tag(?*args)" : 'loadPostByTag',
+                    ":feature/:alias/vacancies/*info": 'loadPostDetailsPage'
                 }
 
             });
@@ -50,148 +64,198 @@ define(
 
             var API = {
 
-               //PUBLIC FUNCTIONS
+                //PUBLIC FUNCTIONS
                 //initialize public interface and load the layout
+
+                //initPublic, initiates the application, loads settings
                 initPublic: function (cb) {
 
                     require([
                         "apps/vacancy/public/common/controller"
                     ], function (CommonController) {
-                        executeAction(CommonController.initAppEngine, cb);
+                        //alert('init layout');
+                        executeAction(CommonController.setupContentLayout, cb);
                     });
 
                 },
 
-                loadHomePage: function (feature, alias) {
-                    var options = {
-                        feature: feature,
-                        alias: alias
-                    };
-
-                    var cb = function () {
-                        require([
-                            "apps/vacancy/public/entities/posts/list/controller"
-                        ], function (ListController) {
-                            ListController.displayHomePage(options);
-
-                        });
-                    };
-                    IntranetManager.trigger("vacancy:public:init", cb);
-                },
-
+                /*
+                 loadPostDetailsPage, loads details for the current post
+                 e.g.     /vacancy/default/vacancy/9-sample-project/index.html
+                 */
                 loadPostDetailsPage: function (feature, alias, info) {
 
-                    var post = info.split('-');
+                    var newsInfo = info.split('-');
 
-                    var postId = post[0];
-                    var slug = post[1];
-
-                    var options = {
-                        postId: postId,
+                    var postId = newsInfo[0];
+                    var slug = newsInfo[1];
+                    //alert(postId);
+                    var opts = {
+                        post_id: postId,
                         feature: feature,
                         alias: alias,
                         slug: slug
                     };
 
-                    console.log(options);
+                    console.log(opts.slug);
 
                     var cb = function () {
                         require([
-                            "apps/vacancies/public/entities/posts/show/controller"
+                            "apps/vacancy/public/entities/posts/show/controller"
                         ], function (ShowController) {
-                            ShowController.displayPostDetails(opts);
+                            ShowController.showPostDetails(opts);
                         });
                     };
 
                     IntranetManager.trigger("vacancy:public:init", cb);
 
-                }/*,
+                },
 
-                loadPostsByCategoryPage: function (feature, alias, category, slug) {
+                /*
+                 loadPostByTag, loads posts matching the current tags
+                 e.g.     /vacancy/default/posts-by-tag/travel
+                 */
+                loadPostByTag: function (feature, alias, tag, args) {
+
+                    console.group('Vacancy: App: loadPostByTag');
 
                     var options = {
                         feature: feature,
                         alias: alias,
-                        category: category
+                        path: Backbone.history.location.pathname,
+                        tag: tag
                     };
+
+                    if(args){
+
+                        if(S(args).contains('page=')){
+                            var q = args.split('&');
+                            options.page = q[0].split('=')[1];
+                        }
+
+                        options.path = Backbone.history.location.pathname;
+                    }
+                    console.info(options);
+                    console.groupEnd();
 
                     var cb = function () {
                         require([
-                            "apps/news/public/entities/categories/show/controller"
-                        ], function (ShowController) {
-                            ShowController.showLayout(options);
+                            "apps/vacancy/public/entities/posts/list/controller"
+                        ], function (ListController) {
+                            ListController.showPostsList(options);
+
                         });
                     };
 
-                    IntranetManager.trigger("news:public:init", cb);
+                    IntranetManager.trigger("vacancy:public:init", cb);
+
                 },
 
-                loadRecentPosts: function (appId) {
+                /*
+                 loadHomePage, loads posts matching the current tags
+                 e.g.     /vacancy/default
+                 */
+                loadHomePage: function (feature, alias, slug, args) {
+
+                    console.group('Vacancy: App: loadHomePage');
+
+                    var options = {
+                        feature: feature,
+                        alias: alias,
+                        path: Backbone.history.location.pathname
+                    };
+
+                    if(args){
+                        if(S(args).contains('page=')){
+                            var q = args.split('&');
+                            options.page = q[1].split('=')[1];
+                            options.uuid = q[0].split('=')[1];
+                        }else{
+                            options.uuid=  args.split('=')[1]
+                        }
+
+                        options.path = Backbone.history.location.pathname + '?uuid=' + options.uuid;
+                    }
+                    console.info(options);
+                    console.groupEnd();
+
+                    var cb = function () {
+                        require([
+                            "apps/vacancy/public/entities/posts/list/controller"
+                        ], function (ListController) {
+                            ListController.showPostsList(options);
+
+                        });
+                    };
+
+                    IntranetManager.trigger("vacancy:public:init", cb);
+
+                },
+
+                /*
+                 loadRecentPostsWidget, recent posts for this project
+                 */
+                loadRecentPostsWidget: function (options) {
                     require([
-                        "apps/news/public/widgets/controller"
+                        "apps/vacancy/public/widgets/controller"
                     ], function (WidgetsController) {
-                        WidgetsController.showRecentPosts(appId);
+                        WidgetsController.showRecentPosts(options);
                     });
-
                 },
 
-                loadPostCategories: function (objectId) {
-
-                   require([
-                        "apps/news/public/widgets/controller"
-                    ], function (WidgetsController) {
-                        WidgetsController.showPostCategories(objectId);
-                    });
-
-                },
-
-                loadPostRelatedTags: function (objectId) {
+                /*
+                 loadPopularPostsWidget, most viewed posts for vacancy
+                 */
+                loadPopularPostsWidget: function(options){
                     require([
-                        "apps/news/public/widgets/controller"
+                        "apps/vacancy/public/widgets/controller"
                     ], function (WidgetsController) {
-                        WidgetsController.showPostRelatedTagsWidget(objectId);
+                        WidgetsController.showPopularPosts(options);
                     });
-
-                }*/
-
-
+                }
 
             };
 
-              //PUBLIC TRIGGERS
+           //PUBLIC TRIGGERS
 
             IntranetManager.on('vacancy:public:init', function (cb) {
                 API.initPublic(cb);
             });
 
-             //Show Recent News
-            IntranetManager.on('vacancy:widget:recent:posts', function (appId) {
-                  // API.loadRecentPostsWidget(appId);
+            //Show Recent vacancy
+            IntranetManager.on('vacancy:posts:recent', function (options) {
+                console.group('vacancy App::  vacancy:posts:recent');
+                console.info(options);
+                console.groupEnd();
+
+                API.loadRecentPostsWidget(options);
             });
 
-            IntranetManager.on('vacancy:widget:post:categories', function (postId) {
-               // API.loadPostCategoriesWidget(postId);
+            IntranetManager.on('vacancy:category:posts', function (options) {
+                console.group('vacancy App::  vacancy:category:posts');
+                console.info(options);
+                console.groupEnd();
+
+                IntranetManager.navigate(options.url, true);
             });
 
-            IntranetManager.on('vacancy:widget:post:tags', function (postId) {
-              //  API.loadPostTagsWidget(postId);
+            IntranetManager.on('vacancy:popular:posts', function (options) {
+                console.group('vacancy App::  vacancy:popular:posts');
+                console.info(options);
+                console.groupEnd();
+
+                API.loadPopularPostsWidget(options);
             });
-
-            IntranetManager.on('vacancy:category:display', function (options) {
-                IntranetManager.navigate(options.url, 'silent');
-            });
-
-
 
             IntranetManager.addInitializer(function () {
-                new VacancyManagerRouter.Router({
+                new ProjectManagerRouter.Router({
                     controller: API
                 });
             });
 
 
         });
-        console.info('--- Vacancy App loaded ---');
-        return IntranetManager.VacancyManagerRouter;
+
+        return IntranetManager.ProjectManagerRouter;
     });
 

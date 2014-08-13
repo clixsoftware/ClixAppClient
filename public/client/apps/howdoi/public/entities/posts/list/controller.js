@@ -1,307 +1,225 @@
-console.log('in ypmanager.posts.list.controller');
-/*
- * Application: News Manager
-  * Module: News Manager.Sites.List.Controller
- * */
-
-
 define([
-    "app",
-    "apps/yp/entities/posts/list/views",
-    "apps/yp/common/views",
-    "common/views",
-    "backbone.virtual-collection",
-    "backbone.grouped-collection"
-
-],
-    function ( IntranetManager, ListViews, CommonViews, GlobalViews ) {
-        IntranetManager.module("YPManager.Posts.List",
-            function ( List, YPManager, Backbone, Marionette, $, _ ) {
+        "app",
+        "apps/howdoi/public/entities/posts/list/views",
+        "apps/howdoi/public/common/views",
+        "common/views",
+        "backbone.virtual-collection",
+        "backbone.grouped-collection",
+        "moment",
+        "simple.pagination"
+    ],
+    function (IntranetManager, ListViews, CommonViews, GlobalViews) {
+        IntranetManager.module("HowDoIManager.Public.Posts.List",
+            function (List, HowDoIManager, Backbone, Marionette, $, _) {
                 List.Controller = {
 
-                    getPublicLayoutView: function () {
 
-                        console.log('<< getAppLayoutView: Return Layout >>');
-
-                        return new ListViews.PublicLayoutView();
-
+                    getLayoutView: function () {
+                        return new ListViews.LayoutView();
                     },
 
-                    getPublicListView: function(collection){
-
-                        return new ListViews.PublicListView({
+                    getListView: function (collection) {
+                        var view = new ListViews.ListView({
                             collection: collection
-                        });
-                    },
-
-                    getCategoriesView: function (collection, appId) {
-
-                        var view = new ListViews.CategoriesView({
-                            collection: collection
-                        });
-
-                        var options = {
-                            trigger: 'ypmanager:app:categories',
-                            appId: appId
-                        };
-
-                        view.on('command:new:category', function () {
-                           IntranetManager.trigger('taxonomy:new:form', options);
                         });
 
                         return view;
                     },
 
-                    getPublicNewsHomeView: function (collection) {
-
-                        return  new ListViews.PublicNewsHomeView({
-                            collection: collection
-                        });
-
-
-                    },
-
-                    getNewsHomeView: function(collection){
-
-                      return new ListViews.NewsHomeView({
-                            collection: collection
-                      })
-
-                    },
 
                     getHeaderView: function (app) {
-                        var that = this;
 
-                        app.set('_page_header_', 'News Application : ' + app.get('alias'));
-                        app.set('_page_description_', 'News Postings for the application');
-                        app.set('_page_command_button_', 'Add Posting');
-                        app.set('_page_command_button_show', true);
-
-                        var view = new CommonViews.ListHeaderView({
+                        return new ListViews.HeaderView({
                             model: app
                         });
-
-                        view.on('button:command:new', function () {
-                            IntranetManager.trigger('yp:admin:post:new', app.get('id'));
-                        });
-
-                        return view;
-
                     },
 
-                    getListSearchView: function () {
+                    getSearchFormView: function () {
+                        return new ListViews.SearchFormView();
+                    },
+
+                    getPaginatorView: function (results) {
+                        return new ListViews.PaginatedView({
+                            model: results
+                        });
+                    },
+
+
+                    showPostsList: function (opts) {
+
+                        console.group('<< How DO I : List: showPostsList  >>');
+
+                        console.group('How DO I  Options');
+                        console.log(opts);
+                        console.groupEnd();
 
                         var that = this;
-                        var view = new GlobalViews.SearchView();
+                        var layout = this.getLayoutView();
 
-                        view.on('list:search', function (criterion) {
-                            that.listSearch(criterion);
-                        });
+                        require(['entities/applications', 'entities/howdoi', 'entities/taxonomy', 'entities/core'], function () {
 
-                        return view;
+                            var settings = {
+                                alias: opts.alias,
+                                parent_feature: HowDoIManager.feature.id
+                            };
 
-                    },
+                            console.group('@@ Fetching How DO I  Application ' );
+                            console.log(settings);
+                            console.groupEnd();
 
-                    getListView: function ( collection ) {
-                        var view =  new ListViews.ListView({
-                            collection: collection
-                        });
+                            var fetchingApp = IntranetManager.request('applications:feature:alias', settings);
 
-                        view.on('itemview:list:model:edit', function(title){
-                           console.log('ID of the model', title);
+                            fetchingApp.then(function (app) {
 
-                        });
+                                console.group('How Do I  App');
+                                console.log(app);
+                                console.groupEnd();
 
-                        return view;
-                    },
+                                var page=0;
 
-                    getBlankView: function (appId) {
-
-                        var view = new ListViews.BlankView();
-
-                        view.on('command:form:new', function () {
-                           IntranetManager.trigger('ypmanager:posts:new:form', appId);
-
-                        });
-
-                        return view;
-                    },
-
-                    getBlankHelpView: function () {
-                        return new ListViews.BlankHelpView();
-                    },
-
-                    getNoRecordsView: function(){
-
-                        var view  = new GlobalViews.ListNoRecordsView() ;
-
-                        view.on('list:command:all', function(){
-                            IntranetManager.trigger('sitemanager:home:show');
-                        });
-
-                        return view;
-                    },
-
-                    listSearch: function(criterion){
-
-                        var that = this;
-                        var fetchingRecords = IntranetManager.request('site:search', 'title=' + criterion);
-
-                        $.when(fetchingRecords).done(function(fetchedRecords){
-
-                            //  alert('search for features');
-                            //  console.log(fetchedRecords);
-                            if(fetchedRecords != undefined){
-
-
-                                var listView = that.getListView(fetchedRecords);
-                                IntranetManager.layoutContent.show(listView);
-                            }else{
-                                IntranetManager.layoutContent.show(that.getNoRecordsView());
-
-                            }
-
-                        });
-
-
-                    },
-
-                    loadCategories: function(appId){
-
-                        require(['entities/taxonomy'], function(){
-
-                            var fetchingCatgories = IntranetManager.request('taxonomy:entities:search', 'parent_app=' + appId);
-
-                            $.when(fetchingCatgories).done(function(fetchedCategories){
-
-                                if(fetchedCategories){
-
-                                    IntranetManager.layoutZone1.show(List.Controller.getCategoriesView(fetchedCategories, appId));
-
-                                }else{
-
-                                    console.log('no categoires found');
+                                if(opts.page){
+                                    page = opts.page;
                                 }
-                            });
 
-                        });
+                                var options = {
+                                    app: app.id,
+                                    page: page,
+                                    parent_application: app.get('id'),
+                                    categories: opts.uuid,
+                                    tag: opts.tag
+                                };
 
-                    },
+                                var fetchingRecords = IntranetManager.request('howdoi:app:posts:search', options);
 
-                    listRecords: function (appId) {
-                        console.group('YPManager: Posts: listRecords');
+                                var fetchingTaxonomy = IntranetManager.request('taxonomy:entity:uuid', opts.uuid);
 
-                        var that = this;
+                                return [app, fetchingRecords, layout, options, fetchingTaxonomy];
 
-                        var cb = function () {
+                            })
+                                .spread(function (app, fetchedPosts, layout, triggerOptions, fetchedTerm) {
 
-                            require(['entities/applications', 'entities/yp_post'], function(){
+                                    console.log(fetchedTerm);
+                                    console.log(Backbone.history.location);
+                                    var searchFormView = that.getSearchFormView();
 
-                               var fetchingApp = IntranetManager.request('applications:entity', appId);
+                                    var buildPaginate = function (collection, trigger, settings) {
+                                        var PaginateModel = Backbone.Model.extend();
 
-                                fetchingApp.then(function(app){
+                                        var paginator = new PaginateModel({
+                                            items: collection.total,
+                                            itemsOnPage: collection.limit,
+                                            path: opts.path
+                                        });
 
-                                    var fetchingNews = IntranetManager.request('yp:posts:search:app', appId);
-//                                    var news = fetchingNews.then(function(success){
-//                                        return success;
-//                                    });
-//
-//                                    alert(news);
+                                        var paginatedView = that.getPaginatorView(paginator);
 
-                                   return [app, fetchingNews];
+                                        paginatedView.on('change:page', function (pageNumber) {
 
-                                })
-                                    .spread(function(app, fetchedNews){
+                                            console.group('Page Change Initialize');
 
-                                        console.log(app);
 
-                                        if(fetchedNews){
-                                            var listView = List.Controller.getListView(fetchedNews);
-                                            IntranetManager.layoutContent.show(listView);
+                                            settings.page = pageNumber;
+
+                                            console.log(settings);
+                                            console.log(trigger);
+                                            console.groupEnd();
+
+
+                                            var records = IntranetManager.request(trigger, settings);
+
+                                            records.then(function (success) {
+                                                console.log('Resetting the collection information');
+
+                                                //layout.peopleNav.reset();
+                                                layout.searchResults.reset();
+                                                layout.searchResults.show(that.getListView(success));
+                                            });
+
+
+                                        });
+
+                                        layout.searchResults.show(that.getListView(collection));
+                                        layout.paginator.show(paginatedView);
+
+                                    };
+
+                                    layout.addRegion("searchResults", "#searchResults");
+                                    layout.addRegion("paginator", "#paginator");
+                                    //setup the search
+
+                                    searchFormView.on("posts:search", function (filterCriterion) {
+
+                                        console.log("posts:search event , criterion = " + filterCriterion);
+                                        // alert('searching');
+                                        var search_options = {
+                                            criterion: filterCriterion,
+                                            parent_application: app.id,
+                                            categories: opts.uuid
+                                        };
+
+                                        var search = IntranetManager.request("howdoi:app:posts:search", search_options);
+
+                                        search.then(function (results) {
+                                            buildPaginate(results, 'howdoi:app:posts:search', search_options);
+                                        });
+
+                                    });
+
+                                    layout.on('show', function () {
+
+
+                                        IntranetManager.trigger('core:object:categories', {
+                                            collection:  app.get('taxonomy'),
+                                            url: '/howdois/' + opts.alias +  '/posts-by-category/{{slug}}?uuid={{uuid}}',
+                                            urlTrigger: "howdoi:category:posts"
+                                        });
+
+                                        IntranetManager.trigger('core:object:tags', {
+                                            collection:  app.get('taxonomy'),
+                                            url: '/howdois/'  + opts.alias +  '/posts-by-tag/{{slug}}'
+                                        });
+
+                                        IntranetManager.layoutHeader.reset();
+                                        if(triggerOptions.categories) {
+                                            var fetchingTaxonomy = IntranetManager.request('taxonomy:entity:uuid', triggerOptions.categories);
+
+                                            fetchingTaxonomy.then(function (category) {
+                                                IntranetManager.layoutHeader.show(that.getHeaderView(category));
+                                            });
+
+                                        }else if (triggerOptions.tag){
+
+                                            var tagModel = IntranetManager.request('core:new:entity', {title: 'All Tasks & Guides tagged : ' + triggerOptions.tag});
+                                            IntranetManager.layoutHeader.show(that.getHeaderView(tagModel));
+
+                                        }else{
+
+                                            IntranetManager.layoutHeader.show(that.getHeaderView(app));
 
                                         }
 
-                                        IntranetManager.layoutHeader.show(List.Controller.getHeaderView(app));
+/*
+                                        IntranetManager.layoutHeader.show(that.getHeaderView(fetchedTerm));*/
 
-                                        IntranetManager.layoutSearch.show(List.Controller.getListSearchView());
+                                        IntranetManager.layoutSearch.reset();
+                                        IntranetManager.layoutSearch.show(searchFormView);
 
-                                       // IntranetManager.trigger('ypmanager:app:categories', appId);
+                                        buildPaginate(fetchedPosts, 'howdoi:app:posts:search', triggerOptions);
 
-                                        IntranetManager.layoutZone2.reset();
-                                        console.log('fetched app and yp')
-                                    })
-                                    .fail(function(error){
-
-                                        console.log(error);
                                     });
 
+                                    IntranetManager.appLayout = layout;
 
+                                    IntranetManager.siteMainContent.reset();
+                                    IntranetManager.siteMainContent.show(IntranetManager.appLayout);
 
-                            });
+                                })
+                                .fail(function (error) {
 
-
-                        };
-
-                       IntranetManager.trigger("yp:admin:init", cb);
-                        console.groupEnd();
-
-                    },
-
-                    showPublicPostsHome: function (options) {
-
-                        console.group('<< showPublicPostsHome : INIT >>');
-
-                        var that = this;
-
-                        var layout = this.getPublicLayoutView();
-
-
-                        require(['entities/applications', 'entities/yp_post'], function () {
-
-                            var settings = {
-                            alias: options.alias,
-                            parent_feature: YPManager.feature.id
-                        };
-
-
-                        console.log('@@ Fetching Current Application using = ' + JSON.stringify(settings));
-
-                        var fetchingApp = IntranetManager.request('applications:feature:alias', settings);
-
-                        fetchingApp.then(function(app){
-                          //  return app;
-
-                            var fetchingPosts = IntranetManager.request('yp:posts:search:app', app.get('id'));
-
-                            var posts = fetchingPosts.then(function(posts){
-                                return posts;
-                            })
-
-                            return [app, posts]
-                        })
-                        .spread(function(app, posts){
-
-                                layout.on('show', function(){
-
-                                    layout.contentRegion.show(that.getPublicListView(posts));
-                                    //getPublicListView
+                                    console.log(error);
                                 });
 
-                                IntranetManager.appLayout = layout;
-                                IntranetManager.siteMainContent.show(IntranetManager.appLayout);
-
-                                //IntranetManager.layoutZone2.show(new that.getNewsHomeView(posts));
-                                    //console.log('posts found');
-
-                        })
-                            .fail(function(error){
-                                console.log('Error ' + error);
-                            });
-
-
-
-
-                    });
+                        });
 
 
                     }
@@ -309,6 +227,6 @@ define([
 
             });
 
-        return IntranetManager.YPManager.Posts.List.Controller;
+        return IntranetManager.HowDoIManager.Public.Posts.List.Controller;
     });
 

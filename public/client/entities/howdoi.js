@@ -7,240 +7,289 @@
 
 define([
     "app",
-    "Q"
-    ], function ( IntranetManager, Q ) {
+    "Q",
+    "S"
+    ], function ( IntranetManager, Q, S ) {
 
         IntranetManager.module("Entities",
         function ( Entities, IntranetManager, Backbone, Marionette, $, _ ) {
 
-
+         var featureAlias = "howdois";
         var apiEndPoint = IntranetManager.opts.API()  + 'howdois';
+         var apiSearchEndPoint = IntranetManager.opts.API()  + 'content';
 
-        Entities.YPPost = Backbone.Model.extend({
+            Entities.HowDoIPost = Backbone.Model.extend({
 
-            url: apiEndPoint/*,
+                url: apiEndPoint + '/posts'
+            });
 
-            validation: {
-                title: {
-                    required: true,
-                    minLength: 8
+            //Entities.configureStorage(Entities.Contact);
+
+            Entities.HowDoICollection = Backbone.Collection.extend({
+
+                url:  apiEndPoint + '/posts',
+
+                model: Entities.HowDoIPost
+
+            });
+
+            Entities.HowDoISearchResults = Entities.HowDoICollection.extend({
+
+                initialize: function () {
+                    /*                    _.bindAll(this, 'parse', 'url', 'pageInfo', 'nextPage', 'previousPage');
+                     typeof(options) != 'undefined' || (options = {});
+                     this.page = 1;
+                     typeof(this.perPage) != 'undefined' || (this.perPage = 10);*/
+                },
+
+                parse: function (resp) {
+                    this.page = resp.page;
+                    this.limit = resp.limit;
+                    this.total = resp.total;
+
+                    console.log('Total models = ' + this.total);
+                    return resp.models;
 
                 },
-                description: {
-                    required: true
-                }
 
-            }*/
+                url: function () {
+                    var thisurl = this.baseUrl + '&' + $.param({page: this.page, limit: this.limit});
+                    console.log('paginated url ' + thisurl);
+                    return thisurl;
+                },
 
-        });
-
-        //Entities.configureStorage(Entities.Contact);
-
-        Entities.YPPostCollection = Backbone.Collection.extend({
-
-            url: apiEndPoint,
-
-            model: Entities.YPPost/*,
-
-            comparator: "title"*/
-
-        });
-
-        //Entities.configureStorage(Entities.ContactCollection);
-
-
-        var API = {
-
-            getEndPoint: function(){
-                return apiEndPoint;
-            },
-
-            getEntities: function (endpoint) {
-
-                if(endpoint){
-                    return this.getDAOCollection(endpoint);
-                }
-
-                return this.getDAOCollection(apiEndPoint);
-            },
-
-            getEntity: function (id, endpoint) {
-
-
-                var item = new Entities.YPPost();
-                if(id){
-                    item.id = id;
-                }
-                item.url = endpoint;
-                return this.getDAOdeferred(item);
-            },
-
-            search: function(query){
-
-                var url = '/search?criterion=' + query;
-                return this.getDAOCollection(url);
-
-            },
-
-            recent: function(query){
-
-                var url = '/recent?limit=8';
-                return this.getDAOCollection(url);
-
-            },
-
-            mostActive: function(query){
-
-                var url = '/mostactive?limit=8';
-                return this.getDAOCollection(url);
-
-            },
-
-            getTrending: function(options){
-
-                var url = apiEndPoint + '/gettrending?' + 'reach=' + options.reach + '&limit=' + options.limit ;
-                return this.getDAOCollection(url);
-            },
-
-            getPostsHomeFeatured: function(){
-
-                var url =   apiEndPoint + '/featured';
-                return this.getDAOCollection(url);
-            },
-
-            getEndpointEntities: function(endpoint){
-
-                return this.getDAOCollection(endpoint);
-            },
-
-            getDAOCollection: function(endpoint){
-
-                console.log('<< getDAOCollection: YP Posts -> ' +  endpoint + '  >>');
-
-
-                var url = this.getEndPoint() + endpoint;
-                console.log('colletion url - ' + url);
-
-                var collection = new Entities.YPPostCollection();
-
-                collection.url = url;
-
-
-                return this.getDAOdeferred(collection);
-            },
-
-            getDAOdeferred: function(queryObject){
-
-                return Q(queryObject.fetch())
-                    .then(function(data){
-
-                        //console.log('Data found ' + data);
-                        return queryObject;
-
-                    },  function(xhr){
-
-                        //console.log(xhr);
-
-                        //console.log('err occurred during fetch');
-                        return undefined;
+                nextPage: function () {
+                    if (!this.pageInfo().next) {
+                        return false;
                     }
-                );
+                    this.page = this.page + 1;
+                    return this.fetch();
+                },
+                previousPage: function () {
+                    if (!this.pageInfo().prev) {
+                        return false;
+                    }
+                    this.page = this.page - 1;
+                    return this.fetch();
+                }
 
-            }
+            });
+
+            var API = {
+
+                getFeatureAlias: function(){
+                    return featureAlias;
+                },
+
+                getEndPoint: function(){
+                    return apiEndPoint;
+                },
+
+                getEntities: function (endpoint) {
+
+                    if(endpoint){
+                        return this.getDAOCollection(endpoint);
+                    }
+
+                    return this.getDAOCollection(apiEndPoint);
+                },
+
+                getEntity: function (id, endpoint) {
+                    console.group('API: How Do I  - getEntity');
+
+                    console.info(endpoint);
+                    console.info('ID : ' + id);
+                    var item = new Entities.HowDoIPost();
+                    if(id){
+                        item.id = id;
+                    }
+                    item.url = apiEndPoint + endpoint + id;
+
+                    console.log(item.url);
+                    console.groupEnd();
+
+                    return this.getDAOdeferred(item);
+                },
+
+                query: function(criteria){
+                    var url = apiEndPoint + criteria;
+                    return this.getDAOCollection(url);
+                },
+
+
+                getDAOCollection: function(endpoint){
+
+                    console.group('getDAOCollection: How Do I  Posts ');
+
+                    var collection = new Entities.HowDoICollection();
+
+                    collection.url =  endpoint;
+
+                    console.log(collection.url);
+
+                    console.groupEnd();
+                    return this.getDAOdeferred(collection);
+
+                },
+
+                find: function(options){
+
+                    console.group('API: How DO I : find');
+                    var apiQuery = {
+                        where: {
+                            // "parent_application": options.parent_application
+                        },
+                        sort: (options.sort) ? options.sort : "title asc",
+                        limit: (options.limit) ? options.limit : 10
+                    };
+
+                    var page = (options.page) ? options.page : 0;
+
+                    if(page > 0){
+                        apiQuery.skip = page - 1;
+                    }
+
+                    if(options.criterion){
+                        apiQuery.where.title =  {
+                            "contains": options.criterion
+                        };
+                    }
+
+                    if(options.categories){
+                        apiQuery.where.categories =  {
+                            "contains": options.categories
+                        };
+                    }
+                    if(options.tag){
+                        apiQuery.where.tags =  {
+                            "contains": options.tag
+                        };
+                    }
+                    var queryEndpoint = options.endPoint + IntranetManager.buildQuery(apiQuery)
+
+                    console.info(queryEndpoint);
+                    console.groupEnd();
+
+                    //var url = apiEndPoint + '/search' +  criteria;
+
+                    return this.getEntities(queryEndpoint);
+                },
+
+                search: function(options){
+
+                    var apiQuery = {
+                        where: {
+                            // "parent_application": options.parent_application
+                        },
+                        sort: (options.sort) ? options.sort : "title asc",
+                        limit: (options.limit) ? options.limit : 10
+                    };
+
+                    var page = (options.page) ? options.page : 0;
+
+                    if(page > 0){
+                        apiQuery.skip = page - 1;
+                    }
+
+                    if(options.criterion){
+                        apiQuery.where.title =  {
+                            "contains": options.criterion
+                        };
+                    }
+
+                    if(options.categories){
+                        apiQuery.where.categories =  {
+                            "contains": options.categories
+                        };
+                    }
+                    if(options.tag){
+                        apiQuery.where.tags =  {
+                            "contains": options.tag
+                        };
+                    }
+                    var queryEndpoint = options.endPoint + IntranetManager.buildQuery(apiQuery)
+
+                    //var url = apiEndPoint + '/search' +  criteria;
+
+                    return this.getSearchResults(queryEndpoint);
+                },
+
+
+                getSearchResults: function(endpoint){
+
+                    console.group('API - How Do I : getSearchResults ');
+
+                    var collection = new Entities.HowDoISearchResults();
+
+                    collection.url =  endpoint;
+
+                    console.log(collection.url);
+                    console.groupEnd();
+                    return this.getDAOdeferred(collection);
+                },
+
+
+                getDAOdeferred: function(queryObject){
+
+                    return Q(queryObject.fetch())
+                        .then(function(data){
+
+                            return queryObject;
+                        })
+                        .fail(function(xhr){
+
+                            console.log(xhr);
+                            return undefined;
+                        });
+                }
 
 
 
+            };
 
-        };
-
-        IntranetManager.reqres.setHandler("yp:posts:entities", function () {
-            return API.getEntities(null);
+        IntranetManager.reqres.setHandler("howdoi:app:posts:entity", function (options) {
+            var endpoint =  '/' + options.parent_application + '/posts/';
+            return API.getEntity(options.id, endpoint);
         });
 
+        IntranetManager.reqres.setHandler("howdoi:app:posts:search", function (options) {
+            // var query;
+            // var skip;
+            console.group('Handler howdoi:app:posts:search');
 
+            var endPointTemplate = API.getEndPoint() + '/{{parent_application}}/posts/search';
+            options.endPoint  =  S(endPointTemplate).template(options).s;
 
-        IntranetManager.reqres.setHandler("yp:posts:search:app", function (id) {
-            return API.search('parent_application=' +  id);
-        });
+            console.log(options);
+            console.groupEnd();
 
-        IntranetManager.reqres.setHandler("yp:posts:search:uuid", function (id) {
-            return API.search('uuid=' +  id);
-        });
-
-        IntranetManager.reqres.setHandler("yp:posts:entity:new", function () {
-            return new Entities.YPPost();
-        });
-
-        IntranetManager.reqres.setHandler("yp:posts:entity:new:endpoint", function (applicationId) {
-            var post = new Entities.YPPost();
-
-            post.url =  API.getEndPoint() + 'yp/applications/' + applicationId +  '/posts';
-            console.log(post.url);
-
-            return post;
-        });
-
-        IntranetManager.reqres.setHandler("yp:posts:home:featured", function () {
-            return API.getPostsHomeFeatured();
-        });
-
-        IntranetManager.reqres.setHandler("yp:posts:feature:alias", function (options ) {
-            var endpoint = 'newspost?parent_application_alias=' + options.alias + '&parent_application_feature=' +  options.feature_alias;
-            console.log(endpoint);
-            return API.getEntities(endpoint);
-        });
-
-        IntranetManager.reqres.setHandler("yp:posts:trending", function (options) {
-            //option properties
-            //option.reach = 'local | global'
-            //option.limit = '5' //total records to return
-            //option.appId = 4
-            return API.getTrending(options);
-        });
-
-
-        IntranetManager.reqres.setHandler("yp:posts:related", function (applicationId) {
-            return API.getEntities('?parent_application=' + applicationId);
-        });
-
-        IntranetManager.reqres.setHandler("yp:posts:recommended", function (query) {
-            return API.getEndpointEntities(query, 'getrecommended');
-        });
-
-        IntranetManager.reqres.setHandler("yp:posts:latest", function (query) {
-            return API.getEndpointEntities(query, 'getlatest');
-        });
-
-
-        IntranetManager.reqres.setHandler("yp:posts:get:feature:app", function (options) {
-            return API.search('parent_application_alias=default&limit=5&sort=updatedAt desc');        });
-
-
-        IntranetManager.reqres.setHandler("howdoi:posts:entity", function (id) {
-            var endpoint = API.getEndPoint()+ '/' + id;
-            return API.getEntity(id, endpoint);
-        });
-
-        IntranetManager.reqres.setHandler("howdoi:posts:search", function (query) {
-            return API.search(query);
-        });
-
-
-        IntranetManager.reqres.setHandler("howdoi:posts:mostactive", function () {
-            //return API.search('parent_application_alias=default&limit=5&sort=views_count desc');
-            return API.mostActive('limit=5');
+            return API.search(options);
 
         });
 
+        IntranetManager.reqres.setHandler("howdoi:app:posts:popular", function (options) {
 
-            IntranetManager.reqres.setHandler("howdoi:posts:recent", function () {
+            console.group('Handler:  howdoi:app:posts:popular');
+            options.endPoint  =  S(API.getEndPoint() + '/{{parent_application}}/posts').template(options).s;
+
+            options.sort = 'views desc';
+
+            console.log(options);
+            console.groupEnd();
+
+            return API.find(options);
+
+        });
+
+        IntranetManager.reqres.setHandler("howdoi:posts:recent", function () {
                 //return API.search('parent_application=' +  applicationId);
                 return API.recent('limit=5');
             });
 
-
         IntranetManager.reqres.setHandler("howdoi:posts:search:category", function (options) {
+
             console.log('search ' + JSON.stringify(options));
+
             var query;
             var endpoint;
             //query = 'parent_application_alias=' + options.feature;

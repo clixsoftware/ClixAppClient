@@ -14,9 +14,14 @@
 
 
 <div class="col-lg-3 col-md-3 col-sm-5">
+    <div id="ad-zone-1"></div>
 
     <div id="layout-zone-6"></div>
+    <!-- apple store button -->
+  <div id="ad-zone-2"></div>
+
     <div id="layout-zone-7"></div>
+
     <div id="layout-zone-8"></div>
     <div id="layout-zone-9"></div>
 

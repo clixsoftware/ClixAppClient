@@ -1,2 +1,2 @@
-<a class="label label-default"
+<a class=""
    href="<%=show_url%>"><%=title%></a>

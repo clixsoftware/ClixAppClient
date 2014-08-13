@@ -11,76 +11,75 @@ define([
     "common/views"
 ],
     function (IntranetManager, CommonViews, GlobalViews) {
-        IntranetManager.module("VacancyManager.Common",
+        IntranetManager.module("VacancyManager.Public.Common",
             function (Common, VacancyManager, Backbone, Marionette, $, _) {
 
                 Common.Controller = {
 
-                    getAppLayoutView: function () {
+                    getContent2ColLayoutView: function () {
 
-                        console.log('<< getAppLayoutView: Return Layout >>');
+                        console.info('<< getContent2ColLayoutView: Return Layout >>');
 
-                        return new CommonViews.AppLayoutView();
+                        return new CommonViews.NewsLayoutView();
 
                     },
 
-                    initAppEngine: function (next) {
+                    setupContentLayout: function (next) {
+
                         var that = this;
-                        console.group('VacancyManager: initAppEngine');
+
+                        require(["entities/feature"],
+                            function () {
+
+                                console.group('VacancyManager: Public : Common : setupContentLayout');
+
+                                //fetch workspaces
+                                var fetchFeature = IntranetManager.request('feature:entity:search:alias', 'vacancies');
+                                fetchFeature.then(function (feature) {
+
+                                    if (!feature) {
+                                        throw new Error('Feature vacancy is not installed');
+                                    }
+
+                                    VacancyManager.feature = {
+                                        id: feature.get('id')
+                                    };
+
+                                    VacancyManager.started = true;
+
+                                    console.log('About to ContentLayout Layout');
+
+                                    IntranetManager.appLayout = Common.Controller.getContent2ColLayoutView();
+                                    IntranetManager.siteMainContent.show(IntranetManager.appLayout);
+
+                                    console.groupEnd();
+
+                                    //Call the next function, Setup app layout must be run before..
+                                    if (next) {
+
+                                        console.info('Executing next() in setupContentLayout ');
+                                        next();
+                                    }
 
 
-                        if (VacancyManager.started === false || VacancyManager.started === undefined) {
 
-                            require(["entities/feature"],
-                                function () {
-
-                                    //fetch workspaces
-                                    var fetchFeature = IntranetManager.request('feature:entity:search:alias', 'vacancies');
-                                    fetchFeature.then(function (feature) {
-
-                                        if (!feature) {
-                                            throw new Error('VacancyManager  is not installed');
-                                        }
-                                        VacancyManager.feature = {
-                                            id: feature.get('id')
-                                        };
-                                        VacancyManager.started = true;
-
-                                       // IntranetManager.appLayout = Common.Controller.getAppLayoutView();
-
-                                      //  IntranetManager.siteMainContent.reset();
-                                       // IntranetManager.siteMainContent.show(IntranetManager.appLayout);
-
-                                        if (next) {
-                                            next();
-                                        }
-
-                                    }).fail(function (error) {
-
+                                })
+                                    .fail(function (error) {
                                         IntranetManager.trigger('core:error:action', error);
-
                                     });
 
-
-                                }
-                            );
-                        } else {
-
-                            if (next) {
-                                console.log('Executing next()');
-                                next();
                             }
+                        );
 
-                        }
-                        console.groupEnd();
+
+
                     }
-
-              };
+                };
 
 
             });
 
 
-        return IntranetManager.VacancyManager.Common.Controller;
+        return IntranetManager.VacancyManager.Public.Common.Controller;
     });
 

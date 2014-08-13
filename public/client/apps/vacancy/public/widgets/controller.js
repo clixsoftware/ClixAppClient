@@ -1,10 +1,10 @@
 
 define([
     "app",
-    "apps/news/public/widgets/views"
+    "apps/vacancy/public/widgets/views"
 ], function ( IntranetManager, WidgetsShow) {
 
-    IntranetManager.module("NewsManager.Widgets.Show",
+    IntranetManager.module("VacancyManager.Public.Widgets.Show",
         function ( Show,
                    IntranetManager,
                    Backbone,
@@ -20,28 +20,27 @@ define([
 
                 },
 
-                showRecentPosts: function(appId){
+                showRecentPosts: function(options){
                     var that = this;
 
-                    console.log('<< NewsManager: Widgets: showRecentPosts ' +  appId + ' >>');
+                    console.group('<< vacancy: Widgets: showRecentPosts>>');
 
                     require([
-                        "entities/news"
+                        "entities/vacancy"
                     ], function(){
 
-                        var options =  {
-                            parent_application: appId,
-                            limit: 5
-                        };
+                        options.limit = 5;
+                        options.sort = 'createdAt desc';
 
-                        var fetchingPosts = IntranetManager.request('news:apps:posts:recent', options);
+                        console.info(options);
+                        console.groupEnd();
+
+                        var fetchingPosts = IntranetManager.request('vacancy:app:posts:find', options);
 
                         fetchingPosts.then(function(posts){
 
-                            console.log(posts);
-
-                            IntranetManager.layoutZone1.reset();
-                            IntranetManager.layoutZone1.show(that.getRecentView(posts));
+                            IntranetManager.layoutZone5.reset();
+                            IntranetManager.layoutZone5.show(that.getRecentView(posts));
                         })
                             .fail(function(error){
 
@@ -54,10 +53,41 @@ define([
                     console.groupEnd();
                 },
 
+                getPopularView: function(collection){
+                    return new WidgetsShow.ListView({
+                        collection: collection
+                    });
 
+                },
+                showPopularPosts: function(options){
+                    var that = this;
+
+                    require([
+                        "entities/vacancy"
+                    ], function(){
+
+                        console.group('<< vacancy Manager: Widgets: showPopularPosts  ')
+                        options.limit = 5;
+                        options.sort = 'views desc';
+
+                        console.info(options);
+                        console.groupEnd();
+
+                        var fetchingPosts = IntranetManager.request('vacancy:app:posts:find', options);
+
+                        fetchingPosts.then(function(posts){
+
+                            IntranetManager.layoutZone4.reset();
+                            IntranetManager.layoutZone4.show(that.getPopularView(posts));
+
+                        });
+
+                    });
+
+                }
             }
         });
 
-    return IntranetManager.NewsManager.Widgets.Show.Controller;
+    return IntranetManager.VacancyManager.Public.Widgets.Show.Controller;
 });
 

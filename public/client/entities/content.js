@@ -104,6 +104,56 @@ define([
                     return this.getDAOdeferred(collection);
                 },
 
+                getEntities: function (endpoint) {
+
+                    if(endpoint){
+                        return this.getDAOCollection(endpoint);
+                    }
+
+                    return this.getDAOCollection(apiEndPoint);
+                },
+
+                find: function(options){
+
+                    console.group('API: How DO I : find');
+
+                    var apiQuery = {
+                        where: {
+                            // "parent_application": options.parent_application
+                        },
+                        sort: (options.sort) ? options.sort : "title asc",
+                        limit: (options.limit) ? options.limit : 10
+                    };
+
+                    var page = (options.page) ? options.page : 0;
+
+                    if(page > 0){
+                        apiQuery.skip = page - 1;
+                    }
+
+                    if(options.criterion){
+                        apiQuery.where.title =  {
+                            "contains": options.criterion
+                        };
+                    }
+
+                    if(options.categories){
+                        apiQuery.where.categories =  {
+                            "contains": options.categories
+                        };
+                    }
+
+                    var queryEndpoint = options.endPoint + IntranetManager.buildQuery(apiQuery)
+
+                    console.info(queryEndpoint);
+                    console.groupEnd();
+
+                    //var url = apiEndPoint + '/search' +  criteria;
+
+                    return this.getEntities(queryEndpoint);
+                },
+
+
                search: function(criteria){
                     var url = apiEndPoint + '/search' +  criteria;
                     return this.getSearchResults(url);
@@ -142,13 +192,20 @@ define([
 
                 }
 
-
             };
 
              IntranetManager.reqres.setHandler("content:posts:popular", function (options) {
-                //var criteria = '?where={"featured": 1}'  ;
-                var criteria = '?limit=7&sort=views desc';
-                return API.search(criteria);
+                 console.group('Handler:  content:posts:popular');
+
+                 options.endPoint  =  API.getEndPoint() + '/posts';
+
+                 options.sort = 'views desc';
+                 options.limit =7;
+
+                 console.log(options);
+                 console.groupEnd();
+
+                 return API.find(options);
             });
 
 /*            IntranetManager.reqres.setHandler("content:posts:recent", function (options) {
@@ -169,26 +226,17 @@ define([
             });
 
             IntranetManager.reqres.setHandler("content:posts:recent", function (options) {
+                console.group('Handler:  content:posts:recent');
+
+                options.endPoint  =  API.getEndPoint() + '/posts';
+
+                options.sort = 'createdAt desc';
+                options.limit =(options["limit"] != undefined) ? options.limit : 5,
 
                 console.log(options);
-                var apiQuery = {
-                    sort: "createdAt desc",
-                    limit:  (options["limit"] != undefined) ? options.limit : 5,
-                    skip: (options.page) ? options.page : 0
-                };
-
-                if(options.criterion){
-                    apiQuery.where.title =  {
-                        "contains": options.criterion
-                    };
-                }
-
-                if(options.parent_application){
-                    apiQuery.where.parent_application =  options.parent_application;
-                }
-
                 console.groupEnd();
-                return API.search(IntranetManager.buildQuery(apiQuery));
+
+                return API.find(options);
 
             });
 

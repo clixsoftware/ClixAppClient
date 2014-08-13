@@ -80,6 +80,25 @@ define(
                         }
 
                     }
+                },
+
+                displayRandomAd: function (options) {
+
+                            require([
+                                "apps/core/public/controller"
+                            ], function (CoreController) {
+                                CoreController.showRandomAdWidget(options);
+                            });
+
+                },
+
+                displayBreadCrumbs: function (options) {
+
+                    require([
+                        "apps/core/public/controller"
+                    ], function (CoreController) {
+                        CoreController.showBreadcrumbWidget(options);
+                    });
                 }
 
             };
@@ -108,6 +127,18 @@ define(
                 console.group('Global Error Log');
                 console.error(error);
                 console.groupEnd();
+            });
+
+            IntranetManager.on('core:display:ad', function (options) {
+                API.displayRandomAd(options);
+            });
+
+            IntranetManager.on('core:object:breadcrumbs', function (options) {
+                console.group('Core App: trigger: core:object:breadcrumbs');
+                console.info(options);
+                console.groupEnd();
+
+                API.displayBreadCrumbs(options);
             });
 
             IntranetManager.addInitializer(function () {

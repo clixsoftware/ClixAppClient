@@ -1,297 +1,261 @@
-console.log('in newsmanager.posts.list.controller');
-/*
- * Application: News Manager
-  * Module: News Manager.Sites.List.Controller
- * */
-
-
 define([
-    "app",
-    "apps/news/public/entities/posts/list/views",
-    "apps/news/public/common/views",
-    "common/views",
-    "backbone.virtual-collection",
-    "backbone.grouped-collection",
-    "moment"
-
-],
-    function ( IntranetManager, ListViews, CommonViews, GlobalViews ) {
-        IntranetManager.module("NewsManager.Posts.List",
-            function ( List, NewsManager, Backbone, Marionette, $, _ ) {
+        "app",
+        "apps/news/public/entities/posts/list/views",
+        "apps/news/public/common/views",
+        "common/views",
+        "backbone.virtual-collection",
+        "backbone.grouped-collection",
+        "moment",
+        "simple.pagination"
+    ],
+    function (IntranetManager, ListViews, CommonViews, GlobalViews) {
+        IntranetManager.module("NewsManager.Public.Posts.List",
+            function (List, NewsManager, Backbone, Marionette, $, _) {
                 List.Controller = {
 
 
-                    getCategoriesView: function (collection, appId) {
+                    getLayoutView: function () {
+                        return new ListViews.LayoutView();
+                    },
 
-                        var view = new ListViews.CategoriesView({
+                    getListView: function (collection) {
+                        var view = new ListViews.ListView({
                             collection: collection
-                        });
-
-                        var options = {
-                            trigger: 'newsmanager:app:categories',
-                            appId: appId
-                        };
-
-                        view.on('command:new:category', function () {
-                           IntranetManager.trigger('taxonomy:new:form', options);
                         });
 
                         return view;
                     },
 
-                    getPublicNewsHomeView: function (collection) {
 
-                        return  new ListViews.PublicNewsHomeView({
-                            collection: collection
-                        });
-
-
-                    },
-
-                    getNewsHomeView: function(collection){
-
-                      return new ListViews.NewsHomeView({
-                            collection: collection
-                      })
-
-                    },
                     getHeaderView: function (app) {
-                        var that = this;
 
-                        app.set('_page_header_', 'News Application : ' + app.get('alias'));
-                        app.set('_page_description_', 'News Postings for the application');
-                        app.set('_page_command_button_', 'Add Posting');
-                        app.set('_page_command_button_show', true);
-
-                        var view = new CommonViews.ListHeaderView({
+                        return new ListViews.HeaderView({
                             model: app
                         });
-
-                        view.on('button:command:new', function () {
-                            IntranetManager.trigger('news:admin:post:new', app.get('id'));
-                        });
-
-                        return view;
-
                     },
 
-                    getListSearchView: function () {
+                    getSearchFormView: function () {
+                        return new ListViews.SearchFormView();
+                    },
 
-                        var that = this;
-                        var view = new GlobalViews.SearchView();
-
-                        view.on('list:search', function (criterion) {
-                            that.listSearch(criterion);
+                    getPaginatorView: function (results) {
+                        return new ListViews.PaginatedView({
+                            model: results
                         });
-
-                        return view;
-
                     },
 
 
-                    getListView: function ( collection ) {
-                        var view =  new ListViews.ListView({
-                            collection: collection
-                        });
+                    showPostsList: function (opts) {
 
-                        view.on('itemview:list:model:edit', function(title){
-                           console.log('ID of the model', title);
+                        console.group('<< News : List: showPostsList  >>');
 
-                        });
-
-                        return view;
-                    },
-
-
-                    getBlankView: function (appId) {
-
-                        var view = new ListViews.BlankView();
-
-                        view.on('command:form:new', function () {
-                           IntranetManager.trigger('newsmanager:posts:new:form', appId);
-
-                        });
-
-                        return view;
-                    },
-
-                    getBlankHelpView: function () {
-                        return new ListViews.BlankHelpView();
-                    },
-
-
-                    getNoRecordsView: function(){
-
-                        var view  = new GlobalViews.ListNoRecordsView() ;
-
-                        view.on('list:command:all', function(){
-                            IntranetManager.trigger('sitemanager:home:show');
-                        });
-
-                        return view;
-                    },
-
-                    listSearch: function(criterion){
-
-                        var that = this;
-                        var fetchingRecords = IntranetManager.request('site:search', 'title=' + criterion);
-
-                        $.when(fetchingRecords).done(function(fetchedRecords){
-
-                            //  alert('search for features');
-                            //  console.log(fetchedRecords);
-                            if(fetchedRecords != undefined){
-
-
-                                var listView = that.getListView(fetchedRecords);
-                                IntranetManager.layoutContent.show(listView);
-                            }else{
-                                IntranetManager.layoutContent.show(that.getNoRecordsView());
-
-                            }
-
-                        });
-
-
-                    },
-
-                    loadCategories: function(appId){
-
-                        require(['entities/taxonomy'], function(){
-
-                            var fetchingCatgories = IntranetManager.request('taxonomy:entities:search', 'parent_app=' + appId);
-
-                            $.when(fetchingCatgories).done(function(fetchedCategories){
-
-                                if(fetchedCategories){
-
-                                    IntranetManager.layoutZone1.show(List.Controller.getCategoriesView(fetchedCategories, appId));
-
-                                }else{
-
-                                    console.log('no categoires found');
-                                }
-                            });
-
-                        });
-
-                    },
-
-                    listRecords: function (appId) {
-                        console.group('NewsManager: Posts: listRecords');
-
-                        var that = this;
-
-                        var cb = function () {
-
-                            require(['entities/applications', 'entities/news'], function(){
-
-                               var fetchingApp = IntranetManager.request('applications:entity', appId);
-
-                                fetchingApp.then(function(app){
-
-                                    var fetchingNews = IntranetManager.request('news:app:posts', appId);
-
-                                    return ([app, fetchingNews]);
-
-                                })
-                                    .spread(function(app, fetchedNews){
-                                        var listView = List.Controller.getListView(fetchedNews);
-                                        IntranetManager.layoutHeader.show(List.Controller.getHeaderView(app));
-
-                                        IntranetManager.layoutContent.show(listView);
-
-                                        IntranetManager.layoutSearch.show(List.Controller.getListSearchView());
-
-                                       // IntranetManager.trigger('newsmanager:app:categories', appId);
-
-                                       // IntranetManager.layoutZone2.reset();
-                                        console.log('fetched app and news')
-                                    });
-
-                            });
-
-
-                        };
-
-                       IntranetManager.trigger("news:admin:init", cb);
+                        console.group('News  Options');
+                        console.log(opts);
                         console.groupEnd();
 
-                    },
-
-                    showPublicNewsHome: function (options) {
-
-                        console.group('<< showPublicNewsHome : INIT >>');
-
                         var that = this;
+                        var layout = this.getLayoutView();
 
-                        require(['entities/applications', 'entities/news'], function () {
+                        require(['entities/applications', 'entities/news', 'entities/taxonomy', 'entities/core'], function () {
 
                             var settings = {
-                            alias: options.alias,
-                            parent_feature: NewsManager.feature.id
-                        };
+                                alias: opts.alias,
+                                parent_feature: NewsManager.feature.id
+                            };
 
+                            console.group('@@ Fetching News  Application ' );
+                            console.log(settings);
+                            console.groupEnd();
 
-                        console.log('@@ Fetching Current Application using = ' + JSON.stringify(settings));
+                            var fetchingApp = IntranetManager.request('applications:feature:alias', settings);
 
-                        var fetchingApp = IntranetManager.request('applications:feature:alias', settings);
+                            fetchingApp.then(function (app) {
 
-                        fetchingApp.then(function(app){
-                          //  return app;
-
-                            var fetchingPosts = IntranetManager.request('news:app:posts', app.get('id'));
-
-                            var posts = fetchingPosts.then(function(posts){
-                                return posts;
-                            });
-
-                            var fetchParentApp = IntranetManager.request('applications:entity', app.get('parent_application'));
-
-                            return [app, posts, fetchParentApp]
-
-                        })
-                        .spread(function(app, posts, parentApp){
-
-                                IntranetManager.layoutContent.reset();
-                                IntranetManager.layoutContent.show(new that.getNewsHomeView(posts));
-
-                                var taxoptions = {
-                                    parentFeature: app.get('parent_application_feature'),
-                                    appFeature: 'news',
-                                    appAlias: app.get('parent_application_alias'),
-                                    parentId: app.get('parent_application'),
-                                    objectId: app.get('uuid'),
-                                    categories: app.get('categories'),
-                                    tags: app.get('tags'),
-                                    url: app.get('path')
-                                };
-
-                                console.group("app");
+                                console.group('News  App');
                                 console.log(app);
                                 console.groupEnd();
 
-                                console.group("taxoptions");
-                                console.log(taxoptions);
-                                console.groupEnd();
-                               // IntranetManager.trigger('news:public:category:list', parentApp.get('uuid'));
-                                IntranetManager.trigger('core:object:categories', taxoptions );
+                                var page=0;
 
-                        })
-                            .fail(function(error){
-                                console.log('Error ' + error);
-                            });
+                                if(opts.page){
+                                    page = opts.page;
+                                }
+
+                                var options = {
+                                    app: app.id,
+                                    page: page,
+                                    parent_application: app.get('id'),
+                                    categories: opts.uuid,
+                                    tag: opts.tag
+                                };
+
+                                var fetchingRecords = IntranetManager.request('news:app:posts:search', options);
+
+                                return [app, fetchingRecords, layout, options];
+
+                            })
+                                .spread(function (app, fetchedPosts, layout, triggerOptions) {
+
+                                    var pageTitle = app.get('title');
+                                    var appUrls = app.get('urls');
+
+                                    console.log(Backbone.history.location);
+                                    var searchFormView = that.getSearchFormView();
+
+                                    var buildPaginate = function (collection, trigger, settings) {
+                                        var PaginateModel = Backbone.Model.extend();
+
+                                        var paginator = new PaginateModel({
+                                            items: collection.total,
+                                            itemsOnPage: collection.limit,
+                                            path: opts.path
+                                        });
+
+                                        var paginatedView = that.getPaginatorView(paginator);
+
+                                        paginatedView.on('paginatedView', function (pageNumber) {
+
+                                            console.group('paginatedView: paginatedView: event');
+
+                                            settings.page = pageNumber;
+
+                                            console.log(settings);
+                                            console.log(trigger);
+                                            console.groupEnd();
+
+
+                                            var records = IntranetManager.request(trigger, settings);
+
+                                            records.then(function (success) {
+                                                layout.searchResults.reset();
+                                                layout.searchResults.show(that.getListView(success));
+                                            });
+
+
+                                        });
+
+                                        layout.searchResults.show(that.getListView(collection));
+                                        layout.paginator.show(paginatedView);
+
+                                    };
+
+                                    layout.addRegion("searchResults", "#searchResults");
+                                    layout.addRegion("paginator", "#paginator");
+                                    //setup the search
+
+                                    searchFormView.on("posts:search", function (filterCriterion) {
+
+                                        console.group('searchFormView: posts:search: event');
+
+                                        // alert('searching');
+                                        var search_options = {
+                                            criterion: filterCriterion,
+                                            parent_application: app.id,
+                                            categories: opts.uuid
+                                        };
+
+                                        console.log(search_options);
+                                        console.groupEnd();
+
+                                        var search = IntranetManager.request("news:app:posts:search", search_options);
+
+                                        search.then(function (results) {
+                                            buildPaginate(results, 'news:app:posts:search', search_options);
+                                        });
+
+                                    });
+
+                                    var updateTitles = function(title, lastCrumb){
+
+                                       // alert('updating titles');
+
+                                        IntranetManager.trigger('dom:title',title );
+
+                                        IntranetManager.trigger('core:object:breadcrumbs', {
+                                            crumbs: [
+                                                {title: app.get('title'), url:appUrls.friendly.href},
+                                                {title: title, url:''}
+                                            ]
+                                        });
+
+                                     };
+
+                                    layout.on('show', function () {
+
+
+                                        IntranetManager.trigger('core:object:categories', {
+                                            collection:  app.get('taxonomy'),
+                                            url: '/sites/' + opts.alias +  '/news/posts-by-category/{{slug}}?uuid={{uuid}}',
+                                            urlTrigger: "news:category:posts"
+                                        });
+
+                                        IntranetManager.trigger('core:object:tags', {
+                                            collection:  app.get('taxonomy'),
+                                            url: '/sites/'  + opts.alias +  '/news/posts-by-tag/{{slug}}'
+                                        });
+
+                                        IntranetManager.layoutHeader.reset();
+
+                                        if(triggerOptions.categories) {
+
+                                            console.group('Searching by Taxonomy/Category');
+                                            console.log(triggerOptions.categories)
+                                            console.groupEnd();
+
+
+                                            var fetchingTaxonomy = IntranetManager.request('taxonomy:entity:uuid', triggerOptions.categories);
+
+                                            fetchingTaxonomy.then(function (category) {
+
+                                                  IntranetManager.layoutHeader.show(that.getHeaderView(category));
+                                                updateTitles("News by category :: " + category.get('title'), null);
+
+                                            });
+
+                                        }else if (triggerOptions.tag){
+
+                                            var tagModel = IntranetManager.request('core:new:entity', {title: 'All News tagged : ' + triggerOptions.tag});
+                                            updateTitles("All News tagged : : " + triggerOptions.tag, null);
+                                            IntranetManager.layoutHeader.show(that.getHeaderView(tagModel));
+
+                                        }else{
+                                            updateTitles("", null);
+                                            IntranetManager.layoutHeader.show(that.getHeaderView(app));
+
+                                        }
 
 
 
 
-                    });
+
+
+
+                                        IntranetManager.layoutSearch.reset();
+                                        IntranetManager.layoutSearch.show(searchFormView);
+
+                                        buildPaginate(fetchedPosts, 'news:app:posts:search', triggerOptions);
+
+                                    });
+
+                                    IntranetManager.appLayout = layout;
+
+                                    IntranetManager.siteMainContent.reset();
+                                    IntranetManager.siteMainContent.show(IntranetManager.appLayout);
+
+                                })
+                                .fail(function (error) {
+
+                                    console.log(error);
+                                });
+
+                        });
+
 
                     }
                 }
 
             });
 
-        return IntranetManager.NewsManager.Posts.List.Controller;
+        return IntranetManager.NewsManager.Public.Posts.List.Controller;
     });
 

@@ -1,10 +1,18 @@
+/*
+ * Application: Application Manager
+ * Views: Workspace Common Views
+ * Module: SiteManager.Common.Views
+ *
+ * */
+
+
 
 define([
     "app",
     "common/views",
-    "tpl!apps/calendar/public/common/templates/layout.tpl"
+    "tpl!apps/calendar/public/common/templates/public_layout.tpl"
 
-], function(IntranetManager, GlobalViews, layoutTpl){
+], function(IntranetManager, GlobalViews, publicLayoutTpl){
 
     IntranetManager.module("CalendarManager.Public.Common.Views",
         function(
@@ -14,14 +22,18 @@ define([
              Marionette,
              $, _){
 
-            Views.LayoutView = Marionette.LayoutView.extend({
-                    template: layoutTpl,
+            Views.NewsLayoutView = GlobalViews.Content2ColLayoutView.extend({
+
+                template: publicLayoutTpl,
 
                 onBeforeRender: function () {
                     // set up final bits just before rendering the view's `el`
-                    $('body').addClass('page-template-page-calendar');
-                }
+                    $('body').addClass('public calendar').removeClass('app');
+                },
 
+                onRender: function(){
+                    $('body').removeClass('app');
+                }
             });
 
 

@@ -1,22 +1,36 @@
 define([
-    "app",
-    "apps/blogs/public/entities/posts/list/views",
-    "apps/blogs/public/common/views",
-    "common/views",
-    "backbone.virtual-collection",
-    "backbone.grouped-collection",
-    "moment"
-
-],
-    function ( IntranetManager, ListViews, CommonViews, GlobalViews ) {
+        "app",
+        "apps/blogs/public/entities/posts/list/views",
+        "apps/blogs/public/common/views",
+        "common/views",
+        "backbone.virtual-collection",
+        "backbone.grouped-collection",
+        "moment",
+        "simple.pagination"
+    ],
+    function (IntranetManager, ListViews, CommonViews, GlobalViews) {
         IntranetManager.module("BlogsManager.Public.Posts.List",
-            function ( List, BlogsManager, Backbone, Marionette, $, _ ) {
+            function (List, BlogsManager, Backbone, Marionette, $, _) {
                 List.Controller = {
 
 
-                   getListView: function ( projects ) {
-                        return   new ListViews.ListView({
-                            collection: projects
+                    getLayoutView: function () {
+                        return new ListViews.LayoutView();
+                    },
+
+                    getListView: function (collection) {
+                        var view = new ListViews.ListView({
+                            collection: collection
+                        });
+
+                        return view;
+                    },
+
+
+                    getHeaderView: function (app) {
+
+                        return new ListViews.HeaderView({
+                            model: app
                         });
                     },
 
@@ -24,62 +38,214 @@ define([
                         return new ListViews.SearchFormView();
                     },
 
-                    getHeaderView: function (app) {
-                        return new ListViews.HeaderView({
-                            model: app
+                    getPaginatorView: function (results) {
+                        return new ListViews.PaginatedView({
+                            model: results
                         });
                     },
 
-                    showPostListPage: function (options) {
 
-                        console.group('<<BlogsManager  showProjectListPage>>');
+                    showPostsList: function (opts) {
+
+                        console.group('<< blogs : List: showPostsList  >>');
+
+                        console.group('blogs  Options');
+                        console.log(opts);
+                        console.groupEnd();
 
                         var that = this;
+                        var layout = this.getLayoutView();
 
-                        require(['entities/applications', 'entities/blogs'], function () {
-
-                       options.parent_feature =  BlogsManager.feature.id;
-
-                        console.log('@@ Fetching Current Application using = ' + JSON.stringify(options));
-
-                        var fetchingApp = IntranetManager.request('applications:feature:alias', options);
-
-                        fetchingApp.then(function(app){
+                        require(['entities/applications', 'entities/blogs', 'entities/taxonomy', 'entities/core'], function () {
 
                             var settings = {
-                                applicationId: app.get('id')
+                                alias: opts.alias,
+                                parent_feature: BlogsManager.feature.id
                             };
 
-                            IntranetManager.layoutHeader.reset();
-                            IntranetManager.layoutHeader.show(that.getHeaderView(app));
+                            console.group('@@ Fetching blogs  Application ' );
+                            console.log(settings);
+                            console.groupEnd();
 
-                            var fetchingPosts = IntranetManager.request('blogs:blog:posts', settings);
+                            var fetchingApp = IntranetManager.request('applications:feature:alias', settings);
 
-                            var posts = fetchingPosts.then(function(posts){
-                                return posts;
-                            });
+                            fetchingApp.then(function (app) {
 
-                            var searchFormView = that.getSearchFormView();
-                            //IntranetManager.layoutSearch.reset();
-                            //IntranetManager.layoutSearch.show(searchFormView);
+                                console.group('blogs  App');
+                                console.log(app);
+                                console.groupEnd();
 
-                            return [app, posts, settings]
-                        })
-                        .spread(function(app, posts, settings){
+                                var page=0;
+
+                                if(opts.page){
+                                    page = opts.page;
+                                }
+
+                                var options = {
+                                    app: app.id,
+                                    page: page,
+                                    parent_application: app.get('id'),
+                                    categories: opts.uuid,
+                                    tag: opts.tag
+                                };
+
+                                var fetchingRecords = IntranetManager.request('blogs:app:posts:search', options);
+
+                                return [app, fetchingRecords, layout, options];
+
+                            })
+                                .spread(function (app, fetchedPosts, layout, triggerOptions) {
+
+                                    var pageTitle = app.get('title');
+                                    var appUrls = app.get('urls');
+
+                                    console.log(Backbone.history.location);
+                                    var searchFormView = that.getSearchFormView();
+
+                                    var buildPaginate = function (collection, trigger, settings) {
+                                        var PaginateModel = Backbone.Model.extend();
+
+                                        var paginator = new PaginateModel({
+                                            items: collection.total,
+                                            itemsOnPage: collection.limit,
+                                            path: opts.path
+                                        });
+
+                                        var paginatedView = that.getPaginatorView(paginator);
+
+                                        paginatedView.on('paginatedView', function (pageNumber) {
+
+                                            console.group('paginatedView: paginatedView: event');
+
+                                            settings.page = pageNumber;
+
+                                            console.log(settings);
+                                            console.log(trigger);
+                                            console.groupEnd();
 
 
-                              IntranetManager.layoutContent.reset();
-                              IntranetManager.layoutContent.show(new that.getListView(posts));
+                                            var records = IntranetManager.request(trigger, settings);
+
+                                            records.then(function (success) {
+                                                layout.searchResults.reset();
+                                                layout.searchResults.show(that.getListView(success));
+                                            });
 
 
-                        })
-                            .fail(function(error){
-                                console.log('Error ' + error);
-                            });
-                    });
+                                        });
+
+                                        layout.searchResults.show(that.getListView(collection));
+                                        layout.paginator.show(paginatedView);
+
+                                    };
+
+                                    layout.addRegion("searchResults", "#searchResults");
+                                    layout.addRegion("paginator", "#paginator");
+                                    //setup the search
+
+                                    searchFormView.on("posts:search", function (filterCriterion) {
+
+                                        console.group('searchFormView: posts:search: event');
+
+                                        // alert('searching');
+                                        var search_options = {
+                                            criterion: filterCriterion,
+                                            parent_application: app.id,
+                                            categories: opts.uuid
+                                        };
+
+                                        console.log(search_options);
+                                        console.groupEnd();
+
+                                        var search = IntranetManager.request("blogs:app:posts:search", search_options);
+
+                                        search.then(function (results) {
+                                            buildPaginate(results, 'blogs:app:posts:search', search_options);
+                                        });
+
+                                    });
+
+                                    var updateTitles = function(title, lastCrumb){
+
+                                       // alert('updating titles');
+
+                                        IntranetManager.trigger('dom:title',title );
+
+                                        IntranetManager.trigger('core:object:breadcrumbs', {
+                                            crumbs: [
+                                                {title: app.get('title'), url:appUrls.friendly.href},
+                                                {title: title, url:''}
+                                            ]
+                                        });
+
+                                     };
+
+                                    layout.on('show', function () {
+
+
+                                        IntranetManager.trigger('core:object:categories', {
+                                            collection:  app.get('taxonomy'),
+                                            url: '/sites/' + opts.alias +  '/blogs/posts-by-category/{{slug}}?uuid={{uuid}}',
+                                            urlTrigger: "blogs:category:posts"
+                                        });
+
+                                        IntranetManager.trigger('core:object:tags', {
+                                            collection:  app.get('taxonomy'),
+                                            url: '/sites/' + opts.alias +  '/blogs/posts-by-tag/{{slug}}'
+                                        });
+
+                                        IntranetManager.layoutHeader.reset();
+
+                                        if(triggerOptions.categories) {
+
+                                            console.group('Searching by Taxonomy/Category');
+                                            console.log(triggerOptions.categories)
+                                            console.groupEnd();
+
+
+                                            var fetchingTaxonomy = IntranetManager.request('taxonomy:entity:uuid', triggerOptions.categories);
+
+                                            fetchingTaxonomy.then(function (category) {
+
+                                                  IntranetManager.layoutHeader.show(that.getHeaderView(category));
+                                                updateTitles("posts  by category :: " + category.get('title'), null);
+
+                                            });
+
+                                        }else if (triggerOptions.tag){
+
+                                            var tagModel = IntranetManager.request('core:new:entity', {title: 'All blog posts tagged : ' + triggerOptions.tag});
+                                            updateTitles("All blog posts tagged : : " + triggerOptions.tag, null);
+                                            IntranetManager.layoutHeader.show(that.getHeaderView(tagModel));
+
+                                        }else{
+                                            IntranetManager.trigger('dom:title', app.get('title') );
+                                            IntranetManager.layoutHeader.show(that.getHeaderView(app));
+
+                                        }
+
+                                        IntranetManager.layoutSearch.reset();
+                                        IntranetManager.layoutSearch.show(searchFormView);
+
+                                        buildPaginate(fetchedPosts, 'blogs:app:posts:search', triggerOptions);
+
+                                    });
+
+                                    IntranetManager.appLayout = layout;
+
+                                    IntranetManager.siteMainContent.reset();
+                                    IntranetManager.siteMainContent.show(IntranetManager.appLayout);
+
+                                })
+                                .fail(function (error) {
+
+                                    IntranetManager.trigger('core:error:action', error);
+                                });
+
+                        });
+
 
                     }
-
                 }
 
             });

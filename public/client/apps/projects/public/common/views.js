@@ -1,12 +1,20 @@
+/*
+ * Application: Application Manager
+ * Views: Workspace Common Views
+ * Module: SiteManager.Common.Views
+ *
+ * */
+
+
 
 define([
     "app",
     "common/views",
-    "tpl!apps/projects/public/common/templates/layout.tpl"
+    "tpl!apps/projects/public/common/templates/public_layout.tpl"
 
-], function(IntranetManager, GlobalViews, layoutTpl){
+], function(IntranetManager, GlobalViews, publicLayoutTpl){
 
-    IntranetManager.module("ProjectsManager.Public.Common.Views",
+    IntranetManager.module("ProjectManager.Public.Common.Views",
         function(
              Views,
              IntranetManager,
@@ -14,19 +22,24 @@ define([
              Marionette,
              $, _){
 
-            Views.LayoutView = Marionette.Layout.extend({
-                    template: layoutTpl,
+            Views.NewsLayoutView = GlobalViews.Content2ColLayoutView.extend({
+
+                template: publicLayoutTpl,
 
                 onBeforeRender: function () {
                     // set up final bits just before rendering the view's `el`
-                    $('body').addClass('page-template-page-projects');
-                }
+                    $('body').addClass('public projects').removeClass('app');
+                },
 
+                onRender: function(){
+                    $('body').removeClass('app');
+                }
             });
+
 
   });
 
 
 
-  return IntranetManager.ProjectsManager.Public.Common.Views;
+  return IntranetManager.ProjectManager.Public.Common.Views;
 });

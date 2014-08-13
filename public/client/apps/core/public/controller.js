@@ -10,9 +10,10 @@ define([
 
             Show.Controller = {
 
-                getCategoriesView: function(categories){
+                getCategoriesView: function(options){
                     return new CorePublicViews.CategoriesView({
-                        collection: categories
+                        collection: options.collection,
+                        useview: options.useview
                     })
 
                 },
@@ -24,11 +25,7 @@ define([
                     console.groupEnd();
 
 
-                    console.log(options.collection.categories);
-
                     if(options.collection.categories && options.collection.categories.length > 0){
-
-                        console.log(options);
 
                         var TermModel = Backbone.Model.extend({});
 
@@ -36,27 +33,31 @@ define([
                             model: TermModel
                         }) ;
 
-
-                        _.each(options.collection.categories, function(term){
+                       _.each(options.collection.categories, function(term){
                             var title = S(term.title).replaceAll(' ', '&nbsp;');
                             term.publicTitle = title + ' ';
                             term.urlTrigger = options.urlTrigger;
                             term.slug = S(term.title).slugify().s;
+                            term.view = options.view;
                             term.show_url = S(options.url).template(term).s;
                            // console.log(term);
                         })
 
+                        console.log(options.view);
+
                         var termsCollection = new TermModelCollection(options.collection.categories);
 
-                        options.view = 'categories';
-                        var categoryView = that.getCategoriesView(termsCollection);
+                        //options.view = 'categories';
+                        var categoryView = that.getCategoriesView({collection: termsCollection, useview: options.view});
 
                         categoryView.on('childview:category:navigate', function (args){
+
                            IntranetManager.trigger(args.model.get('urlTrigger'), {
                                 slug: args.model.get('slug'),
                                 uuid: args.model.get('uuid'),
                                 url: args.model.get('show_url')
                             });
+
                         });
 
                         IntranetManager.layoutZone2.reset();
@@ -69,10 +70,11 @@ define([
                 },
 
 
-                getTagsView:function(tags){
+                getTagsView:function(options){
                     return new CorePublicViews.TagsView({
-                        collection: tags
-                    })
+                        collection: options.collection,
+                        useview: options.useview
+                    })                    ;
 
                 },
 
@@ -82,7 +84,8 @@ define([
                     console.log(options);
                     console.groupEnd();
 
-                    if(options.collection.tags){
+                    if(options.collection.tags && options.collection.tags.length > 0){
+                    //if(options.collection.tags){
 
                         var Tag = Backbone.Model.extend({});
 
@@ -99,6 +102,7 @@ define([
                                 id: id,
                                 title: tag,
                                  slug : S(tag).slugify().s,
+
                                  show_url: S(options.url).template({slug: S(tag).slugify().s}).s
                             });
 
@@ -109,13 +113,13 @@ define([
                         console.log(tags);
 
                          IntranetManager.layoutZone3.reset();
-                        IntranetManager.layoutZone3.show(that.getTagsView(tags));
+                        IntranetManager.layoutZone3.show(that.getTagsView({
+                            collection: tags}));
 
 
                     }
 
                 },
-
 
                 getAttachmentView:function(media){
                     return new CorePublicViews.AttachmentView({
@@ -149,13 +153,13 @@ define([
 
                 },
 
-
                 getImageGalleryView:function(images){
                     return new CorePublicViews.FileListView({
                         collection: images
                     })
 
                 },
+
                 showImageGalleryWidget: function(gallery){
                     var that = this;
 
@@ -192,8 +196,95 @@ define([
 
                     });
 
-                }
+                },
 
+                getAdView:function(ad){
+                    return new CorePublicViews.AdView({
+                        model: ad
+                    })
+
+                },
+
+                showRandomAdWidget: function(options){
+                    var that = this;
+
+                    //alert('showAttachmentWidget');
+
+                    console.group('Core: Widget : showRandomAdWidget');
+                    console.log(options);
+                    console.groupEnd();
+
+
+                    require([
+                        'entities/ads'
+                    ], function(){
+
+                        var fetchingAds = IntranetManager.request('ads:posts:random', options);
+
+                        fetchingAds.then(function(ad){
+
+                            if(ad){
+
+                                var custom_fields = ad.get('custom_fields');
+                                console.log(custom_fields);
+
+                                IntranetManager[custom_fields.adwords.zone].reset();
+                                IntranetManager[custom_fields.adwords.zone].show(that.getAdView(ad));
+                            }
+
+                        }).fail(function(err){
+                            IntranetManager.trigger('core:error:action', err);
+
+                        })
+
+
+                    });
+
+                },
+
+                getBreadCrumbsView:function(collection){
+                    return new CorePublicViews.BreadCrumbView({
+                        collection: collection
+                    });
+
+                },
+
+                showBreadcrumbWidget: function(options){
+                    var that = this;
+
+                    console.group('Core: Widget : showBreadcrumbWidget');
+                    console.log(options);
+                    console.groupEnd();
+
+                    if(options.crumbs && options.crumbs.length > 0){
+
+                        var Crumb = Backbone.Model.extend({});
+
+                        var CrumbCollection = Backbone.Collection.extend({
+                            model: Crumb
+                        }) ;
+
+                        var crumbs = new CrumbCollection();
+
+                        var id = 0;
+                        _.each(options.crumbs, function(crumb){
+                            id = id + 1;
+                            var item  = new Crumb({
+                                id: id,
+                                title: crumb.title,
+                                show_url: crumb.url
+                            });
+                            crumbs.add(item);
+                        });
+
+//                        console.log(crumbs);
+
+                        IntranetManager.siteTopNavBar.reset();
+                        IntranetManager.siteTopNavBar.show(that.getBreadCrumbsView(crumbs));
+
+                    }
+
+                }
 
             }
         });

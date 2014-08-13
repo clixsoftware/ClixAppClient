@@ -46,7 +46,7 @@ define([
 
         siteFooterZone3: '#footer-zone-3',
 
-        siteTopNavBar: "#site-top-navbar",
+        siteTopNavBar: "#topnavbar",
 
         siteMobileNav: ".navbar-header",
 
@@ -98,6 +98,15 @@ define([
 
         layoutFooter: "#layout-footer",
 
+        adZone1: "#ad-zone-1",
+
+        adZone2: "#ad-zone-2",
+        adZone3: "#ad-zone-3",
+        adZone4: "#ad-zone-4",
+        adZone5: "#ad-zone-5",
+        adZone6: "#ad-zone-6",
+
+
         siteDialog: Marionette.Region.Dialog.extend({
             el: "#site-dialog"
         }),
@@ -135,6 +144,7 @@ define([
             counter++;
         });
         console.group('** Build Query ***')
+        console.log(q);
         console.info(queryString);
         console.groupEnd();
 
@@ -171,12 +181,12 @@ define([
 
     IntranetManager.startSubApp = function (appName, args) {
 
-        console.group('Start Sub Application ');
+        console.group('Start Sub Application: ' + appName);
 
-        console.group('Auth Cookie - user |  ')
-            console.log($.cookie('hospitalnet-user'))
-            console.log($.cookie('hospitalnet-auth'));
-        console.groupEnd();
+            console.group('Auth Cookie - user |  ')
+                console.log($.cookie('hospitalnet-user'))
+                console.log($.cookie('hospitalnet-auth'));
+            console.groupEnd();
 
         if ($.cookie('hospitalnet-auth') != undefined) {
             IntranetManager.Auth.isAuthenticated = true;
@@ -189,13 +199,13 @@ define([
 
         var currentApp = appName ? IntranetManager.module(appName) : null;
         if (IntranetManager.currentApp === currentApp) {
-            console.log('App ' + appName + ' is already running!!');
+            console.warn('App ' + appName + ' is already running!!');
             console.groupEnd();
             return;
         }
 
         if (IntranetManager.currentApp) {
-            console.log('App ' + appName + ' will be stopped');
+            console.info('App ' + appName + ' will be stopped');
             console.groupEnd();
             IntranetManager.currentApp.stop();
         }
@@ -203,8 +213,12 @@ define([
         IntranetManager.currentApp = currentApp;
         if (currentApp) {
             //console.log('App ' + appName + ' starting with args ' + args);
-            console.log('** IS USER AUTHENTICATED ** ' + IntranetManager.Auth.isAuthenticated);
+            console.info('** IS USER AUTHENTICATED ** ' + IntranetManager.Auth.isAuthenticated);
+
+            console.warn('Attempting to start : ' + appName);
+
             console.groupEnd();
+            console.log(args);
             currentApp.start(args);
         }
 
@@ -245,14 +259,14 @@ define([
                 "apps/pages/app", //HomePage Manager
                 "apps/classifieds/app", //HomePage Manager
                 "apps/auth/app",
-                //"apps/tasks/app",
+                "apps/forums/app",
                 "apps/sites/app",
                 "apps/projects/app",
                 "apps/blogs/app",
                 "apps/calendar/app",
                 "apps/support/app",
-                "apps/search/app",
-                "apps/services/app"
+                "apps/search/app"/*,
+                "apps/services/app"*/
                 //"apps/hmis/app",
                 //"apps/patients/app"
             ], function () {

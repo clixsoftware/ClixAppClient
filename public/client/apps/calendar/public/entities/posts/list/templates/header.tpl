@@ -1,3 +1,2 @@
-<h1><%=obj.title%></h1>
-<!--<p>Major projects&nbsp;the hospital is working on and the people delivering them, listed in alphabetical order.</p>-->
-
+ <h1 class="h1_<%=id%>"><%=title%></h1>
+ <p><%=obj.description%></p>

@@ -3,10 +3,12 @@ define([
     "common/views",
     "tpl!apps/news/public/widgets/templates/news_item_headline.tpl",
     "tpl!apps/news/public/widgets/templates/news_headline_summary.tpl",
-    "tpl!apps/news/public/widgets/templates/recent.tpl"
+    "tpl!apps/news/public/widgets/templates/recent.tpl",
+    "tpl!apps/news/public/widgets/templates/item_headline.tpl",
+    "tpl!apps/news/public/widgets/templates/list_view.tpl"
 ],
     function ( IntranetManager, GlobalViews, newsItemHeadlineTpl,
-               newsHeadlineSummaryTpl, recentTpl) {
+               newsHeadlineSummaryTpl, recentTpl, itemHeadlineTpl, listViewTpl) {
 
         IntranetManager.module("NewsManager.Widgets.Views",
             function ( Views, IntranetManager, Backbone, Marionette, $, _ ) {
@@ -65,6 +67,46 @@ define([
                     }
                 });
 
+                Views.ItemHeadlineView = Marionette.ItemView.extend({
+
+                    initialize: function(options){
+                        //  console.log('index of model ' + options.index);
+                        this.model.set('index', options.index);
+                    },
+                    tagName: 'li',
+                    template: itemHeadlineTpl,
+
+                    onRender: function(){
+                        console.log('<< Views.ItemHeadlineView - Loaded***DONE ***  >>');
+                    }
+                });
+
+                Views.ListView = Marionette.CompositeView.extend({
+
+                    initialize: function(options){
+                        this.collection = options.collection;
+                    },
+
+                    template: listViewTpl,
+
+                    childView: Views.ItemHeadlineView,
+
+                    emptyView: GlobalViews.NoRecordsView,
+
+                    childViewContainer: '.list-inner',
+
+                    className: 'category-block list-widget',
+
+                    childViewOptions: function(model){
+                        return {
+                            index: this.collection.indexOf(model) +1
+                        }
+                    },
+
+                    onRender: function(){
+                        console.log('<< Views.ListView - Loaded***DONE ***  >>');
+                    }
+                });
 
             });
 

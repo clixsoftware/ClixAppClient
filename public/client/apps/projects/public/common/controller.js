@@ -1,3 +1,8 @@
+/*
+ * Application: Site Manager
+ * Controller: Common Controller
+ * Module: SiteManager.Common
+ * */
 
 
 define([
@@ -6,68 +11,68 @@ define([
     "common/views"
 ],
     function (IntranetManager, CommonViews, GlobalViews) {
-        IntranetManager.module("ProjectsManager.Public.Common",
-            function (Common, ProjectsManager, Backbone, Marionette, $, _) {
+        IntranetManager.module("ProjectManager.Public.Common",
+            function (Common, ProjectManager, Backbone, Marionette, $, _) {
 
                 Common.Controller = {
 
-                    getLayoutView: function () {
-                        return new CommonViews.LayoutView();
+                    getContent2ColLayoutView: function () {
+
+                        console.info('<< getContent2ColLayoutView: Return Layout >>');
+
+                        return new CommonViews.NewsLayoutView();
+
                     },
 
-                    initAppEngine: function (next) {
+                    setupContentLayout: function (next) {
 
                         var that = this;
-
-                        console.log('<< initAppEngine:  (ProjectsManager)  >>');
-                   /*     if (ProjectsManager.started === false || ProjectsManager.started === undefined) {*/
 
                         require(["entities/feature"],
                             function () {
 
-                                //fetch feature
-                                var fetchFeature = IntranetManager.request('feature:entity:search:alias', 'projects');
+                                console.group('ProjectManager: Public : Common : setupContentLayout');
 
+                                //fetch workspaces
+                                var fetchFeature = IntranetManager.request('feature:entity:search:alias', 'projects');
                                 fetchFeature.then(function (feature) {
 
                                     if (!feature) {
-                                        throw new Error('The feature Project Manager is not installed, or the API is down.');
+                                        throw new Error('Feature projects is not installed');
                                     }
 
-                                    ProjectsManager.feature = {
+                                    ProjectManager.feature = {
                                         id: feature.get('id')
                                     };
 
-                                    ProjectsManager.started = true;
+                                    ProjectManager.started = true;
 
-                                    IntranetManager.appLayout =  Common.Controller.getLayoutView();
+                                    console.log('About to ContentLayout Layout');
 
-                                   // IntranetManager.siteMainContent.reset();
+                                    IntranetManager.appLayout = Common.Controller.getContent2ColLayoutView();
                                     IntranetManager.siteMainContent.show(IntranetManager.appLayout);
 
-                                    //console.log(Common.Controller.getLayoutView());
+                                    console.groupEnd();
 
                                     //Call the next function, Setup app layout must be run before..
-
                                     if (next) {
-                                       //alert('doing next');
+
+                                        console.info('Executing next() in setupContentLayout ');
                                         next();
                                     }
 
+
+
                                 })
                                     .fail(function (error) {
-                                        console.log('!!! Error starting - Project Manager App ' + error);
+                                        IntranetManager.trigger('core:error:action', error);
                                     });
 
                             }
                         );
-/*                        } else {
 
-                            if (next) {
-                                next();
-                            }
 
-                        }*/
+
                     }
                 };
 
@@ -75,6 +80,6 @@ define([
             });
 
 
-        return IntranetManager.ProjectsManager.Public.Common.Controller;
+        return IntranetManager.ProjectManager.Public.Common.Controller;
     });
 

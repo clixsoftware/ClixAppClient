@@ -39,7 +39,9 @@ define([
                             parent_feature: HowDoIManager.feature.id
                         };
 
-                        console.log('@@ Fetching Current Applicaiton using = ' + options);
+                        console.group('@@ Fetching Current Application using ' );
+                        console.log(options);
+                        console.groupEnd();
 
                         var fetchingApp = IntranetManager.request('applications:feature:alias', options);
 
@@ -52,7 +54,8 @@ define([
                         }).then(function ( app ) {
                                 console.log('Fetching article post');
 
-                                var fetchingPost = IntranetManager.request("howdoi:posts:entity", opts.post_id);
+                                var fetchingPost = IntranetManager.request("howdoi:app:posts:entity", {parent_application: app.id,
+                                id: opts.postId});
 
                                 return fetchingPost.then(function ( post ) {
 
@@ -86,9 +89,25 @@ define([
                             }).then(function ( post ) {
                                 // alert('post fetched and returned');
                                 IntranetManager.trigger('home:breadcrumb:show');
-                                IntranetManager.trigger('howdoi:post:related:categories', post.get('uuid'));
 
-                            IntranetManager.trigger('howdoi:post:related:tags', post.get('uuid'));
+                                IntranetManager.trigger('core:object:categories', {
+                                    collection: post.get('taxonomy'),
+                                    url: '/howdois/'+ opts.alias+ '/posts-by-category/{{slug}}?uuid={{uuid}}',
+                                    urlTrigger: "howdoi:category:posts"
+                                });
+
+                                IntranetManager.trigger('core:object:tags', {
+                                    collection: post.get('taxonomy'),
+                                    url: '/howdois/'+ opts.alias + '/posts-by-tag/{{slug}}'
+                                });
+
+                                IntranetManager.trigger('howdoi:popular:posts', {
+                                    parent_application: post.get('parent_application'),
+                                    limit: 5
+                                });
+
+
+
 
                         }).fail(function ( err ) {
                                 console.log('an error occurred ' + err);

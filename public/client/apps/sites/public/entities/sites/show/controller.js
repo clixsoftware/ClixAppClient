@@ -41,7 +41,8 @@ define([
 
                             IntranetManager.trigger('sites:content:popular');
                             IntranetManager.trigger('sites:content:recent');
-
+                            IntranetManager.trigger('core:display:ad', {zone: 'adZone1', feature: 'sites'});
+                            IntranetManager.trigger('core:display:ad', {zone: 'adZone2', feature: 'sites'});
                             IntranetManager.trigger('dom:title', app.get('title'));
                         })
                             .fail(function(err){

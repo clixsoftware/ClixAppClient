@@ -22,8 +22,10 @@ define([
                         var view = new ListViews.ListView({
                             collection: collection
                         });
+
                         return view;
                     },
+
 
                     getHeaderView: function (app) {
 
@@ -42,59 +44,78 @@ define([
                         });
                     },
 
-                    displayHomePage: function (pageSettings) {
 
-                        console.group('<< displayHomePage : INIT >>');
+                    showPostsList: function (opts) {
+
+                        console.group('<< vacancy : List: showPostsList  >>');
+
+                        console.group('vacancy  Options');
+                        console.log(opts);
+                        console.groupEnd();
 
                         var that = this;
                         var layout = this.getLayoutView();
 
-                        require(['entities/applications', 'entities/content'], function () {
+                        require(['entities/applications', 'entities/vacancy', 'entities/taxonomy', 'entities/core'], function () {
 
-                            var appSearchSettings = {
-                                alias: pageSettings.alias,
+                            var settings = {
+                                alias: opts.alias,
                                 parent_feature: VacancyManager.feature.id
                             };
 
-                            console.log('@@ Fetching Current Application using = ' + JSON.stringify(appSearchSettings));
+                            console.group('@@ Fetching vacancy  Application ' );
+                            console.log(settings);
+                            console.groupEnd();
 
-                            var fetchingApp = IntranetManager.request('applications:feature:alias', appSearchSettings);
+                            var fetchingApp = IntranetManager.request('applications:feature:alias', settings);
 
                             fetchingApp.then(function (app) {
 
-                                var postSearchOptions = {
-                                    page: (pageSettings.page)? pageSettings.page: 0,
-                                    parent_application: app.get('id')
+                                console.group('vacancy  App');
+                                console.log(app);
+                                console.groupEnd();
+
+                                var page=0;
+
+                                if(opts.page){
+                                    page = opts.page;
+                                }
+
+                                var options = {
+                                    app: app.id,
+                                    page: page,
+                                    parent_application: app.get('id'),
+                                    categories: opts.uuid,
+                                    tag: opts.tag
                                 };
 
-                                var fetchingRecords = IntranetManager.request('content:posts:search', postSearchOptions);
+                                var fetchingRecords = IntranetManager.request('vacancy:app:posts:search', options);
 
-                                return [app, fetchingRecords, layout, postSearchOptions];
+                                return [app, fetchingRecords, layout, options];
 
                             })
                                 .spread(function (app, fetchedPosts, layout, triggerOptions) {
 
-                                    console.group('Application');
-                                    console.log(app);
-                                    console.groupEnd();
+                                    var pageTitle = app.get('title');
+                                    var appUrls = app.get('urls');
 
+                                    console.log(Backbone.history.location);
                                     var searchFormView = that.getSearchFormView();
 
-                                    //pagination function - needs fixing
                                     var buildPaginate = function (collection, trigger, settings) {
                                         var PaginateModel = Backbone.Model.extend();
 
                                         var paginator = new PaginateModel({
                                             items: collection.total,
                                             itemsOnPage: collection.limit,
-                                            path: app.get('path')
+                                            path: opts.path
                                         });
 
                                         var paginatedView = that.getPaginatorView(paginator);
 
-                                        paginatedView.on('change:page', function (pageNumber) {
+                                        paginatedView.on('paginatedView', function (pageNumber) {
 
-                                            console.group('Page Change Initialize');
+                                            console.group('paginatedView: paginatedView: event');
 
                                             settings.page = pageNumber;
 
@@ -106,9 +127,7 @@ define([
                                             var records = IntranetManager.request(trigger, settings);
 
                                             records.then(function (success) {
-                                                console.log('Resetting the collection information');
-
-                                                //layout.peopleNav.reset();
+                                                layout.searchResults.reset();
                                                 layout.searchResults.show(that.getListView(success));
                                             });
 
@@ -120,68 +139,106 @@ define([
 
                                     };
 
-                                    //add additional regions to support search and paginator
                                     layout.addRegion("searchResults", "#searchResults");
                                     layout.addRegion("paginator", "#paginator");
+                                    //setup the search
 
-                                    //fires when a search is conducted
                                     searchFormView.on("posts:search", function (filterCriterion) {
 
-                                        console.log("posts:search event , criterion = " + filterCriterion);
+                                        console.group('searchFormView: posts:search: event');
+
                                         // alert('searching');
                                         var search_options = {
                                             criterion: filterCriterion,
-                                            parent_application: app.id
+                                            parent_application: app.id,
+                                            categories: opts.uuid
                                         };
 
-                                        var search = IntranetManager.request("content:posts:search", search_options);
+                                        console.log(search_options);
+                                        console.groupEnd();
+
+                                        var search = IntranetManager.request("vacancy:app:posts:search", search_options);
 
                                         search.then(function (results) {
-                                            buildPaginate(results, 'content:posts:search', search_options);
+                                            buildPaginate(results, 'vacancy:app:posts:search', search_options);
                                         });
 
                                     });
 
-                                    //shows the actual page layout
+                                    var updateTitles = function(title, lastCrumb){
+
+                                       // alert('updating titles');
+
+                                        IntranetManager.trigger('dom:title',title );
+
+                                        IntranetManager.trigger('core:object:breadcrumbs', {
+                                            crumbs: [
+                                                {title: app.get('title'), url:appUrls.friendly.href},
+                                                {title: title, url:''}
+                                            ]
+                                        });
+
+                                     };
+
                                     layout.on('show', function () {
 
-                                        //load the application category widget
-                                        var taxonomy = app.get('taxonomy');
 
                                         IntranetManager.trigger('core:object:categories', {
-                                            collection: taxonomy,
-                                            urlTrigger: 'vacancy:category:display',
-                                            url: '/vacancies/posts-by-category/{{slug}}'
+                                            collection:  app.get('taxonomy'),
+                                            url: '/sites/' + opts.alias +  '/vacancies/posts-by-category/{{slug}}?uuid={{uuid}}',
+                                            urlTrigger: "vacancy:category:posts"
                                         });
 
                                         IntranetManager.trigger('core:object:tags', {
-                                            collection: taxonomy,
-                                            urlTrigger: 'vacancy:category:display',
-                                            url: '/vacancies/posts-by-tags/{{slug}}'
+                                            collection:  app.get('taxonomy'),
+                                            url: '/sites/' + opts.alias +  '/vacancies/posts-by-tag/{{slug}}'
                                         });
 
-                                        //empty layoutHeader and show Header
                                         IntranetManager.layoutHeader.reset();
-                                        IntranetManager.layoutHeader.show(that.getHeaderView(app));
 
-                                        //empty layoutHeader and show Header
+                                        if(triggerOptions.categories) {
+
+                                            console.group('Searching by Taxonomy/Category');
+                                            console.log(triggerOptions.categories)
+                                            console.groupEnd();
+
+
+                                            var fetchingTaxonomy = IntranetManager.request('taxonomy:entity:uuid', triggerOptions.categories);
+
+                                            fetchingTaxonomy.then(function (category) {
+
+                                                  IntranetManager.layoutHeader.show(that.getHeaderView(category));
+                                                updateTitles("vacancies by category :: " + category.get('title'), null);
+
+                                            });
+
+                                        }else if (triggerOptions.tag){
+
+                                            var tagModel = IntranetManager.request('core:new:entity', {title: 'All vacancies tagged : ' + triggerOptions.tag});
+                                            updateTitles("All vacancies tagged : : " + triggerOptions.tag, null);
+                                            IntranetManager.layoutHeader.show(that.getHeaderView(tagModel));
+
+                                        }else{
+                                            IntranetManager.trigger('dom:title', app.get('title') );
+                                            IntranetManager.layoutHeader.show(that.getHeaderView(app));
+
+                                        }
+
                                         IntranetManager.layoutSearch.reset();
                                         IntranetManager.layoutSearch.show(searchFormView);
 
-                                        //fetch the posts and display using the pagination function
-                                        buildPaginate(fetchedPosts, 'content:posts:search', triggerOptions);
+                                        buildPaginate(fetchedPosts, 'vacancy:app:posts:search', triggerOptions);
 
                                     });
 
-                                    //adds the page layout
                                     IntranetManager.appLayout = layout;
 
-                                    //reset main content area and show the page layout instead
                                     IntranetManager.siteMainContent.reset();
                                     IntranetManager.siteMainContent.show(IntranetManager.appLayout);
 
                                 })
                                 .fail(function (error) {
+
                                     IntranetManager.trigger('core:error:action', error);
                                 });
 

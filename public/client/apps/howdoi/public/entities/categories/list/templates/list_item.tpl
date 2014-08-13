@@ -1,1 +1,0 @@
-<a href="/sites/default/how-do-i/categories/<%=code%>/index.html"><%=title%></a>

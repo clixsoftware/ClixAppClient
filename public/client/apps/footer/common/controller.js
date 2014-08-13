@@ -69,7 +69,7 @@ define([
                         "entities/support"
                     ], function () {
 
-                        var newRecord = IntranetManager.request("support:entity:new");
+                        var newRecord = IntranetManager.request("support:ticket:entity:new");
 
                         var view = that.getFeedbackFormView(newRecord);
 

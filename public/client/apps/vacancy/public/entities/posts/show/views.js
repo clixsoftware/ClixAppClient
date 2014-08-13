@@ -1,18 +1,11 @@
 define([
     "app",
-    "tpl!apps/news/public/entities/posts/show/templates/view.tpl",
-    "tpl!apps/news/public/entities/posts/show/templates/sidebar.tpl",
-    "tpl!apps/news/public/entities/posts/show/templates/header.tpl",
-    "tpl!apps/news/public/entities/posts/show/templates/stats.tpl",
-    "tpl!apps/news/public/entities/posts/show/templates/public_view.tpl",
-    "tpl!apps/news/public/entities/posts/show/templates/public_view_header.tpl",
-    "tpl!apps/news/public/entities/posts/show/templates/top_news.tpl",
-    "tpl!apps/news/public/entities/posts/show/templates/image_view.tpl",
-    "tpl!apps/news/public/entities/posts/show/templates/post_layout.tpl"
+    "tpl!apps/vacancy/public/entities/posts/show/templates/public_view.tpl",
+    "tpl!apps/vacancy/public/entities/posts/show/templates/post_layout.tpl"
 ],
-    function ( IntranetManager, viewTpl, sidebarTpl, headerTpl, statsTpl, publicViewTpl, publicViewHeaderTpl, topNewsTpl, imageViewTpl, postLayoutTpl ) {
+    function ( IntranetManager,  publicViewTpl, postLayoutTpl ) {
 
-        IntranetManager.module("NewsManager.Posts.Show.Views",
+        IntranetManager.module("VacancyManager.Public.Posts.Show.Views",
             function ( Views, IntranetManager, Backbone, Marionette, $, _ ) {
 
                 Views.PostLayoutView = Marionette.LayoutView.extend({
@@ -35,35 +28,11 @@ define([
                     },
 
                     onRender: function(){
-                        console.log('<< Views.PostLayoutView - Loaded ***DONE ***  >>');
+                        console.group('Render -> vacancy : Show: Views : PostLayoutView');
+                        console.info(this.regions);
+                        console.groupEnd();
                     }
 
-                });
-
-                Views.ImageView = Marionette.ItemView.extend({
-                    template: imageViewTpl
-                });
-
-                Views.PostView = Marionette.ItemView.extend({
-                    template: viewTpl
-                });
-
-                Views.SidebarView = Marionette.ItemView.extend({
-                    template: sidebarTpl
-                });
-
-                Views.HeaderView = Marionette.ItemView.extend({
-                    template: headerTpl,
-
-                    triggers: {
-                        'click .js-command-delete': 'form:delete',
-
-                        'click .js-command-edit': 'form:edit'
-                    }
-                });
-
-                Views.StatsView = Marionette.ItemView.extend({
-                    template: statsTpl
                 });
 
                 Views.PublicView = Marionette.ItemView.extend({
@@ -71,9 +40,7 @@ define([
 
                     onBeforeRender: function () {
                         // set up final bits just before rendering the view's `el`
-                        $('body').addClass('single single-news');
-
-                        console.log('<< Views.PublicView: Loaded ***COMPLETED*** >>');
+                        $('body').addClass('single single-vacancy');
                     },
 
                     ui: {
@@ -83,6 +50,8 @@ define([
 
                     onRender: function(){
                         var attachments = this.model.get('attachments');
+
+                        console.group('Render -> vacancy : Show: Views : PublicView');
 
                         console.group('attachments');
                         console.log(attachments);
@@ -99,38 +68,18 @@ define([
 
                             console.group('images');
                             console.log(images);
-                            console.groupEnd();
-
                             console.log(images.lead);
+                            console.groupEnd();
 
                             $(this.ui.media_image).attr('src', images.lead.source_url);
 
                         }
 
-/*                        if(_.isEmpty(this.model.get('media'))){
-
-                            this.ui.media.hide();
-                        }else{
-                            //alert('Media is available');
-                            var media_image = this.model.get('media');
-                            $(this.ui.media_image).attr('src', media_image.source_url);
-                            //      this.ui.media_image.src = media_image.source_url;
-                        }*/
-                        console.log('<< Views.NoItemFoundView - Loaded ***DONE ***  >>');
+                        console.groupEnd();
                     }
-                });
-
-                Views.PublicViewHeader = Marionette.ItemView.extend({
-                    template: publicViewHeaderTpl
-                });
-
-
-
-                Views.TopNewsView = Marionette.ItemView.extend({
-                    template: topNewsTpl
                 });
 
             });
 
-        return IntranetManager.NewsManager.Posts.Show.Views;
+        return IntranetManager.VacancyManager.Public.Posts.Show.Views;
     });

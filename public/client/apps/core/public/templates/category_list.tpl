@@ -6,4 +6,11 @@
 </style>
 <h3>Categories</h3>
 
-    <p class="taglisting page"></div>
+    <p class="taglisting page">
+
+    </p>
+<div class="howdoi">
+<ul class="howdoi">
+
+</ul>
+</div>

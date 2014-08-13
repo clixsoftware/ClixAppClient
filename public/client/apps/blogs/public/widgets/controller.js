@@ -1,8 +1,7 @@
 
 define([
     "app",
-    "apps/blogs/public/widgets/views",
-    "moment"
+    "apps/blogs/public/widgets/views"
 ], function ( IntranetManager, WidgetsShow) {
 
     IntranetManager.module("BlogsManager.Public.Widgets.Show",
@@ -14,65 +13,78 @@ define([
 
             Show.Controller = {
 
-
-                getUserProfileView: function(profile){
-                    return new WidgetsShow.UserProfileView({
-                        model: profile
-                    })
-
-                },
-
-                showUserProfile: function(profileId){
-
-                    var that = this;
-
-                    require([
-                        "entities/profiles"
-                    ], function(){
-
-                        var fetchingProfile = IntranetManager.request('profiles:entity:user', profileId);
-
-                        fetchingProfile.then(function(profile){
-
-
-                            IntranetManager.layoutZone1.reset();
-                            IntranetManager.layoutZone1.show(that.getUserProfileView(profile));
-
-                        }).fail(function(err){
-                            console.log('showRecentPosts: Error occurred  ' + err);
-                        })
+                getRecentView: function(collection){
+                       return new WidgetsShow.RecentView({
+                        collection: collection
                     });
-                },
-
-                getRecentPostsView: function(categories){
-                    return new WidgetsShow.ListView({
-                        collection: categories
-                    })
 
                 },
 
                 showRecentPosts: function(options){
                     var that = this;
 
+                    console.group('<< blogs: Widgets: showRecentPosts>>');
 
                     require([
                         "entities/blogs"
                     ], function(){
 
-                        var fetchingPosts = IntranetManager.request('blogs:posts:recent', options);
+                        options.limit = 5;
+                        options.sort = 'createdAt desc';
+
+                        console.info(options);
+                        console.groupEnd();
+
+                        var fetchingPosts = IntranetManager.request('blogs:app:posts:find', options);
 
                         fetchingPosts.then(function(posts){
 
-
-                            IntranetManager.layoutZone2.reset();
-                            IntranetManager.layoutZone2.show(that.getRecentPostsView(posts));
-
-                        }).fail(function(err){
-                            console.log('showRecentPosts: Error occurred  ' + err);
+                            IntranetManager.layoutZone5.reset();
+                            IntranetManager.layoutZone5.show(that.getRecentView(posts));
                         })
-                    });
-                }
+                            .fail(function(error){
 
+                                IntranetManager.trigger("core:error:action", error);
+
+                            });
+
+                    });
+
+                    console.groupEnd();
+                },
+
+                getPopularView: function(collection){
+                    return new WidgetsShow.ListView({
+                        collection: collection
+                    });
+
+                },
+                showPopularPosts: function(options){
+                    var that = this;
+
+                    require([
+                        "entities/blogs"
+                    ], function(){
+
+                        console.group('<< blogs Manager: Widgets: showPopularPosts  ')
+                        options.limit = 5;
+                        options.sort = 'views desc';
+
+                        console.info(options);
+                        console.groupEnd();
+
+                        var fetchingPosts = IntranetManager.request('blogs:app:posts:find', options);
+
+                        fetchingPosts.then(function(posts){
+
+                            IntranetManager.layoutZone4.reset();
+                            IntranetManager.layoutZone4.show(that.getPopularView(posts));
+
+                        });
+
+                    });
+
+                }
             }
         });
 

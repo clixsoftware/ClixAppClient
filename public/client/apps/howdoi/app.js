@@ -4,9 +4,10 @@
 
 define(
     [
-        "app"
+        "app",
+        "S"
     ],
-    function ( IntranetManager ) {
+    function ( IntranetManager, S) {
         IntranetManager.module("HowDoIManager", function ( HowDoIManager, IntranetManager, Backbone, Marionette, $, _ ) {
 
             HowDoIManager.title = "HowDoI Manager";
@@ -41,15 +42,16 @@ define(
         });
 
         //WorkspaceManager Routers
-        IntranetManager.module("Routers.HowDoIManager", function ( HowDoIManagerRouter, IntranetManager, Backbone, Marionette, $, _ ) {
+        IntranetManager.module("Routers.HowDoIManager", function ( HowDoIManagerRouter, IntranetManager, Backbone, Marionette, $, _) {
 
             HowDoIManagerRouter.Router = Marionette.AppRouter.extend({
 
                 appRoutes: {
-                    "how-do-i/:alias": 'loadHomePage',
-                    "how-do-i/:alias(/filter/criterion::criterion)": "loadSearchResultsPage",
-                    "how-do-i/:alias/categories/:code/*slug": 'loadPostsByCategory',
-                    "how-do-i/:alias/:postId/*slug": 'loadPostDetails'
+                    "howdois/:alias": 'loadHomePage',
+                    "howdois/:alias(/filter/criterion::criterion)": "loadSearchResultsPage",
+                    "howdois/:alias/posts-by-category/*slug?*args" : 'loadPostsByCategory',
+                    "howdois/:alias/posts-by-tag/*tag(?*args)" : 'loadPostByTag',
+                    "howdois/:alias/*slug": 'loadPostDetails'
 
                 }
 
@@ -72,8 +74,6 @@ define(
                     });
 
                 },
-
-
 
                 loadOverview: function () {
 
@@ -122,7 +122,6 @@ define(
 
                 },
 
-
                 loadAppPostings: function ( appId ) {
 
                     var cb = function () {
@@ -137,7 +136,6 @@ define(
 
                 },
 
-
                 loadPostNewForm: function ( id ) {
                     require([
                         "apps/yp/entities/posts/new/controller"
@@ -146,7 +144,6 @@ define(
                     });
 
                 },
-
 
                 loadEditForm: function ( id ) {
                     require([
@@ -167,7 +164,6 @@ define(
                 },
 
 
-
                 initPublic: function ( cb ) {
 
                     require([
@@ -180,14 +176,18 @@ define(
                 },
 
                 //load the details page of the posting
-                loadPostDetails: function (alias, postId, slug ) {
+                loadPostDetails: function (alias,  options ) {
+
+                    var info = options.split('-');
+
                     var opts = {
-                        post_id: postId,
+                        postId: info[0],
+                        feature: 'how-do-i',
                         alias: alias,
-                        slug: slug.replace('/index.html', '')
+                        slug: info[1]
                     };
 
-                    //console.log(opts.slug);
+                    console.log(info);
 
                     var cb = function () {
                         require([
@@ -238,168 +238,90 @@ define(
 
                 },
 
-                loadPostRelatedCategories: function (objectId) {
-                    require([
-                        "apps/howdoi/public/widgets/controller"
-                    ], function (WidgetsController) {
-                        WidgetsController.showPostRelatedCategoriesWidget(objectId);
-                    });
+                loadPostByTag: function (alias, tag, args) {
 
-                },
+                    console.group('How Do I: App: loadPostByTag');
 
-                loadAppRelatedCategories: function (objectId) {
-                    require([
-                        "apps/howdoi/public/widgets/controller"
-                    ], function (WidgetsController) {
-                        WidgetsController.showAppRelatedCategoriesWidget(objectId);
-                    });
-
-                },
-
-
-
-                loadPostRelatedTags: function (objectId) {
-                    require([
-                        "apps/howdoi/public/widgets/controller"
-                    ], function (WidgetsController) {
-                        WidgetsController.showPostRelatedTagsWidget(objectId);
-                    });
-
-                },
-
-
-                loadPostsByCategory: function(alias, category, slug){
                     var options = {
+                        feature: "howdois",
                         alias: alias,
-                        category: category
+                        path: Backbone.history.location.pathname,
+                        tag: tag
                     };
 
+                    if(args){
+
+                        if(S(args).contains('page=')){
+                            var q = args.split('&');
+                            options.page = q[0].split('=')[1];
+                        }
+
+                        options.path = Backbone.history.location.pathname;
+                    }
+                    console.info(options);
+                    console.groupEnd();
 
                     var cb = function () {
                         require([
-                            "apps/howdoi/public/entities/categories/show/controller"
-                        ], function (ShowController) {
-                            ShowController.showCategoryPostsPage(options);
+                            "apps/howdoi/public/entities/posts/list/controller"
+                        ], function (ListController) {
+                            ListController.showPostsList(options);
+
+                        });
+                    };
+
+                    IntranetManager.trigger("howdoi:public:init", cb);
+
+                },
+
+                loadPostsByCategory: function(alias, slug, args){
+                    //alert('loading the posts by category function');
+
+                    console.group('How Do I: App: loadPostsByCategory');
+
+                  var options = {
+                      alias: alias,
+                      category: slug
+                  }
+
+                  if(S(args).contains('page=')){
+                    var q = args.split('&');
+                     options.page = q[1].split('=')[1];
+                      options.uuid = q[0].split('=')[1];
+                  }else{
+                      options.uuid=  args.split('=')[1]
+                  }
+
+                    options.path = Backbone.history.location.pathname + '?uuid=' + options.uuid;
+
+                    console.info(options);
+                    console.groupEnd();
+
+                    var cb = function () {
+                        require([
+                            "apps/howdoi/public/entities/posts/list/controller"
+                        ], function (ListController) {
+                            ListController.showPostsList(options);
                         });
                     };
 
                     IntranetManager.trigger("howdoi:public:init", cb);
                 },
 
-                loadTrendingPosts: function (options) {
-                    require([
-                        "apps/yp/public/widgets/controller"
-                    ], function ( WidgetsController ) {
-                        WidgetsController.showTrendingPosts(options);
-                    });
-                },
-
-                loadRecommendedPosts: function (options) {
-                    require([
-                        "apps/yp/public/widgets/controller"
-                    ], function ( WidgetsController ) {
-                        WidgetsController.showRecommendedPosts(options);
-                    });
-                },
-
-                loadRelatedPosts: function (applicationId) {
-                    require([
-                        "apps/yp/public/widgets/controller"
-                    ], function ( WidgetsController ) {
-                        WidgetsController.showRelatedPosts(applicationId);
-                    });
-                },
-
-                loadPublicAppCategories: function (app) {
-
-
-                    require([
-                        "apps/yp/public/widgets/controller"
-                    ], function ( WidgetsController ) {
-                        WidgetsController.showPublicAppCategories(app);
-                    });
-
-                },
-
-                loadRecentPosts: function (options) {
-
-
-                    require([
-                        "apps/yp/public/widgets/controller"
-                    ], function ( WidgetsController ) {
-                        WidgetsController.showRecentPosts(options);
-                    });
-
-                },
-
-                loadMostActivePosts: function (options) {
-
-                    require([
-                        "apps/yp/public/widgets/controller"
-                    ], function ( WidgetsController ) {
-                        WidgetsController.showMostActivePosts(options);
-                    });
-
-                },
-
-                loadAppCategoryList: function(objectId){
+                loadPopularPostsWidget: function(options){
                     require([
                         "apps/howdoi/public/widgets/controller"
                     ], function (WidgetsController) {
-                        WidgetsController.showAppCategoryListWidget(objectId);
+                        WidgetsController.showPopularPosts(options);
                     });
-
-                },
-
-                loadAppTagsList: function(objectId){
-                    require([
-                        "apps/howdoi/public/widgets/controller"
-                    ], function (WidgetsController) {
-                        WidgetsController.showAppTagsListWidget(objectId);
-                    });
-
                 }
 
 
             };
 
-            IntranetManager.on('yp:admin:init', function ( cb ) {
+            IntranetManager.on('howdoi:admin:init', function ( cb ) {
                 console.log('|| Trigger: yp:admin:init ||');
                 API.init(cb);
-            });
-
-            IntranetManager.on('yp:admin:home', function () {
-                IntranetManager.navigate("ypmanager", true);
-                API.loadOverview();
-            });
-
-            IntranetManager.on('yp:admin:apps:list', function () {
-                IntranetManager.navigate("ypmanager", true);
-                API.loadOverview();
-            });
-
-            IntranetManager.on('yp:admin:app:overview', function () {
-                IntranetManager.navigate("ypmanager", true);
-                API.loadOverview();
-            });
-
-            IntranetManager.on('yp:admin:app:categories:list', function (appId) {
-                API.loadAppCategories(appId);
-            });
-
-            IntranetManager.on('yp:admin:post:new', function ( id ) {
-                IntranetManager.navigate("ypmanager/applications/" + id + "/posts/new", true);
-                API.loadPostNewForm(id);
-            });
-
-            IntranetManager.on('yp:admin:post:edit', function ( id ) {
-                IntranetManager.navigate("ypmanager/" + id + "/edit", true);
-            });
-
-            IntranetManager.on('yp:admin:app:posts', function ( appId ) {
-                IntranetManager.navigate("ypmanager/applications/" + appId + '/posts');
-                API.loadAppPostings(appId);
-
             });
 
             IntranetManager.on('howdoi:public:init', function ( cb ) {
@@ -407,62 +329,19 @@ define(
                 API.initPublic(cb);
             });
 
-            IntranetManager.on('howdoi:post:related:categories', function (objectId) {
-                API.loadPostRelatedCategories(objectId);
-            });
-
-            IntranetManager.on('howdoi:post:related:tags', function (objectId) {
-                API.loadPostRelatedTags(objectId);
-            });
-
-            IntranetManager.on('howdoi:app:category:list', function (objectId) {
-                API.loadAppCategoryList(objectId);
-            });
-
-            IntranetManager.on('howdoi:app:related:categories', function (objectId) {
-                API.loadAppRelatedCategories(objectId);
-            });
-
-
             IntranetManager.on('howdoi:search', function (criterion) {
                  IntranetManager.navigate("how-do-i/default/filter/criterion:" + criterion);
                 API.loadSearchResultsPage('default', criterion);
             });
 
-            IntranetManager.on('howdoi:app:tags:list', function (objectId) {
-                API.loadAppTagsList(objectId);
+            IntranetManager.on('howdoi:category:posts', function (options) {
+                IntranetManager.navigate(options.url, true);
+                //API.loadSearchResultsPage('default', criterion);
             });
 
-            IntranetManager.on('yp:public:posts:trending', function (options) {
-                console.log('|| Trigger: yp:show:public:posts:trending ||');
-                API.loadTrendingPosts(options);
+            IntranetManager.on('howdoi:popular:posts', function (options) {
+                API.loadPopularPostsWidget(options);
             });
-
-            IntranetManager.on('yp:public:posts:recommended', function (options) {
-                console.log('|| Trigger: yp:show:public:posts:recommended ||');
-                API.loadRecommendedPosts(options);
-            });
-
-            IntranetManager.on('yp:public:posts:related', function (options) {
-                console.log('|| Trigger: yp:show:public:posts:related ||');
-                API.loadRelatedPosts(options);
-            });
-
-            IntranetManager.on('yp:public:posts:recent', function (options) {
-                console.log('|| Trigger: yp:public:posts:recent ||');
-                API.loadRecentPosts(options);
-            });
-
-            IntranetManager.on('yp:public:posts:mostactive', function (options) {
-                console.log('|| Trigger: yp:public:posts:mostactive ||');
-                API.loadMostActivePosts(options);
-            });
-
-            IntranetManager.on('yp:public:app:channels:list', function (app) {
-                console.log('<< Trigger: yp:public:app:channels:list>>');
-                API.loadPublicAppCategories(app);
-            });
-
 
 
             IntranetManager.addInitializer(function () {
@@ -472,7 +351,7 @@ define(
             });
 
 
-        });
+        } );
         console.info('--- How Do I App loaded ---');
         return IntranetManager.HowDoIManagerRouter;
     });

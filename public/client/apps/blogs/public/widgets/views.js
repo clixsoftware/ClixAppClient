@@ -1,56 +1,58 @@
 define([
     "app",
     "common/views",
-    "tpl!apps/blogs/public/widgets/templates/list.tpl",
-    "tpl!apps/blogs/public/widgets/templates/list_item.tpl",
-    "tpl!apps/blogs/public/widgets/templates/user_profile.tpl"
-
+    "tpl!apps/blogs/public/widgets/templates/news_item_headline.tpl",
+    "tpl!apps/blogs/public/widgets/templates/news_headline_summary.tpl",
+    "tpl!apps/blogs/public/widgets/templates/recent.tpl",
+    "tpl!apps/blogs/public/widgets/templates/item_headline.tpl",
+    "tpl!apps/blogs/public/widgets/templates/list_view.tpl"
 ],
-    function ( IntranetManager, GlobalViews, listTpl, listItemTpl,  userProfileTpl) {
+    function ( IntranetManager, GlobalViews, newsItemHeadlineTpl,
+               newsHeadlineSummaryTpl, recentTpl, itemHeadlineTpl, listViewTpl) {
 
         IntranetManager.module("BlogsManager.Public.Widgets.Views",
             function ( Views, IntranetManager, Backbone, Marionette, $, _ ) {
 
-                  Views.UserProfileView = Marionette.ItemView.extend({
+                Views.NewsItemHeadlineView = Marionette.ItemView.extend({
 
                     initialize: function(options){
-                        //  console.log('index of model ' + options.index);
-                        this.model.set('index', options.index);
+                     //  console.log('index of model ' + options.index);
+                      this.model.set('index', options.index);
                     },
 
-                    template: userProfileTpl,
+                    template: newsItemHeadlineTpl,
 
-                    tagName: 'div',
-
-                    className: 'media',
+                    className: 'item',
 
                     onRender: function(){
-                        console.log('<< Views.RecentItemView - Loaded***DONE ***  >>');
+                        console.log('<< Views.NewsItemHeadlineView - Loaded***DONE ***  >>');
                     }
                 });
 
-
-                Views.ListItemView =  Marionette.ItemView.extend({
-                    template: listItemTpl,
+                Views.NewsHeadlineSummaryView = Views.NewsItemHeadlineView.extend({
 
                     initialize: function(options){
                         //  console.log('index of model ' + options.index);
                         this.model.set('index', options.index);
                     },
 
+                    template: newsHeadlineSummaryTpl,
+
+                    className: 'widgetnewsitem',
+
                     onRender: function(){
-                        console.log('<< Views.ListItemView - Loaded***DONE ***  >>');
+                        console.log('<< Views.NewsHeadlineSummary - Loaded***DONE ***  >>');
                     }
-                }) ;
+                });
 
-                Views.ListView = Marionette.CompositeView.extend({
-                    template: listTpl,
+                Views.RecentView = Marionette.CompositeView.extend({
+                    template: recentTpl,
 
-                    itemView: Views.ListItemView,
+                    childView: Views.NewsHeadlineSummaryView,
 
                     emptyView: GlobalViews.NoRecordsView,
 
-                    itemViewContainer: 'div.ui.list',
+                    childViewContainer: 'div.ui.list',
 
                     className: 'widget-box nobottom',
 
@@ -61,14 +63,50 @@ define([
                     },
 
                     onRender: function(){
-                        console.log('<< Views.RecommendedView - Loaded***DONE ***  >>');
+                        console.log('<< Views.RelatedView - Loaded***DONE ***  >>');
                     }
-
-
                 });
 
+                Views.ItemHeadlineView = Marionette.ItemView.extend({
 
+                    initialize: function(options){
+                        //  console.log('index of model ' + options.index);
+                        this.model.set('index', options.index);
+                    },
+                    tagName: 'li',
+                    template: itemHeadlineTpl,
 
+                    onRender: function(){
+                        console.log('<< Views.ItemHeadlineView - Loaded***DONE ***  >>');
+                    }
+                });
+
+                Views.ListView = Marionette.CompositeView.extend({
+
+                    initialize: function(options){
+                        this.collection = options.collection;
+                    },
+
+                    template: listViewTpl,
+
+                    childView: Views.ItemHeadlineView,
+
+                    emptyView: GlobalViews.NoRecordsView,
+
+                    childViewContainer: '.list-inner',
+
+                    className: 'category-block list-widget',
+
+                    childViewOptions: function(model){
+                        return {
+                            index: this.collection.indexOf(model) +1
+                        }
+                    },
+
+                    onRender: function(){
+                        console.log('<< Views.ListView - Loaded***DONE ***  >>');
+                    }
+                });
 
             });
 

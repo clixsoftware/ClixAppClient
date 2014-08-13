@@ -5,6 +5,7 @@ requirejs.config({
         "backbone.picky": "vendor/backbone.picky",
         "backbone.syphon": "vendor/backbone.syphon",
         "backbone.nested": "vendor/backbone.nested",
+        "backbone.params": "vendor/backbone.queryparams",
         jquery: "vendor/jquery",
         // "jquery-ui": "vendor/jquery-ui",
         json2: "vendor/json2",
@@ -29,6 +30,7 @@ requirejs.config({
         "backbone.grouped-collection": 'libs/backbone.groupedcollection',
         "backbone.stickit": 'libs/backbone.stickit',
         "S": 'libs/string',
+        "underscore_string": "vendor/underscore.string",
         "simple.pagination": "vendor/simple-pagination/jquery.simplePagination"
 
     },
@@ -36,6 +38,10 @@ requirejs.config({
     shim: {
         underscore: {
             exports: "_"
+        },
+        'underscore_string': {
+            deps: ['underscore'],
+            exports: "_s"
         },
         backbone: {
             deps: ["jquery", "underscore", "json2"],
@@ -45,6 +51,7 @@ requirejs.config({
         "backbone.syphon": ["backbone"],
         "backbone.validation": ["backbone"],
         "backbone.nested": ["backbone"],
+        "backbone.params": ["backbone"],
         "backbone.virtual-collection": ["backbone"],
         "backbone.stickit": ["backbone"],
         "backbone.grouped-collection": ["backbone", 'backbone.virtual-collection'],
@@ -66,15 +73,18 @@ require([
     'app',
     'marionette',
     'underscore',
+    'underscore_string',
     'bootstrap',
     'apps/header/app',
     'apps/footer/app',
     'backbone.validation'
-], function ( IntranetManager, Marionette, _ ) {
+], function ( IntranetManager, Marionette, _, _s ) {
 
 
 // Extend the callbacks to work with Bootstrap, as used in this example
 // See: http://thedersen.com/projects/backbone-validation/#configuration/callbacks
+
+
     _.extend(Backbone.Validation.callbacks, {
 
         valid: function ( view, attr, selector ) {

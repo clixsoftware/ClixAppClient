@@ -1,4 +1,4 @@
-    <h3>Recent news</h3>
+    <h3>Recent vacancy</h3>
     <div class="ui divided list">
 
     </div>

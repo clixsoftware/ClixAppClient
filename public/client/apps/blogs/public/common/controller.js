@@ -1,3 +1,8 @@
+/*
+ * Application: Site Manager
+ * Controller: Common Controller
+ * Module: SiteManager.Common
+ * */
 
 
 define([
@@ -11,26 +16,29 @@ define([
 
                 Common.Controller = {
 
-                    getLayoutView: function () {
-                        return new CommonViews.LayoutView();
+                    getContent2ColLayoutView: function () {
+
+                        console.info('<< getContent2ColLayoutView: Return Layout >>');
+
+                        return new CommonViews.NewsLayoutView();
+
                     },
 
-                    initAppEngine: function (next) {
+                    setupContentLayout: function (next) {
 
                         var that = this;
-
-                        console.log('<< initAppEngine:  (BlogsManager)  >>');
 
                         require(["entities/feature"],
                             function () {
 
-                                //fetch feature
-                                var fetchFeature = IntranetManager.request('feature:entity:search:alias', 'blogs');
+                                console.group('BlogsManager: Public : Common : setupContentLayout');
 
+                                //fetch workspaces
+                                var fetchFeature = IntranetManager.request('feature:entity:search:alias', 'blogs');
                                 fetchFeature.then(function (feature) {
 
                                     if (!feature) {
-                                        throw new Error('The feature Project Manager is not installed, or the API is down.');
+                                        throw new Error('Feature blogs is not installed');
                                     }
 
                                     BlogsManager.feature = {
@@ -39,24 +47,31 @@ define([
 
                                     BlogsManager.started = true;
 
-                                    IntranetManager.appLayout =  Common.Controller.getLayoutView();
+                                    console.log('About to ContentLayout Layout');
+
+                                    IntranetManager.appLayout = Common.Controller.getContent2ColLayoutView();
                                     IntranetManager.siteMainContent.show(IntranetManager.appLayout);
 
-                                    console.log(Common.Controller.getLayoutView());
+                                    console.groupEnd();
 
                                     //Call the next function, Setup app layout must be run before..
-
                                     if (next) {
+
+                                        console.info('Executing next() in setupContentLayout ');
                                         next();
                                     }
 
+
+
                                 })
                                     .fail(function (error) {
-                                        console.log('!!! Error starting - Project Manager App ' + error);
+                                        IntranetManager.trigger('core:error:action', error);
                                     });
 
                             }
                         );
+
+
 
                     }
                 };

@@ -1,22 +1,34 @@
-<hr><h3 class="postlist">
-    <a href="<%=urls.show.href%>" title="<%=title%>"
-       rel="bookmark"><%=title%></a></h3>
-<div class="media"><a
-        href="<%=urls.show.href%>">
-    <div class="hidden-xs"></div>
+<h3 class="postlist">
+    <a href="<%=obj.urls.show.href%>" title="<%=obj.title%>"
+       rel="bookmark"><%=obj.title%></a></h3>
+<div class="media"><a href="<%=obj.urls.show.href%>" class="js-media">
+
+    <div class="hidden-xs ">
+        <img width="245" height="167"
+             src=""
+             class="alignright wp-post-image js-media-image" alt="file000103102419">
+    </div>
+
 </a>
 
-    <div class="media-body"><p><span class="listglyph"><i
-            class="glyphicon glyphicon-calendar"></i><%=moment(createdAt).format("DD MMM YYYY")%></span>&nbsp;<a
-            class=""
-            href="<%=obj.created_by.path%>">
-        <img alt="" src="" class="avatar avatar-32 photo" height="32" width="32">
-    </a>&nbsp;<a class="" href="<%=obj.created_by.path%>"><span class="listglyph"><%=obj.created_by.title%></span></a>
-    </p>
+    <div class="media-body">
+        <div><!--<span class="listglyph">
+            <i class="glyphicon glyphicon-blogs"></i> <%=moment(updatedAt).format("DD MMM YYYY")%>
+        </span>-->
+        <span class="listglyph">
+            <%  var count= 0;
+                    obj.taxonomy.categories.forEach(function(term) {
+                        count++
+            %>
 
-        <p><%=description%> … </p>
+            <span class="glyphicon glyphicon-stop gb<%=count%>"></span>&nbsp; <%= term.title%>
+            <% }); %>
+
+        </span>&nbsp;&nbsp;
+
+            &nbsp;&nbsp;
+        </div>
+        <p><%=description%></p>
     </div>
 </div>
-
-
-
+<hr>

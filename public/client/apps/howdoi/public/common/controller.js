@@ -61,11 +61,11 @@ define([
                                 function () {
 
                                     //fetch workspaces
-                                    var fetchFeature = IntranetManager.request('feature:entity:search:alias', 'how-do-i');
+                                    var fetchFeature = IntranetManager.request('feature:entity:search:alias', 'howdois');
                                     fetchFeature.then(function (feature) {
 
                                         if (!feature) {
-                                            throw new Error('Feature Yellow Pages is not installed');
+                                            throw new Error('Feature How Do I is not installed');
                                         }
 
 
@@ -120,11 +120,11 @@ define([
                             function () {
 
                                 //fetch workspaces
-                                var fetchFeature = IntranetManager.request('feature:entity:search:alias', 'how-do-i');
+                                var fetchFeature = IntranetManager.request('feature:entity:search:alias', 'howdois');
                                 fetchFeature.then(function (feature) {
 
                                     if (!feature) {
-                                        throw new Error('Feature News is not installed');
+                                        throw new Error('Feature How-Do-I  is not installed');
                                     }
 
                                     HowDoIManager.feature = {

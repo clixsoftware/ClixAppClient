@@ -9,12 +9,16 @@ define([
     "tpl!apps/core/public/templates/attachment_list_item.tpl",
     "tpl!apps/core/public/templates/file_list.tpl",
     "tpl!apps/core/public/templates/file_list_item.tpl",
+    "tpl!apps/core/public/templates/ad_item.tpl",
+    "tpl!apps/core/public/templates/breadcrumb_item.tpl",
+    "tpl!apps/core/public/templates/breadcrumbs.tpl",
+
     "fancybox"
 
 ],
-
     function ( IntranetManager, GlobalViews, categoryListTpl, categoryListItemTpl, tagListTpl,
-               tagListItemTpl, attachmentListTpl, attachmentListItemTpl, fileListTpl, fileListItemTpl) {
+               tagListItemTpl, attachmentListTpl, attachmentListItemTpl, fileListTpl, fileListItemTpl, adItemTpl,
+        breadCrumbItemTpl, breadCrumbsTpl) {
 
         IntranetManager.module("CoreManager.Public.Widgets.Show.Views",
             function ( Views, IntranetManager, Backbone, Marionette, $, _ ) {
@@ -36,8 +40,16 @@ define([
 
                     className: 'wptag',
 
-                    onRender: function(){
+/*
+                    getTemplate: function(){
+                        if(this.model.get('view') === '2col'){
+                                    return categoryListItemTpl;
+                                }
+                                    return categoryListItemTpl;
+                         },
+*/
 
+                    onRender: function(){
                        this.$el.addClass('t' + this.model.get('id'));
                        this.$el.css("","");
 
@@ -46,7 +58,49 @@ define([
                     }
                 });
 
+                Views.CategoriesItemLiView = Marionette.ItemView.extend({
+
+                    initialize: function(options){
+                        //  console.log('index of model ' + options.index);
+
+                        this.model.set('index', options.index);
+                    },
+
+                    triggers: {
+                        'click a.category-item':'category:navigate'
+                    },
+
+                    template: categoryListItemTpl,
+
+                    tagName: 'li',
+
+                    className: 'howdoi',
+
+                    onRender: function(){
+                        console.log(this.$el);
+                        this.$el.prepend("<span class='brd" + this.model.get('index') + "'>&nbsp;</span>&nbsp;")
+                      //  this.$el.addClass('t' + this.model.get('id'));
+                      //  this.$el.css("","");
+
+                       // $( "<p>Test</p>" ).insertAfter(th is.$el);
+                      //  console.log('<< Views.CategoriesItemView - Loaded***DONE ***  >>');
+                    }
+                });
+
                 Views.CategoriesView = Marionette.CompositeView.extend({
+
+                    initialize: function(options){
+                        console.group('Core:  Views:  CategoriesView - options');
+                        console.log(options);
+                        console.groupEnd();
+
+                        if(options.useview === '2col'){
+                            this.useview = options.useview;
+                            this.childViewContainer = 'ul.howdoi';
+                           this.childView = Views.CategoriesItemLiView;
+                        }
+                    },
+
                     template: categoryListTpl,
 
                     childView: Views.CategoriesItemView,
@@ -57,9 +111,10 @@ define([
 
                     className: 'widget-box',
 
-                    itemViewOptions: function(model){
+                    childViewOptions: function(model){
                         return {
-                            index: this.collection.indexOf(model) +1
+                            index: this.collection.indexOf(model) +1,
+                            useview: this.useview
                         }
                     },
 
@@ -71,7 +126,16 @@ define([
                 Views.TagItemView = Marionette.ItemView.extend({
 
                     initialize: function(options){
-                        //  console.log('index of model ' + options.index);
+                        console.group('Core:  Views:  TagItemView - options');
+                        console.log(options);
+                        console.groupEnd();
+                         this.useview = options.useview;
+                        if(options.useview === 'tagcloud'){
+                            this.className ="tag";
+                        }else{
+                            this.className = 'wptag';
+                        }
+
                         this.model.set('index', options.index);
                     },
 
@@ -79,16 +143,33 @@ define([
 
                     tagName: 'span',
 
-                    className: '',
+                  className: 'wptag',
 
                     onRender: function(){
-                        this.$el.addClass('t' + this.model.get('id'));
-                        $( "<p>Test</p>" ).insertAfter(this.$el);
+                        if(this.useview != 'tagcloud') {
+                            this.$el.addClass('t' + this.model.get('id'));
+                            $( "<p>Test</p>" ).insertAfter(this.$el);
+                        }
+
                         console.log('<< Views.TagItemView - Loaded***DONE ***  >>');
                     }
                 });
 
-                Views.TagsView = Marionette.CompositeView.extend({
+                 Views.TagsView = Marionette.CompositeView.extend({
+
+                     initialize: function(options){
+                         console.group('Core:  Views:  TagsView - options');
+                         console.log(options);
+                         console.groupEnd();
+
+                         if(options.useview === 'tagcloud'){
+                             this.useview = options.useview;
+                             this.childViewContainer = 'div.tagscloud';
+                             //this.childView = Views.CategoriesItemLiView;
+                         }
+
+                     },
+
                     template: tagListTpl,
 
                     childView: Views.TagItemView,
@@ -99,11 +180,12 @@ define([
 
                     className: 'widget-box',
 
-                    itemViewOptions: function(model){
-                        return {
-                            index: this.collection.indexOf(model) +1
-                        }
-                    },
+                     childViewOptions: function(model){
+                         return {
+                             index: this.collection.indexOf(model) +1,
+                             useview: this.useview
+                         }
+                     },
 
                     onRender: function(){
                         //alert('PostRelatedTagsView');
@@ -223,6 +305,46 @@ define([
                         });
                         console.log('<< Views.FileListView - Loaded***DONE ***  >>');
                     }
+                });
+
+                Views.AdView = Marionette.ItemView.extend({
+
+                    events: {
+                        /*'click a.attachment': 'downloadAttach'*/
+                    },
+
+                    template: adItemTpl,
+
+                    className: 'ads',
+
+                    onRender: function(){
+                       console.log('<< Views.AdView - Loaded***DONE ***  >>');
+                    }
+                });
+
+                Views.BreadCrumbItemView = Marionette.ItemView.extend({
+
+                    template: breadCrumbItemTpl,
+
+                    tagName: 'span'
+
+                });
+
+                Views.BreadCrumbView = Marionette.CompositeView.extend({
+
+                    template: breadCrumbsTpl,
+
+                    childView: Views.BreadCrumbItemView,
+
+                    childViewContainer: '.breadcrumbs',
+
+                    childViewOptions: function(model){
+                        return {
+                            index: this.collection.indexOf(model) +1
+                        }
+                    },
+
+                    onRender: function(){ }
                 });
 
             });

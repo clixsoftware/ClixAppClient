@@ -115,7 +115,7 @@ define([
 
                 getSearchResults: function(endpoint){
 
-                    console.group('getSearchResults: News Posts ');
+                    console.group('API: Applications : : getSearchResults ');
 
                     var collection = new Entities.ApplicationSearchResults();
 

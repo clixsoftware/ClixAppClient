@@ -1,11 +1,11 @@
 define([
     "app",
-    "apps/news/public/entities/posts/show/views",
+    "apps/vacancy/public/entities/posts/show/views",
     "moment"
 ], function (IntranetManager, PostShowViews) {
 
-    IntranetManager.module("NewsManager.Posts.Show",
-        function (Show, NewsManager, Backbone, Marionette, $, _) {
+    IntranetManager.module("VacancyManager.Public.Posts.Show",
+        function (Show, VacancyManager, Backbone, Marionette, $, _) {
 
             Show.Controller = {
 
@@ -14,212 +14,97 @@ define([
 
                 },
 
-                getImageView: function (post) {
-                    return new PostShowViews.ImageView({
-                        model: post
-                    })
-
-                },
-
-                getPostView: function (post) {
-                    return new PostShowViews.PostView({
-                        model: post
-                    })
-
-                },
-
-                getSidebarView: function (post) {
-                    return new PostShowViews.SidebarView({
-                        model: post
-                    });
-                },
-
-                getHeaderView: function (post) {
-                    var view = new PostShowViews.HeaderView({
-                        model: post
-                    });
-
-                    view.on('form:delete', function () {
-                        alert('ready to delete');
-                    });
-
-                    return view;
-                },
-
-
-                getStatsView: function (post) {
-                    return new PostShowViews.StatsView({
-                        model: post
-                    });
-                },
-
                 getPublicView: function (post) {
                     return new PostShowViews.PublicView({
                         model: post
                     });
                 },
 
-                getPublicViewHeader: function (post) {
-                    return new PostShowViews.PublicViewHeader({
-                        model: post
-                    });
-                },
+                showPostDetails: function (opts) {
 
+                    console.group('<< vacancy: List: showPostDetailss  >>');
 
-                showPublicNewsPost: function (opts) {
-                    // alert('showing a public news post' + opts.slug);
+                    console.group('vacancy Options');
+                    console.log(opts);
+                    console.groupEnd();
+
                     var that = this;
 
-                    require(['entities/applications', 'entities/news'], function () {
+                    require(['entities/applications', 'entities/vacancy'], function () {
 
-                        IntranetManager.trigger('news:public:posts:recent', null);
                         var options = {
                             alias: opts.alias,
-                            parent_feature: NewsManager.feature.id
+                            parent_feature: VacancyManager.feature.id
                         };
 
-                        console.log('@@ Fetching Current Application using = ' + options);
+                        console.group('@@ Fetching vacancy Application ' );
+                        console.log(options);
+                        console.groupEnd();
 
                         var fetchingApp = IntranetManager.request('applications:feature:alias', options);
 
-
                         fetchingApp.then(function (app) {
+                            console.group('vacancy App');
                             console.log(app);
+                            console.groupEnd();
 
-                            //IntranetManager.appLayout = Show.Controller.getPostLayoutView();
+                            var fetchingPost = IntranetManager.request("vacancy:app:posts:entity", {
+                                id: opts.post_id,
+                                parent_application: app.id
+                            });
 
-                            // IntranetManager.siteMainContent.show(IntranetManager.appLayout);
+                            return fetchingPost.then(function (post) {
 
-                            //  IntranetManager.trigger('home:news:posts', alias);
-                            //IntranetManager.trigger('dom:title', app.get('title'));
-                            return app;
+                                var layout = that.getPostLayoutView();
 
-                        }).then(function (app) {
-                                console.log('Fetching article post');
+                                IntranetManager.layoutContent.reset();
+                                IntranetManager.layoutContent.show(that.getPublicView(post));
 
-                                var fetchingPost = IntranetManager.request("news:posts:entity", opts.post_id);
+                                IntranetManager.trigger('dom:title', post.get('title'));
 
-                                return    fetchingPost.then(function (post) {
-                                   //console.log(post);
+                                return [post, app];
 
-                                    var newspost = post;
+                            }).spread(function (post, app) {
 
-                                    //console.log(newspost);
+                                var appUrls = app.get('urls');
 
-
-                                    var layout = that.getPostLayoutView();
-
-                                    layout.on('show', function () {
-
-                                        //layout.postMedia.show(that.getImageView(fetchedPost));
-
-                                        // layout.postContent.show(that.getPublicView(post));
-
-                                    });
-
-                                    //  IntranetManager.layoutHeader.show( that.getPublicViewHeader(fetchedPost) );
-
-                                    //   IntranetManager.layoutContent.show(that.getPublicView(post));
-                                    IntranetManager.layoutContent.reset();
-                                    IntranetManager.layoutContent.show(that.getPublicView(newspost));
-
-                                    IntranetManager.trigger('dom:title', newspost.get('title'));
-
-                                    return [newspost, app];
-
+                                IntranetManager.trigger('core:object:categories', {
+                                    collection: post.get('taxonomy'),
+                                    url:  '/sites' + app.get('path') + '/posts-by-category/{{slug}}?uuid={{uuid}}',
+                                    urlTrigger: "vacancy:category:posts"
                                 });
 
-                            }).spread(function (newspost, app) {
+                                IntranetManager.trigger('core:object:tags', {
+                                    collection: post.get('taxonomy'),
+                                    url: '/sites' + app.get('path') + '/posts-by-tag/{{slug}}'
+                                });
 
+                                IntranetManager.trigger('vacancy:posts:recent', {parent_application: app.id});
 
-                               // alert('post fetched and returned');
-                             //   IntranetManager.trigger('news:public:posts:categories', newspost.get('uuid'));
+                                IntranetManager.trigger('vacancy:popular:posts', {parent_application: app.id});
 
-
-                            var taxoptions = {
-                                parentFeature: newspost.get('parent_application_feature'),
-                                appFeature: 'news',
-                                appAlias: newspost.get('parent_application_alias'),
-                                parentId: newspost.get('parent_application'),
-                                objectId: newspost.get('uuid'),
-                                categories: newspost.get('categories'),
-                                tags: newspost.get('tags'),
-                                url: app.get('path')
-                            };
-                            var taxoptions2 = {
-                                parentFeature: newspost.get('parent_application_feature'),
-                                appFeature: 'news',
-                                appAlias: newspost.get('parent_application_alias'),
-                                parentId: newspost.get('parent_application'),
-                                objectId: newspost.get('uuid'),
-                                categories: newspost.get('categories'),
-                                tags: newspost.get('tags'),
-                                url: ''
-                            };
-
-                           // IntranetManager.trigger('core:object:categories', taxoptions );
-                           // IntranetManager.trigger('core:object:tags', taxoptions2);
-                            //IntranetManager.trigger('core:object:image:gallery', newspost.get("attachments"));
-
-
-                         //  IntranetManager.trigger('news:public:posts:recent', newspost.get('parent_application'));
+                                IntranetManager.trigger('core:object:breadcrumbs', {
+                                    crumbs: [
+                                        {title: app.get('title'), url:appUrls.friendly.href},
+                                        {title: post.get('short_title'), url:''}
+                                    ]
+                                });
 
                             }).fail(function (err) {
                                 IntranetManager.trigger('core:error:action', err);
 
                             });
 
-                    });
-
-                },
-
-                loadDisplayPage: function (opts) {
-
-                    console.group('NewsManager: Posts: loadDisplayPage');
-
-                    var that = this;
-                    require([
-                        "entities/news"
-                    ], function () {
-
-                        var fetchingPost = IntranetManager.request("news:posts:entity", opts.postId);
-                        console.log('post id ' + opts.postId);
-
-                        $.when(fetchingPost).done(function (post) {
-
-                            console.log(JSON.stringify(post));
-
-                            if (post) {
-
-                                IntranetManager.layoutContent.show(that.getPostView(post));
-
-                               // IntranetManager.layoutZone1.show(that.getSidebarView(post));
-
-                               // IntranetManager.layoutHeader.show(that.getHeaderView(post));
-
-                                //IntranetManager.layoutZone2.show(that.getStatsView(post));
-
-
-                                //close out search
-
-                                IntranetManager.layoutSearch.reset();
-
-                            } else {
-
-                                console.error('TODO: no record found view');
-                            }
                         });
 
                     });
 
-                    console.groupEnd();
 
                 }
-
-
             }
+
         });
 
-    return IntranetManager.NewsManager.Posts.Show.Controller;
+    return IntranetManager.VacancyManager.Public.Posts.Show.Controller;
 });
 
